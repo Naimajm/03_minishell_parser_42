@@ -1,0 +1,74 @@
+
+** COMPONENTES PPALES MINISHELL
+
+1. BUCLE PPAL 	...................process..
+2. INPUT READER	...................process..
+3. PARSING COMANDOS ...............process..
+	🔹 HITO 1: Lectura básica y tokenización
+		- [✓] Leer la línea de entrada con readline().
+		- [ ] Dividir la línea en tokens, respetando espacios dentro de comillas.
+		- [ ] Reconocer operadores especiales: |, >, <, >>, <<.
+2		- [ ] Ignorar espacios en blanco fuera de comillas.
+
+	🔹 HITO 2: Manejo de comillas
+		- [ ] Soportar comillas simples '...' (contenido literal).
+		- [ ] Soportar comillas dobles "..." (expande variables).
+		- [ ] Detectar comillas sin cerrar y dar error adecuado.
+		- [ ] Manejar comillas anidadas o mezcladas correctamente (ej. "Hola '$USER'").
+
+	🔹 HITO 3: Expansión de variables de entorno
+		- [ ] Detectar $VAR y reemplazar por su valor.
+		- [ ] Manejar $? (último código de salida).
+		- [ ] Soportar $VAR dentro de comillas dobles.
+		- [ ] Ignorar expansión dentro de comillas simples.
+
+	🔹 HITO 4: Reconocimiento de redirecciones
+		- [ ] Detectar > (redirección de salida).
+		- [ ] Detectar >> (redirección de salida en modo append).
+		- [ ] Detectar < (redirección de entrada).
+		- [ ] Detectar << (heredoc).
+		- [ ] Asociar redirecciones al comando correspondiente.
+		- [ ] Validar que cada redirección tenga un archivo objetivo (error si no).
+
+	🔹 HITO 5: Reconocimiento de pipes
+		- [ ] Dividir la línea en comandos conectados por |.
+		- [ ] Validar sintaxis: error si hay pipe sin comando antes o después.
+		- [ ] Crear estructuras tipo lista o árbol para representar la secuencia.
+
+	🔹 HITO 6: Construcción de estructuras de comandos
+		- [ ] Crear una estructura t_command o similar que incluya:
+			- Nombre del comando.
+			- Lista de argumentos.
+			- Redirecciones de entrada/salida.
+			- Indicadores de heredoc, append, etc.
+		- [ ] Crear una lista enlazada o array de estas estructuras si hay pipes.
+		- [ ] Asignar correctamente las redirecciones a cada nodo.
+
+	🔹 HITO 7: Manejo de errores de sintaxis
+		- [ ] Detectar errores como:
+			- | ls (pipe al principio)
+			- ls || cat (pipes múltiples inválidos)
+			- echo > (falta archivo)
+			- Comillas no cerradas.
+		- [ ] Mostrar mensajes claros sin que la shell crashee.
+
+	🔹 HITO 8: Heredoc básico
+		- [ ] Detectar << delimitador
+		- [ ] Leer múltiples líneas hasta encontrar el delimitador.
+		- [ ] Guardar el contenido en un pipe temporal o archivo tmp.
+		- [ ] Soportar expansión de variables dentro del heredoc si NO está entre comillas.
+
+	🔹 HITO 9: Soporte de caracteres de escape (opcional)
+		- [ ] Permitir \ para escapar comillas, $, espacios, etc.
+		- [ ] Manejar correctamente escapes dentro de comillas dobles.
+
+	🔹 HITO 10: Testing con casos límite
+		- [ ] Pruebas con comandos complejos, por ejemplo:
+			echo "Hola $USER" | grep "$HOME" >> salida.txt
+		- [ ] Pruebas con errores de sintaxis intencionales.
+		- [ ] Pruebas con comillas anidadas, pipes múltiples, y combinaciones.
+
+4. COMMAND EXECUTOR ...................0 %..
+	- Manejo de señales
+5. ENVIROMENT MANAGER .................0 %..
+
