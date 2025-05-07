@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/05 19:00:37 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:40:38 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,22 +60,21 @@
 
 // STRUCT -----------------------------------------------------
 
-// SHELL
-typedef struct s_shell
-{
-	char	*input;
-}			t_shell;
-
 // TOKEN
 typedef struct s_token
 {
 	char	*token;
-	int		type_token;
-	struct	s_token	*previous;	
+	int		type;
+	//struct	s_token	*previous;	
 	struct	s_token	*next;	
 }			t_token;
 
-
+// SHELL
+typedef struct s_shell
+{
+	char	*input;
+	t_token	*token_list;
+}			t_shell;
 
 // FUNCTIONS -----------------------------------------------------
 
@@ -91,6 +90,11 @@ t_shell *initialize_shell(void);
 // 02_parser_tokenize.c
 
 void	categorize_token(t_shell *shell);
+
+// 03_parser_struct_token.c
+
+void	listtoken_add_back(t_token **token_list, char  *input, int token_type);
+void print_token_list(t_token *token_list);
 	
 // 08_utils.c 
 
