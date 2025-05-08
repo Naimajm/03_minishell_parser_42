@@ -6,15 +6,15 @@
 3. PARSING COMANDOS ...............process..
 	🔹 HITO 1: Lectura básica y tokenización
 		- [✓] Leer la línea de entrada con readline().
-		- [ ] Dividir la línea en tokens, respetando espacios dentro de comillas.
-		- [ ] Reconocer operadores especiales: |, >, <, >>, <<.
-2		- [ ] Ignorar espacios en blanco fuera de comillas.
+		- [✓] Dividir la línea en tokens, respetando espacios dentro de comillas.
+		- [✓] Reconocer operadores especiales: |, >, <, >>, <<.
+2		- [✓] Ignorar espacios en blanco fuera de comillas.
 
 	🔹 HITO 2: Manejo de comillas
-		- [ ] Soportar comillas simples '...' (contenido literal).
-		- [ ] Soportar comillas dobles "..." (expande variables).
-		- [ ] Detectar comillas sin cerrar y dar error adecuado.
-		- [ ] Manejar comillas anidadas o mezcladas correctamente (ej. "Hola '$USER'").
+		- [✓] Soportar comillas simples '...' (contenido literal).
+		- [✓] Soportar comillas dobles "..." (expande variables).
+		- [✓] Detectar comillas sin cerrar y dar error adecuado.
+		- [✓ ] Manejar comillas anidadas o mezcladas correctamente (ej. "Hola '$USER'").
 
 	🔹 HITO 3: Expansión de variables de entorno
 		- [ ] Detectar $VAR y reemplazar por su valor.
@@ -23,10 +23,10 @@
 		- [ ] Ignorar expansión dentro de comillas simples.
 
 	🔹 HITO 4: Reconocimiento de redirecciones
-		- [ ] Detectar > (redirección de salida).
-		- [ ] Detectar >> (redirección de salida en modo append).
-		- [ ] Detectar < (redirección de entrada).
-		- [ ] Detectar << (heredoc).
+		- [✓] Detectar > (redirección de salida).
+		- [✓] Detectar >> (redirección de salida en modo append).
+		- [✓] Detectar < (redirección de entrada).
+		- [✓] Detectar << (heredoc).
 		- [ ] Asociar redirecciones al comando correspondiente.
 		- [ ] Validar que cada redirección tenga un archivo objetivo (error si no).
 

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/07 14:40:38 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:48:23 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,30 +33,22 @@
 # define ERROR_ARGS			"Error\n Error number arguments\n"
 # define ERROR_OPEN_FILE	"Error\n Opening file\n"
 
+# define ERROR_QUOTE_SYNTAX	"Error\n Simple/double quote syntax. Not closed\n"
+
 # define PROMPT				"minishell$ "
 
 # define FREE_ALL_SHELL		"Free\n Total cleaning minishell\n"
 # define FREE_MATRIX		"Free\n cleaning matrix\n"
 
 // categorizacion tokens
-# define WORDS_NO_QUOTATION		0
-# define WORDS_SINGLE_QUOTES	1
-# define WORDS_DOUBLE_QUOTES	2
-# define OUTFILE				3
-# define APPEND					4
-# define INFILE					5
-# define HERE_DOC				6
-# define PIPE					7
-
-// TIPOS TOKEN
-/* 0 -> palabras sin comillas
-1 -> palabras con comillas simples -> literal
-2 -> palabras con comillas dobles -> expansion variables
-3 -> operador > OUTFILE
-4 -> operador >> APPEND
-5 -> operador < INFILE
-6 -> operador <> HERE_DOC
-7 -> operador | PIPE */
+# define WORDS_NO_QUOTATION		0		// 0 -> palabras sin comillas
+# define WORDS_SINGLE_QUOTES	1		// 1 -> palabras con comillas simples -> literal
+# define WORDS_DOUBLE_QUOTES	2		// 2 -> palabras con comillas dobles -> expansion variables
+# define OUTFILE				3		// 3 -> operador > OUTFILE
+# define APPEND					4		// 4 -> operador >> APPEND
+# define INFILE					5		// 5 -> operador < INFILE
+# define HERE_DOC				6		// 6 -> operador <> HERE_DOC
+# define PIPE					7		// 7 -> operador | PIPE
 
 // STRUCT -----------------------------------------------------
 
@@ -90,10 +82,12 @@ t_shell *initialize_shell(void);
 // 02_parser_tokenize.c
 
 void	categorize_token(t_shell *shell);
+char	*quotes_tokenizer(char *input, int index_first_char, char delimiter);
+char	*word_tokenizer(char *input, int index_first_char);
 
-// 03_parser_struct_token.c
+// 03_parser_list_token.c
 
-void	listtoken_add_back(t_token **token_list, char  *input, int token_type);
+void	add_back_token(t_token **token_list, char  *input, int token_type);
 void print_token_list(t_token *token_list);
 	
 // 08_utils.c 
