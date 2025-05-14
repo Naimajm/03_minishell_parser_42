@@ -7,6 +7,8 @@
 
  "ho<< $? la" "car$a<>|cola" "" ' ey'
 
+ "prefijo $HOME sufijo"
+
 ## ERROR SINTAXIS
 'test ey
 "test ey

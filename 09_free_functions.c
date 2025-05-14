@@ -6,23 +6,27 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/09 14:56:24 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:25:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include/minishell.h"
 
 void	free_token_list(t_token **token_list);
-void	free_matrix(void **matrix);
+void	free_matrix(char **matrix);
 
 void	cleanup_minishell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-		
+	// free lista tokens
 	if (shell->token_list)
 		free_token_list(&shell->token_list);
 		
+	// free copia variables entorno
+	if (shell->environment)
+		free_matrix(shell->environment);
+
 	free(shell);
 	shell = NULL;
 	ft_printf(FREE_ALL_SHELL);
@@ -62,7 +66,7 @@ void	free_expand_stack(t_expand *expand_stack)
 	expand_stack = NULL;
 }
 
-void	free_matrix(void **matrix)
+void	free_matrix(char **matrix)
 {
 	int row;
 

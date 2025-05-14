@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/09 14:58:37 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:39:51 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 char	*quotes_tokenizer(char *input, int index_first_char, char delimiter);
 char	*word_tokenizer(char *input, int index_first_char);
-static int is_operator(char character);
-static int	is_space(char character);
 
 void	tokenizer(t_shell *shell)
 {
@@ -140,7 +138,7 @@ char	*word_tokenizer(char *input, int index_first_char)
 
 	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
 	while (!is_space(input[index]) && !is_operator(input[index]) 
-		&& input[index] !=  '"' && input[index])
+		&& input[index] !=  '\"' && input[index])
 		index++;
 		
 	//ft_printf("index -> %d\n", index);
@@ -151,23 +149,4 @@ char	*word_tokenizer(char *input, int index_first_char)
 
 	//ft_printf("token -> %s\n", token);
 	return (token);
-}
-
-static int is_operator(char character)
-{
-	int	operator;
-
-	operator = 0;
-	if (character == '>' || character == '<' || character == '|')
-		operator = 1;
-	return (operator);
-}
-static int	is_space(char character)
-{
-	int	space;
-
-	space = 0;
-	if (character == ' ' || (character >= '\t' && character <= '\r'))
-		space = 1;
-	return (space);
 }

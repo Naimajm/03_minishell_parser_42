@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 09:02:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:25:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	load_environment_variables(t_shell *shell, char **environment_var)
 	// reserva + carga copia en shell
 	shell->environment = (char **) malloc(sizeof(char *) * (count + 1));
 	if (!shell->environment)
-		free_environment(shell->environment);
+		free_matrix(shell->environment);
 
 	while (environment_var[index])
 	{

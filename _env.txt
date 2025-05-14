@@ -1,8 +1,0 @@
-
-
-USER=juagomez
-HOME=/home/juagomez
-
-PATH=/usr/bin:/bin:/usr/local/bin
-SHELL=/bin/bash
-

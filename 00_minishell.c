@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/13 10:07:36 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:18:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,17 @@ void	start_minishell(char *prompt, char **environment_var)
 	char	*input;
 	t_shell	*shell;	
 
+	// validacion inputs
+	if (!prompt || !environment_var)
+		return ;
+
 	input = NULL;
 	// inicializar shell
 	shell = initialize_shell();
 
 	// cargar variables entorno
 	load_environment_variables(shell, environment_var);	
+	
 	// loop ppal
 	while (1)
 	{
@@ -38,6 +43,9 @@ void	start_minishell(char *prompt, char **environment_var)
 
 		// PARSEAR INPUT
 		input_parser(shell);
+
+		// validacion estructura shell
+		print_config_shell(shell);	
 		
 		// EJECUTAR COMAND
 
@@ -62,12 +70,10 @@ void	input_parser(t_shell *shell)
 	// expandir variables  "$VAR"
 	if (search_expand_operators(shell->token_list))
 	{
-		ft_printf("expand var ? -> %d\n", search_expand_operators(shell->token_list));
+		ft_printf("expand var OK\n");
 		activate_expand_operators(shell->token_list);
-	}
+	}	
 	
-	// validacion estructura shell
-	print_config_shell(shell);	
 }
 
 char	*input_reader(char *prompt)
@@ -85,24 +91,16 @@ char	*input_reader(char *prompt)
 
 // MAIN -----------------------------------------------------------------------
 
-int	main(int	argc, char **argv)
+int	main(int	argc, char **argv, char **env)
 {
 	(void) argc;
 	(void) argv;
-	char **environment_variables;
 
 	// DASHBOARD PROYECTO
 	print_text_file("_work_process.txt");	
 
-	// CARGAR CHAR **ENVIRONMENT DESDE ARCHIVO
-	environment_variables = load_environment_from_file("_env.txt");
-	if (!environment_variables)
-		return (FAILURE);	
-	
-	start_minishell(PROMPT, environment_variables);
-
-	// Liberar las variables de entorno
-    free_environment(environment_variables);
+	// INICIO
+	start_minishell(PROMPT, env);
 
 	return (SUCCESS);
 }
