@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/08 13:48:23 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/13 10:10:00 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 # define MINISHELL_H
 
 // EXTERNAL LIBRARIES
-#include <unistd.h>	// write getcwd chdir
-#include <stdio.h>  // printf aux
-#include <fcntl.h>	// open
+#include <unistd.h>		// write getcwd chdir
+#include <stdio.h>  	// printf aux
+#include <fcntl.h>		// open
+#include <stdbool.h>	// bool
 
 #include <readline/readline.h> 	// readline
 #include <readline/history.h>	// readline
@@ -38,6 +39,7 @@
 # define PROMPT				"minishell$ "
 
 # define FREE_ALL_SHELL		"Free\n Total cleaning minishell\n"
+# define FREE_TOKENS		"Free\n cleaning Token List\n"
 # define FREE_MATRIX		"Free\n cleaning matrix\n"
 
 // categorizacion tokens
@@ -52,11 +54,22 @@
 
 // STRUCT -----------------------------------------------------
 
+// VARIABLES EXPANDIDAS
+typedef struct s_expand
+{
+	int		start;
+	int		end;
+	char	*key;
+	char	*value;		
+}			t_expand;
+
 // TOKEN
 typedef struct s_token
 {
 	char	*token;
 	int		type;
+	bool	expand_var;
+	
 	//struct	s_token	*previous;	
 	struct	s_token	*next;	
 }			t_token;
@@ -65,38 +78,50 @@ typedef struct s_token
 typedef struct s_shell
 {
 	char	*input;
+	char	**environment;
 	t_token	*token_list;
 }			t_shell;
 
 // FUNCTIONS -----------------------------------------------------
 
 // 00_minishell.c
-
+void	start_minishell(char *prompt, char **environment_var);
+void	input_parser(t_shell *shell);
 char	*input_reader(char *prompt);
-void	start_minishell(char *prompt);
 
 // 01_init_shell.c
-
 t_shell *initialize_shell(void);
+void	load_environment_variables(t_shell *shell, char **environment_var);
 
 // 02_parser_tokenize.c
-
-void	categorize_token(t_shell *shell);
+void	tokenizer(t_shell *shell);
 char	*quotes_tokenizer(char *input, int index_first_char, char delimiter);
 char	*word_tokenizer(char *input, int index_first_char);
 
 // 03_parser_list_token.c
-
 void	add_back_token(t_token **token_list, char  *input, int token_type);
-void print_token_list(t_token *token_list);
+void	print_token_list(t_token *token_list);
 	
+//  04_parser_expand.c
+void	activate_expand_operators(t_token *token_list);
+int		search_expand_operators(t_token *token_list);
+
+//  05_parser_expand_utils.c
+void print_expand_stack(t_expand *expand_stack);
+
 // 08_utils.c 
 
-void	print_text_file(const char *filename);
-
 // 09_free_functions.c
-
 void	cleanup_minishell(t_shell *shell);
+void	free_token_list(t_token **token_list);
+void	free_expand_stack(t_expand *expand_stack);
 void	free_matrix(void **matrix);
+
+// 15_utils_process.c 
+char 	**load_environment_from_file(const char *filename);
+void 	free_environment(char **environment);
+void	print_text_file(const char *filename);
+void	print_config_shell(t_shell *shell);
+void	print_strings_array(char **array);
 
 #endif

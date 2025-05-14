@@ -24,8 +24,9 @@ EXT_LIBRARYS = $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIV
 
 SRC_FILES :=	00_minishell.c 01_init_shell.c \
 				02_parser_tokenize.c 03_parser_list_token.c \
+				04_parser_expand.c 05_parser_expand_utils.c 06_parser_expand_exitstatus.c \
 				08_utils.c 09_free_functions.c \
-
+				15_utils_process.c \
 
 OBJ_FILES := $(SRC_FILES:%.c=%.o) 
 

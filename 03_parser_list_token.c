@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/07 20:06:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/09 13:39:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static t_token	*list_token_find_last_node(t_token *token_list);
 static t_token *token_create_node(char  *input, int type_token);
+void print_token_list(t_token *token_list);
 
 void	add_back_token(t_token **token_list, char  *input, int token_type)
 {
@@ -39,6 +40,25 @@ void	add_back_token(t_token **token_list, char  *input, int token_type)
         last_node->next = new_node;
 }
 
+static t_token *token_create_node(char  *input, int token_type)
+{
+    t_token *new_node;
+
+    if (!input)
+        return (NULL);
+
+    new_node = (t_token *) malloc(sizeof(t_token));
+    if (!new_node)
+        return (NULL);
+    new_node->token         = ft_strdup(input);
+    new_node->type          = token_type;
+    new_node->expand_var    = false;
+    new_node->next	        = NULL;
+
+    //ft_printf("new_node -> %s\n", new_node->token);
+    return  (new_node);
+}
+
 static t_token	*list_token_find_last_node(t_token *token_list)
 {
     // validation 
@@ -51,31 +71,16 @@ static t_token	*list_token_find_last_node(t_token *token_list)
 	return (token_list);
 }
 
-static t_token *token_create_node(char  *input, int token_type)
-{
-    t_token *new_node;
-
-    if (!input)
-        return (NULL);
-
-    new_node = (t_token *) malloc(sizeof(t_token));
-    if (!new_node)
-        return (NULL);
-    new_node->token = ft_strdup(input);
-    new_node->type  = token_type;
-    new_node->next	= NULL;
-
-    //ft_printf("new_node -> %s\n", new_node->token);
-    return  (new_node);
-}
-
 void print_token_list(t_token *token_list)
 {
     if (!token_list)
         return ;    
     while (token_list)
     {
-        ft_printf("token -> %s          : type [%d]\n", token_list->token, token_list->type);
+        ft_printf("token -> %s [type %d]\n", token_list->token, token_list->type);
+        ft_printf("expand var -> %i\n", token_list->expand_var);
+        ft_printf("current -> %p // ", token_list);
+        ft_printf("next -> %p\n\n", token_list->next);
         token_list = token_list->next;
     }
 }

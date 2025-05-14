@@ -6,25 +6,51 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/07 18:33:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/14 09:02:29 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include/minishell.h"
 
+void	load_environment_variables(t_shell *shell, char **environment_var);
 
 t_shell *initialize_shell(void)
 {
 	t_shell	*shell;
 
-	/* if (!input)
-		return (NULL);	 */
 	shell = (t_shell *) malloc(sizeof(t_shell));
 	if(!shell)
 		return (NULL);	
 		
 	shell->input 		= NULL;
+	shell->environment	= NULL;
 	shell->token_list 	= NULL;
 
 	return (shell);
+}
+
+void	load_environment_variables(t_shell *shell, char **environment_var)
+{
+	int	count;
+	int	index;
+
+	if (!shell || !environment_var)
+		return ;
+	count 	= 0;
+	index 	= 0;
+	// calculo total elementos
+	while (environment_var[count])
+		count++;
+	
+	// reserva + carga copia en shell
+	shell->environment = (char **) malloc(sizeof(char *) * (count + 1));
+	if (!shell->environment)
+		free_environment(shell->environment);
+
+	while (environment_var[index])
+	{
+		shell->environment[index] = ft_strdup(environment_var[index]);
+		index++;
+	}
+	shell->environment[index] = NULL;	// terminador nulo char **
 }

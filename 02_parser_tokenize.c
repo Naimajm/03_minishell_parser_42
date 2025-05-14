@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/08 13:50:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/09 14:58:37 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*word_tokenizer(char *input, int index_first_char);
 static int is_operator(char character);
 static int	is_space(char character);
 
-void	categorize_token(t_shell *shell)
+void	tokenizer(t_shell *shell)
 {
 	int		index;
 	char	*token_input;
@@ -36,7 +36,6 @@ void	categorize_token(t_shell *shell)
 		
 		if (shell->input[index] == '\'') // PALABRAS COMILLA SIMPLES -> LITERAL
 		{
-			//ft_printf("EXPRESION LITERAL ''\n");
 			token_input = quotes_tokenizer(shell->input, index, '\'');
 			// validacion token si en funcion NULL o expresion literal sin final comilla
 			if (!token_input)
@@ -48,7 +47,6 @@ void	categorize_token(t_shell *shell)
 		}		
 		else if (shell->input[index] == '"') // PALABRAS COMILLA DOBLE -> EXPANSION VARIABLE
 		{
-			//ft_printf("EXPANSION VARIABLES ""\n");
 			token_input = quotes_tokenizer(shell->input, index, '"');
 			if (!token_input)
 				return ;
@@ -92,9 +90,7 @@ void	categorize_token(t_shell *shell)
 			free(token_input);		 // liberar copia strdup de input	
 		}			
 		index++;		
-	}
-	// verificacion lista tokens	
-	print_token_list(shell->token_list);
+	}	
 }
 
 char	*quotes_tokenizer(char *input, int index_first_char, char delimiter)
