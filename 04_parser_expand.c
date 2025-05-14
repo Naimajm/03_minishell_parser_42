@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 14:12:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/14 14:16:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,17 +108,11 @@ void	expand_var_token(t_token *token_list)
 
 			/// SUSTITUIR VARIABLE POR SU VALOR --------------------
 		}
-
 		index++;
-	}
-	
-	
+	}	
 	// verificacion
-	print_expand_stack(expand_stack);
-	
+	print_expand_stack(expand_stack);	
 }
-
-
 
 t_expand *initialize_expand_stack(void)
 {
@@ -134,6 +128,3 @@ t_expand *initialize_expand_stack(void)
 	expand_stack->value	= NULL; // valor de la variable
 	return (expand_stack);
 }
-
-
-
