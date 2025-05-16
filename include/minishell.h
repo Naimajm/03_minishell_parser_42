@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 09:42:38 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:28:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	*quotes_tokenizer(char *input, int index_first_char, char delimiter);
 char	*word_tokenizer(char *input, int index_first_char);
 
 // 03_parser_list_token.c
-void	add_back_token(t_token **token_list, char  *input, int token_type);
+void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_token_list(t_token *token_list);
 	
 //  04_parser_expand.c

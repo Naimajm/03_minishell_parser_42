@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 12:03:23 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:31:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,22 @@ void	expand_token(t_token *token, char **env)
 	// ciclo busqueda $, tomar variable, busqueda y expansion
 	while (token->final_token[index] && ft_strchr(token->final_token, '$'))
 	{
+		//index = 0;		
 		if (token->final_token[index] == '$')
 		{
-			// casos especiales '$ ' y '$"'
+			/// SWITCH OPERADOR $ + VARIABLE  (casos especiales)-------------------------
+			// casos especiales '$ ' y '$"' y  final linea '$\0'
 			if (token->final_token[index + 1] == ' '
-				|| token->final_token[index + 1] == '\"')
+				|| token->final_token[index + 1] == '\"'
+				|| token->final_token[index + 1] == '\0')
 			{
 				index++;	// literal $ -> avanzar
 				continue;
-			}			
+			}		
+			// GESTION CARACTER $? -> Devuelve el código de salida del último comando ejecutado
+			// operadores especiales $? $$ $! -> tratar?
+			if (expand->key && expand->key[0] == '?')
+				ft_printf("TODO caso especial $?\n");		
 
 			/// EXTRAER VARIABLE  (similar a word_tokenizer)------------------------------
 			index++;  // saltar operador $
@@ -95,12 +102,7 @@ void	expand_token(t_token *token, char **env)
 			expand->key = extract_variable(token->final_token, index);
 			if (!expand->key)
 				return ;
-			expand->last_index = index + ft_strlen(expand->key);				
-
-			// GESTION CARACTER $? -> Devuelve el código de salida del último comando ejecutado
-			// operadores especiales $? $$ $! -> tratar?
-			if (expand->key && expand->key[0] == '?')
-				ft_printf("TODO caso especial $?\n");		
+			expand->last_index = index + ft_strlen(expand->key);			
 
 			/// BUSCAR VARIABLE EN ENV ------------------------------
 			expand->value = get_environment_var(env,  expand->key);

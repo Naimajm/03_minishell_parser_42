@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 09:35:35 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:28:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static t_token	*list_token_find_last_node(t_token *token_list);
 static t_token *token_create_node(char  *input, int type_token);
 void print_token_list(t_token *token_list);
 
-void	add_back_token(t_token **token_list, char  *input, int token_type)
+void	add_token_node(t_token **token_list, char  *input, int token_type)
 {
     t_token *new_node;
     t_token *last_node;

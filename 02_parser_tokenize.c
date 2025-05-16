@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 13:39:51 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:31:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	tokenizer(t_shell *shell)
 				return ;
 			index += ft_strlen(token_input) - 1; // avanza indice hasta final palabra
 
-			add_back_token(&shell->token_list, token_input, WORDS_SINGLE_QUOTES);
+			add_token_node(&shell->token_list, token_input, WORDS_SINGLE_QUOTES);
 			free(token_input); // liberar copia strdup de input
 		}		
 		else if (shell->input[index] == '"') // PALABRAS COMILLA DOBLE -> EXPANSION VARIABLE
@@ -50,7 +50,7 @@ void	tokenizer(t_shell *shell)
 				return ;
 			index += ft_strlen(token_input) - 1;
 
-			add_back_token(&shell->token_list, token_input, WORDS_DOUBLE_QUOTES);
+			add_token_node(&shell->token_list, token_input, WORDS_DOUBLE_QUOTES);
 			free(token_input);			
 		}		
 		else if (shell->input[index] == '>') // operadores especiales -> OUTFILE o APPEND
@@ -58,23 +58,23 @@ void	tokenizer(t_shell *shell)
 			if (shell->input[index + 1] == '>')
 			{
 				index++;
-				add_back_token(&shell->token_list, ">>", APPEND);				
+				add_token_node(&shell->token_list, ">>", APPEND);				
 			}
 			else
-				add_back_token(&shell->token_list, ">", OUTFILE);			
+				add_token_node(&shell->token_list, ">", OUTFILE);			
 		}		
 		else if (shell->input[index] == '<') // operadores especiales -> INFILE o HERE_DOC
 		{
 			if (shell->input[index + 1] == '<')
 			{
 				index++;
-				add_back_token(&shell->token_list, "<<", HERE_DOC);
+				add_token_node(&shell->token_list, "<<", HERE_DOC);
 			}
 			else
-				add_back_token(&shell->token_list, "<", INFILE);					
+				add_token_node(&shell->token_list, "<", INFILE);					
 		}		
 		else if (shell->input[index] == '|') // operadores especiales -> PIPE
-			add_back_token(&shell->token_list, "|", PIPE);
+			add_token_node(&shell->token_list, "|", PIPE);
 		else // 1º letra palabra simple sin inicio comillas
 		{
 			// PROCESO COMPLETO CATEGORIZAR -> TOKENIZAR -> AÑADIR A LISTA TOKEN
@@ -84,7 +84,7 @@ void	tokenizer(t_shell *shell)
 			index += ft_strlen(token_input) - 1;	 // avanza indice hasta final palabra	
 
 			// añadir token a lista token
-			add_back_token(&shell->token_list, token_input, WORDS_NO_QUOTATION);			
+			add_token_node(&shell->token_list, token_input, WORDS_NO_QUOTATION);			
 			free(token_input);		 // liberar copia strdup de input	
 		}			
 		index++;		
@@ -115,8 +115,10 @@ char	*quotes_tokenizer(char *input, int index_first_char, char delimiter)
 	}
 	// validacion sintaxis expresion literal
 	if (!second_quote_flag)
-		return (ft_printf(ERROR_QUOTE_SYNTAX), (NULL));
-
+	{
+		ft_printf(ERROR_QUOTE_SYNTAX);
+		return (NULL);
+	}
 	// copia expresion con comillas simples incluidas
 	token = ft_substr(input, index_first_char, (index - index_first_char + 1)); // + 1-> 2º comillas
 	if (!token)
