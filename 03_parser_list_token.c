@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/09 13:39:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 09:35:35 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ static t_token *token_create_node(char  *input, int token_type)
     new_node = (t_token *) malloc(sizeof(t_token));
     if (!new_node)
         return (NULL);
-    new_node->token         = ft_strdup(input);
+    new_node->raw_token         = ft_strdup(input);
     new_node->type          = token_type;
     new_node->expand_var    = false;
+    new_node->final_token   = NULL;
     new_node->next	        = NULL;
 
     //ft_printf("new_node -> %s\n", new_node->token);
@@ -77,7 +78,7 @@ void print_token_list(t_token *token_list)
         return ;    
     while (token_list)
     {
-        ft_printf("token -> %s [type %d]\n", token_list->token, token_list->type);
+        ft_printf("token -> %s [type %d]\n", token_list->raw_token, token_list->type);
         ft_printf("expand var -> %i\n", token_list->expand_var);
         ft_printf("current -> %p // ", token_list);
         ft_printf("next -> %p\n\n", token_list->next);

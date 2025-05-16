@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 13:18:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:25:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	start_minishell(char *prompt, char **environment_var)
 		input_parser(shell);
 
 		// validacion estructura shell
-		print_config_shell(shell);	
+		//print_config_shell(shell);	
 		
 		// EJECUTAR COMAND
 
@@ -60,18 +60,19 @@ void	start_minishell(char *prompt, char **environment_var)
 
 void	input_parser(t_shell *shell)
 {
+	ft_printf("Tokenizer...				OK\n");
 	tokenizer(shell);
 
-	// verificacion lista tokens	
-	print_token_list(shell->token_list);
+	// validacion lista tokens	
+	//print_token_list(shell->token_list);
 
 	// check error sintaxis tokens
 
 	// expandir variables  "$VAR"
 	if (search_expand_operators(shell->token_list))
 	{
-		ft_printf("expand var OK\n");
-		activate_expand_operators(shell->token_list);
+		ft_printf("Expand variables $...			OK\n");
+		activate_expand_operators(shell->token_list, shell->environment);
 	}	
 	
 }
@@ -97,7 +98,7 @@ int	main(int	argc, char **argv, char **env)
 	(void) argv;
 
 	// DASHBOARD PROYECTO
-	print_text_file("_work_process.txt");	
+	//print_text_file("_work_process.txt");	
 
 	// INICIO
 	start_minishell(PROMPT, env);

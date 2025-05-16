@@ -7,10 +7,19 @@
 
  "ho<< $? la" "car$a<>|cola" "" ' ey'
 
- "prefijo $HOME sufijo"
+// EXPANSION VARIABLES 
+
+"prefijo $HOME sufijo"
+
+"$HOME"
+
+casos especiales '$ ' o '$"'
+"aa$HOMEzz $ $"
+caso especial '$?'
+
 
 ## ERROR SINTAXIS
 'test ey
 "test ey
 cmd1 'test | "test
-"Hola '$USER'"
+"Hola '$USER'" 

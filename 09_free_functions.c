@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 11:25:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 09:38:37 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,12 @@ void	free_token_list(t_token **token_list)
 	while (*token_list)
 	{
 		temp_ptr = temp_ptr->next;
-		// borrar puntero
-		if ((*token_list)->token)
-			free((*token_list)->token);
+		// borrar raw_token
+		if ((*token_list)->raw_token)
+			free((*token_list)->raw_token);
+		// borrar final_token
+		if ((*token_list)->final_token)
+			free((*token_list)->final_token);
 		free(*token_list);
 		*token_list = NULL;
 		// reestablecer puntero 1º nodo

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 13:42:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/16 09:42:38 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,10 @@ typedef struct s_expand
 // TOKEN
 typedef struct s_token
 {
-	char	*token;
+	char	*raw_token;
 	int		type;
 	bool	expand_var;
+	char	*final_token;
 	
 	//struct	s_token	*previous;	
 	struct	s_token	*next;	
@@ -103,11 +104,14 @@ void	add_back_token(t_token **token_list, char  *input, int token_type);
 void	print_token_list(t_token *token_list);
 	
 //  04_parser_expand.c
-void	activate_expand_operators(t_token *token_list);
 int		search_expand_operators(t_token *token_list);
+void	activate_expand_operators(t_token *token_list, char **env);
+void	expand_token(t_token *token, char **env);
+char	*extract_variable(char *token, int first_index);
+char	*get_environment_var(char **env, char *variable);
+t_expand *initialize_expand_stack(void);
 
 //  05_parser_expand_utils.c
-int		find_next_char_operator(const char *str, char operator);
 void	print_expand_stack(t_expand *expand_stack);
 
 // 08_utils.c
