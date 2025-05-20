@@ -9,13 +9,16 @@
 
 // EXPANSION VARIABLES 
 
-"prefijo $HOME sufijo"
-
 "$HOME"
 
-casos especiales '$ ' o '$"'
+"aa $HOME bb \$literal ${HOME}xxx $?z zz"
+
+
+casos especiales '$ ' o '$"' '$
 "aa$HOMEzz $ $"
 caso especial '$?'
+
+"$ff{HOME}ff" -> {HOME}ff
 
 
 ## ERROR SINTAXIS
