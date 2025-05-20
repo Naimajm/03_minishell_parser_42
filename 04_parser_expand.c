@@ -6,54 +6,41 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 12:31:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/20 10:20:17 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include/minishell.h"
 
 
-void	activate_expand_operators(t_token *token_list, char **env);
+void	activate_expand_operators(t_shell *shell);
 void	expand_token(t_token *token_list, char **env);
 char	*insert_expand_value(char *token, t_expand *expand_var);
 char	*extract_variable(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 t_expand *initialize_expand_stack(void);
 
-int	search_expand_operators(t_token *token_list)
+void	activate_expand_operators(t_shell *shell)
 {
-	t_token	*temp_list;
-	int	match;
+	t_token	*ptr_token;
 
-	if (!token_list)
-		return (0);
-	temp_list = (t_token *) token_list;
-	match = 0;
-	while (temp_list)
-	{
-		if (ft_strchr(temp_list->raw_token, '$'))
-		{
-			match = 1;
-			temp_list->expand_var = true;   // activar funcion expansion en ese token			
-		}			
-		temp_list = temp_list->next;
-	}
-	return (match);	
-}
-
-void	activate_expand_operators(t_token *token_list, char **env)
-{
-	t_token	*ptr_list;
-
-	if (!token_list)
+	if (!shell->token_list)
 		return ;
-	ptr_list = (t_token *) token_list;
+	ptr_token = (t_token *) shell->token_list;
 
-	while (ptr_list)
+	while (ptr_token)
 	{
-		if (ptr_list->expand_var)		
-			expand_token(ptr_list, env);
-		ptr_list = ptr_list->next;
+		// GENERAR LISTAS NODOS EXPAND
+		variables_expander(ptr_token);		
+		
+		// BUSCAR VALUE -
+		// shell->env
+		// shell->exit-status
+
+		// PREFIJO +  INSERTAR VALUE - QUITAR SUBSTITUTION_VAR + SUFIJO
+
+		//expand_token(ptr_list, env);
+		ptr_token = ptr_token->next;
 	}	
 }
 
@@ -171,7 +158,7 @@ char	*extract_variable(char *token, int first_index)
 
 	if (!token)
 		return (NULL);
-	variable = NULL;
+	//variable = NULL;
 	index  = first_index;
 
 	// calcular index final variable -> limites > < | " " '"' /0		
@@ -222,10 +209,14 @@ t_expand *initialize_expand_stack(void)
 	expand_stack = (t_expand *) malloc(sizeof(t_expand));
 	if(!expand_stack)
 		return (NULL);	
-		
+	
+	expand_stack->type	= 0;
 	expand_stack->first_index	= -1;  	/// posicion de inicio -1 -> error si no se da valor > 0 ??
 	expand_stack->last_index 	= -1;	/// posicion final -1 ??
-	expand_stack->key	= NULL; // nombre variable extraida
-	expand_stack->value	= NULL; // valor de la variable
+	expand_stack->substitution_var = NULL;  // variable a sustituir en token
+	expand_stack->key	= NULL; // variable extraida
+	expand_stack->value	= NULL;	
+
+	expand_stack->next	= NULL;	 
 	return (expand_stack);
 }

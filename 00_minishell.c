@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 11:25:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/20 10:18:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	start_minishell(char *prompt, char **environment_var)
 	input = NULL;
 	// inicializar shell
 	shell = initialize_shell();
-
 	// cargar variables entorno
 	load_environment_variables(shell, environment_var);	
 	
@@ -68,13 +67,11 @@ void	input_parser(t_shell *shell)
 
 	// check error sintaxis tokens
 
-	// expandir variables  "$VAR"
-	if (search_expand_operators(shell->token_list))
-	{
-		ft_printf("Expand variables $...			OK\n");
-		activate_expand_operators(shell->token_list, shell->environment);
-	}	
-	
+	ft_printf("Expand variables $...			OK\n");
+	activate_expand_operators(shell);
+
+	// verificacion	
+	print_token_list(shell->token_list);	
 }
 
 char	*input_reader(char *prompt)

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 12:28:14 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/20 10:18:02 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,26 @@
 # define HERE_DOC				6		// 6 -> operador <> HERE_DOC
 # define PIPE					7		// 7 -> operador | PIPE
 
+// categorizacion expand variable
+# define BASIC_EXPANSION		0		// 0 -> expansion basica
+# define CURLY_BRACES			1		// 1 -> expansion basica con llaves {}
+# define LAST_EXIT_STATUS		2		// 2 -> caso especial $? -> ultimo exit_status
+# define LITERAL				3		// 3 -> caso especial \$? -> valor literal
+
+
+
 // STRUCT -----------------------------------------------------
 
 // VARIABLES EXPANDIDAS
 typedef struct s_expand
-{
+{	
+	int		type;
 	int		first_index;
 	int		last_index;
+	char	*substitution_var;
 	char	*key;
-	char	*value;		
+	char	*value;			
+	struct	s_expand	*next;	
 }			t_expand;
 
 // TOKEN
@@ -68,10 +79,9 @@ typedef struct s_token
 {
 	char	*raw_token;
 	int		type;
-	bool	expand_var;
-	char	*final_token;
+	char	*final_token;	
+	t_expand	*expand_list; // lista nodos expansion variables
 	
-	//struct	s_token	*previous;	
 	struct	s_token	*next;	
 }			t_token;
 
@@ -80,6 +90,10 @@ typedef struct s_shell
 {
 	char	*input;
 	char	**environment;
+
+	int		exit_status;
+	int		last_exit_status;
+
 	t_token	*token_list;
 }			t_shell;
 
@@ -99,22 +113,34 @@ void	tokenizer(t_shell *shell);
 char	*quotes_tokenizer(char *input, int index_first_char, char delimiter);
 char	*word_tokenizer(char *input, int index_first_char);
 
-// 03_parser_list_token.c
+// 03_parser_tokenize_utils.c
 void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_token_list(t_token *token_list);
 	
 //  04_parser_expand.c
-int		search_expand_operators(t_token *token_list);
-void	activate_expand_operators(t_token *token_list, char **env);
+void	activate_expand_operators(t_shell *shell);
 void	expand_token(t_token *token, char **env);
 char	*extract_variable(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 t_expand *initialize_expand_stack(void);
 
 //  05_parser_expand_utils.c
+void	add_expand_node(t_expand **expand_list, char  *variable, int first_index, int expand_type);
+//static t_expand *expand_create_node(char  *variable, int first_index, int expand_type);
+//static t_expand	*list_expand_find_last_node(t_expand *token_list);
+void 	print_expand_list(t_expand *expand_list);
+
 void	print_expand_stack(t_expand *expand_stack);
 
+//  06_parser_expand_option.c
+//void variables_expander(t_token *token);
+void 	variables_expander(t_token *token);
+char	*extract_variable_option(char *input, int index_first_char);
+char	*extract_braces_var(char *input, int index_first_char, char first_delimiter, char second_delimiter);
+
 // 08_utils.c
+int 	find_index_char(const char *str, char character);
+int		is_quote(char character);
 int		is_operator(char character);
 int		is_space(char character);
 

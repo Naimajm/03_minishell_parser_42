@@ -23,8 +23,9 @@ INCLUDES	= -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(INCLUDES_DIR)
 EXT_LIBRARYS = $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
 
 SRC_FILES :=	00_minishell.c 01_init_shell.c \
-				02_parser_tokenize.c 03_parser_list_token.c \
-				04_parser_expand.c 05_parser_expand_utils.c 06_parser_expand_exitstatus.c \
+				02_parser_tokenize.c 03_parser_tokenize_utils.c \
+				04_parser_expand.c 05_parser_expand_utils.c \
+				06_parser_expand_option.c \
 				08_utils.c 09_free_functions.c \
 				15_utils_process.c \
 
