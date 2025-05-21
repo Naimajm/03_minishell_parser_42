@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/20 10:18:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 23:26:33 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	input_parser(t_shell *shell)
 	tokenizer(shell);
 
 	// validacion lista tokens	
-	//print_token_list(shell->token_list);
+	print_token_list(shell->token_list);
 
 	// check error sintaxis tokens
 

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 13:50:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 23:28:10 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,20 +77,23 @@ static t_token	*token_find_last_node(t_token *token_list)
 
 void print_token_list(t_token *token_list)
 {
-    t_token *ptr_token;
+    t_token *token;
 
     if (!token_list)
         return ;  
-    ptr_token = (t_token *)(token_list);
-    while (ptr_token)
+    token = (t_token *)(token_list);
+    while (token)
     {
-        ft_printf("token -> %s [type %d]\n", ptr_token->raw_token, ptr_token->type);
-        ft_printf("current -> %p // ", ptr_token);
-        ft_printf("next -> %p\n\n", ptr_token->next);
+        //ft_printf("token -> %s [type %d]\n", token->raw_token, token->type);
+        //ft_printf("current -> %p // ", token);
+        //ft_printf("next -> %p\n\n", token->next);
+
+        printf("%s", token->raw_token); // VALIDACION SECUENCIA TOKENSVS BASH
 
         // IMPRESION LISTA NODOS EXPAND
-        print_expand_list(ptr_token->expand_list);
+        print_expand_list(token->expand_list);
 
-        ptr_token = ptr_token->next;
+        token = token->next;
     }
+    printf("\n");
 }

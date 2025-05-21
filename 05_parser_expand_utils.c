@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/19 19:55:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:01:55 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ static t_expand *expand_create_node(char  *substitution_variable, int first_inde
 		return (NULL);	
 	new_node->type				= expand_type;		
 	new_node->first_index		= first_index;  	
-	new_node->substitution_var 	= ft_strdup(substitution_variable); 
-	if (!new_node->substitution_var)
+	new_node->substitution_str 	= ft_strdup(substitution_variable); 
+	if (!new_node->substitution_str)
 		return (NULL);
 	new_node->last_index 		= first_index + ft_strlen(substitution_variable);	
 	new_node->key 				= NULL;	 // nombre variable extraida
@@ -88,7 +88,7 @@ void print_expand_list(t_expand *expand_list)
 		printf("type -> %d\n", expand->type);
 		printf("first_index -> %d\n", expand->first_index);
 		printf("last_index -> %d\n", expand->last_index);
-		printf("substitution_variable -> %s\n", expand->substitution_var);
+		printf("substitution_variable -> %s\n", expand->substitution_str);
 		printf("key -> %s\n", expand->key);
 		printf("value -> %s\n", expand->value);			
 		printf("current node -> %p // next -> %p\n\n", expand, expand->next);	

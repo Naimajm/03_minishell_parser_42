@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 13:51:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 20:20:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 
 // MACROS
 # define SUCCESS	0
-# define FAILURE	1
+# define FAILURE	-1
 
 # define ERROR_ARGS			"Error\n Error number arguments\n"
 # define ERROR_OPEN_FILE	"Error\n Opening file\n"
@@ -43,20 +43,21 @@
 # define FREE_MATRIX		"Free\n cleaning matrix\n"
 
 // categorizacion tokens
-# define NO_QUOTES				0		// 0 -> palabras sin comillas
-# define SINGLE_QUOTES			1		// 1 -> palabras con comillas simples -> literal
-# define DOUBLE_QUOTES			2		// 2 -> palabras con comillas dobles -> expansion variables
-# define OUTFILE				3		// 3 -> operador > OUTFILE
-# define APPEND					4		// 4 -> operador >> APPEND
-# define INFILE					5		// 5 -> operador < INFILE
-# define HERE_DOC				6		// 6 -> operador <> HERE_DOC
-# define PIPE					7		// 7 -> operador | PIPE
+# define NO_QUOTES				1		// 1 -> palabras sin comillas
+# define SINGLE_QUOTES			2		// 2 -> palabras con comillas simples -> literal
+# define DOUBLE_QUOTES			3		// 3 -> palabras con comillas dobles -> expansion variables
+# define OUTFILE				4		// 4 -> operador > OUTFILE
+# define APPEND					5		// 5 -> operador >> APPEND
+# define INFILE					6		// 6 -> operador < INFILE
+# define HERE_DOC				7		// 7 -> operador <> HERE_DOC
+# define PIPE					8		// 8 -> operador | PIPE
 
 // categorizacion VARIABLES EXPANDIDAS
-# define BASIC_EXPANSION		0		// 0 -> expansion basica
-# define CURLY_BRACES			1		// 1 -> expansion basica con llaves {}
-# define LAST_EXIT_STATUS		2		// 2 -> caso especial $? -> ultimo exit_status
-# define LITERAL				3		// 3 -> caso especial \$ -> valor literal
+//# define NO_EXPANSION			0		// 0 -> no expansion
+# define BASIC_EXPANSION		1		// 1 -> expansion basica
+# define CURLY_BRACES			2		// 2 -> expansion basica con llaves {}
+# define LAST_EXIT_STATUS		3		// 3 -> caso especial $? -> ultimo exit_status
+# define LITERAL				4		// 4 -> caso especial \$ -> valor literal
 
 
 
@@ -68,7 +69,7 @@ typedef struct s_expand
 	int		type;
 	int		first_index;
 	int		last_index;
-	char	*substitution_var;
+	char	*substitution_str;
 	char	*key;
 	char	*value;			
 	struct	s_expand	*next;	
@@ -110,8 +111,9 @@ void	load_environment_variables(t_shell *shell, char **environment_var);
 
 // 02_parser_tokenize.c
 void	tokenizer(t_shell *shell);
-char	*quotes_tokenizer(char *input, int index_first_char, char delimiter);
-char	*word_tokenizer(char *input, int index_first_char);
+int		word_tokenizer(t_shell *shell, int index_first_char);
+int		quotes_tokenizer(t_shell *shell, int index_first_char);
+int		operator_tokenizer(t_shell *shell, int index_first_char);
 
 // 03_parser_tokenize_utils.c
 void	add_token_node(t_token **token_list, char  *input, int token_type);
