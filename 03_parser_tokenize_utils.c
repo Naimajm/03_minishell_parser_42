@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/20 09:49:41 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 13:50:11 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static t_token *token_create_node(char  *input, int token_type)
     if (!new_node->raw_token)
         return (NULL);
     new_node->type          = token_type;
-    new_node->final_token   = NULL;
+    new_node->expanded_token   = NULL;
 
     new_node->expand_list   = NULL;
     new_node->next	        = NULL;

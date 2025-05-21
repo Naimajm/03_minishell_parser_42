@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/16 12:31:03 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 13:47:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	tokenizer(t_shell *shell)
 				return ;
 			index += ft_strlen(token_input) - 1; // avanza indice hasta final palabra
 
-			add_token_node(&shell->token_list, token_input, WORDS_SINGLE_QUOTES);
+			add_token_node(&shell->token_list, token_input, SINGLE_QUOTES);
 			free(token_input); // liberar copia strdup de input
 		}		
 		else if (shell->input[index] == '"') // PALABRAS COMILLA DOBLE -> EXPANSION VARIABLE
@@ -50,7 +50,7 @@ void	tokenizer(t_shell *shell)
 				return ;
 			index += ft_strlen(token_input) - 1;
 
-			add_token_node(&shell->token_list, token_input, WORDS_DOUBLE_QUOTES);
+			add_token_node(&shell->token_list, token_input, DOUBLE_QUOTES);
 			free(token_input);			
 		}		
 		else if (shell->input[index] == '>') // operadores especiales -> OUTFILE o APPEND
@@ -84,7 +84,7 @@ void	tokenizer(t_shell *shell)
 			index += ft_strlen(token_input) - 1;	 // avanza indice hasta final palabra	
 
 			// añadir token a lista token
-			add_token_node(&shell->token_list, token_input, WORDS_NO_QUOTATION);			
+			add_token_node(&shell->token_list, token_input, NO_QUOTES);			
 			free(token_input);		 // liberar copia strdup de input	
 		}			
 		index++;		

@@ -6,15 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/20 10:20:17 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:00:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include/minishell.h"
 
 
-void	activate_expand_operators(t_shell *shell);
-void	expand_token(t_token *token_list, char **env);
+void generate_expand_list(t_token *token);
+
+
 char	*insert_expand_value(char *token, t_expand *expand_var);
 char	*extract_variable(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
@@ -22,29 +23,134 @@ t_expand *initialize_expand_stack(void);
 
 void	activate_expand_operators(t_shell *shell)
 {
-	t_token	*ptr_token;
+	t_token	*current_token;
 
 	if (!shell->token_list)
 		return ;
-	ptr_token = (t_token *) shell->token_list;
+	current_token = (t_token *) shell->token_list;
 
-	while (ptr_token)
+	while (current_token)
 	{
+		if (current_token->type == SINGLE_QUOTES)  // no hay expansion $
+			continue;
+
 		// GENERAR LISTAS NODOS EXPAND
-		variables_expander(ptr_token);		
+		generate_expand_list(current_token);
+			
+
+		// establecer KEY
 		
 		// BUSCAR VALUE -
 		// shell->env
 		// shell->exit-status
 
+
+
 		// PREFIJO +  INSERTAR VALUE - QUITAR SUBSTITUTION_VAR + SUFIJO
 
-		//expand_token(ptr_list, env);
-		ptr_token = ptr_token->next;
+
+		current_token = current_token->next;
 	}	
 }
 
-void	expand_token(t_token *token, char **env)
+void generate_expand_list(t_token *token)
+{
+	int		index;
+	char	*substitution_var;
+	char	*key;
+	char	*value;
+	int		first_index;
+
+	if (!token || !token->raw_token)
+		return ; 	
+	index = 0;	
+
+	// CATEGORIZACION TOKENs -> 7 TIPOS TOKENS
+	while (token->raw_token[index])
+	{
+		substitution_var	= NULL;	
+		key			= NULL;
+	
+		if (token->raw_token[index] == '$')
+		{
+			first_index = index;
+
+			// GESTION CASO ESPECIAL "$?
+			//Devuelve el código de salida del último comando ejecutado
+			if (token->raw_token[index + 1] == '?')
+			{				
+				substitution_var = ft_strdup("$?");
+				if (!substitution_var)
+					return ;
+
+				// key -> irrelevante
+				key = ft_strdup("$?");
+				printf("expander / key -> %s\n", key);
+				
+				add_expand_node(&token->expand_list, substitution_var, first_index,  LAST_EXIT_STATUS);	// añadir nodo expand a token			
+
+				// VALUE = SHELL->EXIT_STATUS
+				//value = get_shell_pid(shell);				
+			}
+			// caso \$VAR -> literal , no inicia expancion
+			else if (token->raw_token[index - 1] == '\\')
+			{
+				substitution_var = extract_substitution_segment(token->raw_token, first_index);
+				if (!substitution_var)
+					return ;
+				
+				// ESTABLECER KEY
+				key = ft_strdup(substitution_var);
+				printf("expander / key -> %s\n", key);	
+				
+				// ESTABLCER VALUE COMO LITERAL
+				value = ft_strdup(substitution_var);
+				printf("expander / value -> %s\n", value);
+
+				add_expand_node(&token->expand_list, substitution_var, first_index, LITERAL);	 // añadir expand nodo a token					
+			}
+			// caso ${VAR}xx -> literal , no inicia expancion
+			else if (token->raw_token[index + 1] == '{')
+			{
+				substitution_var = extract_braces_var(token->raw_token, first_index, '{', '}');
+				if (!substitution_var)
+					return ;
+
+				// ESTABLECER KEY
+				key = extract_braces_var(substitution_var, 1, '{', '}');
+				printf("expander / variable -> %s\n", key);
+				
+				add_expand_node(&token->expand_list, substitution_var, first_index, CURLY_BRACES);	// añadir token a lista token
+
+				// BUSCAR VALUE			
+				//value = get_environment_var(env, key);
+				//printf("expander / value -> %s\n", value);				
+			}
+			else // caso normal -> EXPANSION BASICA -> AÑADIR A LISTA EXPAND
+			{				
+				substitution_var = extract_substitution_segment(token->raw_token, first_index);	
+				if (!substitution_var)
+					return ;
+
+				// ESTABLECER KEY
+				key = extract_substitution_segment(substitution_var, 1);
+				printf("expander / key -> %s\n", key);
+				
+				add_expand_node(&token->expand_list, substitution_var, first_index, BASIC_EXPANSION);	// añadir token a lista token				
+
+				// BUSCAR VALUE			
+				//value = get_environment_var(env, key);
+				//printf("expander / value -> %s\n", value);
+			}	
+			index += ft_strlen(substitution_var); // avanza indice hasta final palabra
+			free(key);	
+			free(substitution_var);				
+		}			
+		index++;		
+	}	
+}
+
+/* void	expand_token(t_token *token, char **env)
 {
 	t_expand	*expand;
 	int			index;
@@ -107,7 +213,7 @@ void	expand_token(t_token *token, char **env)
 	}	
 	// liberacion expand
 	free_expand_stack(expand);
-}
+} */
 
 char	*insert_expand_value(char *token, t_expand *expand)
 {

@@ -13,6 +13,8 @@
 
 "aa $HOME bb \$literal ${HOME}xxx $?z zz"
 
+'aa $HOME bb \$literal ${HOME}xxx $?z zz'
+
 
 casos especiales '$ ' o '$"' '$
 "aa$HOMEzz $ $"

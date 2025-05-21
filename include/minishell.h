@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/20 10:18:02 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/21 13:51:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,20 @@
 # define FREE_MATRIX		"Free\n cleaning matrix\n"
 
 // categorizacion tokens
-# define WORDS_NO_QUOTATION		0		// 0 -> palabras sin comillas
-# define WORDS_SINGLE_QUOTES	1		// 1 -> palabras con comillas simples -> literal
-# define WORDS_DOUBLE_QUOTES	2		// 2 -> palabras con comillas dobles -> expansion variables
+# define NO_QUOTES				0		// 0 -> palabras sin comillas
+# define SINGLE_QUOTES			1		// 1 -> palabras con comillas simples -> literal
+# define DOUBLE_QUOTES			2		// 2 -> palabras con comillas dobles -> expansion variables
 # define OUTFILE				3		// 3 -> operador > OUTFILE
 # define APPEND					4		// 4 -> operador >> APPEND
 # define INFILE					5		// 5 -> operador < INFILE
 # define HERE_DOC				6		// 6 -> operador <> HERE_DOC
 # define PIPE					7		// 7 -> operador | PIPE
 
-// categorizacion expand variable
+// categorizacion VARIABLES EXPANDIDAS
 # define BASIC_EXPANSION		0		// 0 -> expansion basica
 # define CURLY_BRACES			1		// 1 -> expansion basica con llaves {}
 # define LAST_EXIT_STATUS		2		// 2 -> caso especial $? -> ultimo exit_status
-# define LITERAL				3		// 3 -> caso especial \$? -> valor literal
+# define LITERAL				3		// 3 -> caso especial \$ -> valor literal
 
 
 
@@ -77,9 +77,9 @@ typedef struct s_expand
 // TOKEN
 typedef struct s_token
 {
-	char	*raw_token;
-	int		type;
-	char	*final_token;	
+	int			type;
+	char		*raw_token;	
+	char		*expanded_token;	
 	t_expand	*expand_list; // lista nodos expansion variables
 	
 	struct	s_token	*next;	
@@ -119,7 +119,8 @@ void	print_token_list(t_token *token_list);
 	
 //  04_parser_expand.c
 void	activate_expand_operators(t_shell *shell);
-void	expand_token(t_token *token, char **env);
+void 	generate_expand_list(t_token *token);
+
 char	*extract_variable(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 t_expand *initialize_expand_stack(void);
@@ -133,9 +134,8 @@ void 	print_expand_list(t_expand *expand_list);
 void	print_expand_stack(t_expand *expand_stack);
 
 //  06_parser_expand_option.c
-//void variables_expander(t_token *token);
-void 	variables_expander(t_token *token);
-char	*extract_variable_option(char *input, int index_first_char);
+
+char	*extract_substitution_segment(char *input, int index_first_char);
 char	*extract_braces_var(char *input, int index_first_char, char first_delimiter, char second_delimiter);
 
 // 08_utils.c
