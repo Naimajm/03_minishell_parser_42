@@ -6,11 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 13:50:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:48:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./include/minishell.h"
+#include "../include/minishell.h"
 
 void	free_token_list(t_token **token_list);
 void	free_matrix(char **matrix);

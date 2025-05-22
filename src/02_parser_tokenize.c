@@ -6,11 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 23:32:17 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:47:45 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./include/minishell.h"
+#include "../include/minishell.h"
 
 int	word_tokenizer(t_shell *shell, int index_first_char);
 int	quotes_tokenizer(t_shell *shell, int index_first_char);

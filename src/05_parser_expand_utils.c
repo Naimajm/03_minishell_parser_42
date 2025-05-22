@@ -6,11 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 14:01:55 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:47:57 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./include/minishell.h"
+#include "../include/minishell.h"
 
 static t_expand *expand_create_node(char  *variable, int first_index, int expand_type);
 static t_expand	*expand_find_last_node(t_expand *token_list);

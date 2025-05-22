@@ -6,11 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 13:29:02 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:48:00 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./include/minishell.h"
+#include "../include/minishell.h"
 
 // EXPANSION VARIABLES -> GESTION CASO ESPECIAL "$?"
 // Devuelve el código de salida del último comando ejecutado

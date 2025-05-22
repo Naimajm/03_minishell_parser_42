@@ -6,11 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 10:13:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/14 11:30:47 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:48:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./include/minishell.h"
+#include "../include/minishell.h"
 
 // UTILIDADES PROCESO DESARROLLO
 

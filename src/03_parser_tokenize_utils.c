@@ -6,11 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 23:28:10 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:47:50 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./include/minishell.h"
+#include "../include/minishell.h"
 
 static t_token	*token_find_last_node(t_token *token_list);
 static t_token *token_create_node(char  *input, int type_token);
