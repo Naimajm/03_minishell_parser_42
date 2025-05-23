@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/21 20:20:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/23 10:51:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 #include <readline/readline.h> 	// readline
 #include <readline/history.h>	// readline
 
-
 // OWN LIBRARIES
 #include	"../libft/libft.h"
 #include	"../ft_printf/ft_printf.h"
@@ -31,8 +30,13 @@
 # define SUCCESS	0
 # define FAILURE	-1
 
-# define ERROR_ARGS			"Error\n Error number arguments\n"
-# define ERROR_OPEN_FILE	"Error\n Opening file\n"
+//# define ERROR_ARGS			"Error\n Error number arguments\n"
+# define ERROR_ENVIRONMENT				"Error\n Environment unavailable or empty\n"
+# define ERROR_OPEN_FILE				"Error\n Opening file\n"
+# define ERROR_INPUT_READER				"Error\n Error read input\n"
+# define ERROR_STRUCT_INITIALIZATION	"Error\n structure initialization error\n"
+
+ 
 
 # define ERROR_QUOTE_SYNTAX	"Error\n Simple/double quote syntax. Not closed\n"
 
@@ -59,8 +63,6 @@
 # define LAST_EXIT_STATUS		3		// 3 -> caso especial $? -> ultimo exit_status
 # define LITERAL				4		// 4 -> caso especial \$ -> valor literal
 
-
-
 // STRUCT -----------------------------------------------------
 
 // VARIABLES EXPANDIDAS
@@ -80,7 +82,7 @@ typedef struct s_token
 {
 	int			type;
 	char		*raw_token;	
-	char		*expanded_token;	
+	char		*final_token;	
 	t_expand	*expand_list; // lista nodos expansion variables
 	
 	struct	s_token	*next;	
@@ -121,26 +123,26 @@ void	print_token_list(t_token *token_list);
 	
 //  04_parser_expand.c
 void	activate_expand_operators(t_shell *shell);
-void 	generate_expand_list(t_token *token);
+void	generate_expand_list(t_token *token);
+int		basic_expander(t_token *token, int first_index);
+int		last_exit_status_expander(t_token *token, int first_index);
+int		curly_braces_expander(t_token *token, int first_index);
+int		literal_expander(t_token *token, int first_index);
 
+//  05_parser_expand_extract.c 
+char	*extract_substitution_segment(char *input, int index_first_char);
+
+//  06_parser_expand_key_value.c
+char	*insert_expand_value(char *token, t_expand *expand);
 char	*extract_variable(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
-t_expand *initialize_expand_stack(void);
 
-//  05_parser_expand_utils.c
+//	07_parser_expand_utils.c 
 void	add_expand_node(t_expand **expand_list, char  *variable, int first_index, int expand_type);
-//static t_expand *expand_create_node(char  *variable, int first_index, int expand_type);
-//static t_expand	*list_expand_find_last_node(t_expand *token_list);
 void 	print_expand_list(t_expand *expand_list);
 
-void	print_expand_stack(t_expand *expand_stack);
-
-//  06_parser_expand_option.c
-
-char	*extract_substitution_segment(char *input, int index_first_char);
-char	*extract_braces_var(char *input, int index_first_char, char first_delimiter, char second_delimiter);
-
 // 08_utils.c
+void	print_message_and_exit(char *message, int fd, int exit_code);
 int 	find_index_char(const char *str, char character);
 int		is_quote(char character);
 int		is_operator(char character);
