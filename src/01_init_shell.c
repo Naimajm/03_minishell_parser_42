@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 12:47:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 16:52:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_shell *initialize_shell(void)
 
 	shell = (t_shell *) malloc(sizeof(t_shell));
 	if(!shell)
-		return (NULL);	
+		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
 	shell->input 		= NULL;
 	shell->environment	= NULL;

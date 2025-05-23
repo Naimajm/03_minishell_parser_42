@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 12:47:45 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:26:39 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,7 @@ int	quotes_tokenizer(t_shell *shell, int index_first_char)
 	while (shell->input[current_index] && shell->input[current_index] != delimiter)
 		current_index++;
 	if (shell->input[current_index] != delimiter) // validacion falta de comilla de cierre
-	{
-		ft_printf(ERROR_QUOTE_SYNTAX);
-		return (FAILURE);
-	}	
+		print_message_and_exit(ERROR_QUOTE_SYNTAX, STDERR_FILENO, FAILURE);
 	token_input = ft_substr(shell->input, index_first_char, (current_index - index_first_char + 1)); // copia expresion con comillas incluidas
 	if (!token_input)
 		return (FAILURE);	

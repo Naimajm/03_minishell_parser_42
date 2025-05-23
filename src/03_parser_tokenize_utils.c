@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 12:47:50 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/23 09:59:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,12 @@ static t_token *token_create_node(char  *input, int token_type)
 
     new_node = (t_token *) malloc(sizeof(t_token));
     if (!new_node)
-        return (NULL);
+        print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
     new_node->raw_token      = ft_strdup(input);
     if (!new_node->raw_token)
-        return (NULL);
+        print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
     new_node->type          = token_type;
-    new_node->expanded_token   = NULL;
+    new_node->final_token   = NULL;
 
     new_node->expand_list   = NULL;
     new_node->next	        = NULL;
@@ -88,8 +88,9 @@ void print_token_list(t_token *token_list)
         //ft_printf("current -> %p // ", token);
         //ft_printf("next -> %p\n\n", token->next);
 
-        printf("%s", token->raw_token); // VALIDACION SECUENCIA TOKENSVS BASH
+        printf("raw_token -> %s", token->raw_token); // VALIDACION SECUENCIA TOKENSVS BASH
 
+        printf("\n");
         // IMPRESION LISTA NODOS EXPAND
         print_expand_list(token->expand_list);
 

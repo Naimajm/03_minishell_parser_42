@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   05_parser_expand_utils.c                           :+:      :+:    :+:   */
+/*   07_parser_expand_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 12:47:57 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/23 10:01:30 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,16 @@ static t_expand *expand_create_node(char  *substitution_variable, int first_inde
     t_expand *new_node;
 	
 	if (!substitution_variable)
-		return (NULL);
+		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 	
 	new_node = (t_expand *) malloc(sizeof(t_expand));
 	if(!new_node)
-		return (NULL);	
+		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);	
 	new_node->type				= expand_type;		
 	new_node->first_index		= first_index;  	
 	new_node->substitution_str 	= ft_strdup(substitution_variable); 
 	if (!new_node->substitution_str)
-		return (NULL);
+		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 	new_node->last_index 		= first_index + ft_strlen(substitution_variable);	
 	new_node->key 				= NULL;	 // nombre variable extraida
 	new_node->value				= NULL;	
@@ -64,39 +64,37 @@ static t_expand *expand_create_node(char  *substitution_variable, int first_inde
 }
 
 static t_expand	*expand_find_last_node(t_expand *token_list)
-{
-    // validation 
-    if (!token_list)
+{    
+    if (!token_list) // validation 
         return (NULL);
 
     while (token_list->next)
-		token_list = token_list-> next;
-    // retorna puntero a ultimo nodo
-	return (token_list);
+		token_list = token_list-> next;    
+	return (token_list); // retorna puntero a ultimo nodo
 }
 
 void print_expand_list(t_expand *expand_list)
 {
-	t_expand	*expand;
+	t_expand	*expand_node;
 	
 	if (!expand_list)
 		return ;    
-	expand = (t_expand *)(expand_list);
-    while (expand)
+	expand_node = (t_expand *)(expand_list);
+    while (expand_node)
     {
         printf("expand_stack:\n");
-		printf("type -> %d\n", expand->type);
-		printf("first_index -> %d\n", expand->first_index);
-		printf("last_index -> %d\n", expand->last_index);
-		printf("substitution_variable -> %s\n", expand->substitution_str);
-		printf("key -> %s\n", expand->key);
-		printf("value -> %s\n", expand->value);			
-		printf("current node -> %p // next -> %p\n\n", expand, expand->next);	
-        expand = expand->next;
+		printf("type -> %d\n", expand_node->type);
+		printf("first_index -> %d\n", expand_node->first_index);
+		printf("last_index -> %d\n", expand_node->last_index);
+		printf("substitution_variable -> %s\n", expand_node->substitution_str);
+		printf("key -> %s\n", expand_node->key);
+		printf("value -> %s\n", expand_node->value);			
+		printf("current node -> %p // next -> %p\n\n", expand_node, expand_node->next);	
+        expand_node = expand_node->next;
     }
 }
 
-void print_expand_stack(t_expand *expand_stack)
+/* void print_expand_stack(t_expand *expand_stack)
 {
 	t_expand	*ptr_expand;
 
@@ -107,4 +105,4 @@ void print_expand_stack(t_expand *expand_stack)
 	ft_printf("last_index -> %d\n", ptr_expand->last_index);
 	ft_printf("key -> %s\n", ptr_expand->key);
 	ft_printf("value -> %s\n", ptr_expand->value);	
-}
+} */

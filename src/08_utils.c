@@ -6,11 +6,18 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 12:48:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/22 16:48:32 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+void	print_message_and_exit(char *message, int fd, int exit_code)
+{
+	if (message)
+		ft_putendl_fd(message, fd);    
+    exit(exit_code);
+}
 
 int find_index_char(const char *str, char character)
 {

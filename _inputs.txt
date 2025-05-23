@@ -9,9 +9,9 @@
 
 // EXPANSION VARIABLES 
 
-"$HOME"
+"$HOME" "$?" "\$literal" "${HOME}xxx"
 
-"aa $HOME bb \$literal ${HOME}xxx $?z zz"
+"aa $HOME $? bb \$literal ${HOME}xxx zz"
 
 'aa $HOME bb \$literal ${HOME}xxx $?z zz'
 

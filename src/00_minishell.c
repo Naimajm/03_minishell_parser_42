@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 12:47:32 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/23 09:56:37 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	start_minishell(char *prompt, char **environment_var)
 	// validacion inputs
 	if (!prompt || !environment_var)
 		return ;
-
 	input = NULL;
 	// inicializar shell
 	shell = initialize_shell();
@@ -36,9 +35,9 @@ void	start_minishell(char *prompt, char **environment_var)
 		// LEER INPUT
 		input = input_reader(prompt);
 		if (!input)
-			break;
+			break ;
 		shell->input = input;
-		ft_printf("Procesando: %s\n", shell->input);
+		ft_printf("Processing: %s\n", shell->input);
 
 		// PARSEAR INPUT
 		input_parser(shell);
@@ -63,7 +62,7 @@ void	input_parser(t_shell *shell)
 	tokenizer(shell);
 
 	// validacion lista tokens	
-	print_token_list(shell->token_list);
+	//print_token_list(shell->token_list);
 
 	// check error sintaxis tokens
 
@@ -80,7 +79,7 @@ char	*input_reader(char *prompt)
 
 	input = readline(prompt);
 	if (!input)
-		return (NULL);
+		print_message_and_exit(ERROR_INPUT_READER, STDERR_FILENO, FAILURE);
 	// añadir a historial si input no vacio	
 	if (input[0] != '\0') 
 		add_history(input);
@@ -96,6 +95,9 @@ int	main(int	argc, char **argv, char **env)
 
 	// DASHBOARD PROYECTO
 	//print_text_file("_work_process.txt");	
+
+	if (!*env)
+		print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
 
 	// INICIO
 	start_minishell(PROMPT, env);
