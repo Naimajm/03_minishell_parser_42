@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/23 16:04:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/24 12:02:18 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ char	*extract_key(char *token, int first_index)
 	
 	// copiar sub substr
 	key = ft_substr(token, first_index, (index - first_index));
+	if (!key)
+		return (NULL);
 	//ft_printf("extract_key -> key -> %s\n", key);
 	return (key);
 }

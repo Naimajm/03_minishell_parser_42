@@ -6,41 +6,42 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/23 10:01:30 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/24 12:23:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_expand *expand_create_node(char  *variable, int first_index, int expand_type);
-static t_expand	*expand_find_last_node(t_expand *token_list);
+static t_expand *create_expand_node(char  *variable, int first_index, int expand_type);
+static t_expand	*find_expand_last_node(t_expand *token_list);
 void print_expand_list(t_expand *expand_list);
 
-void	add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type)
+t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type)
 {
     t_expand *new_node;
     t_expand *last_node;
 
     // validation inputs
     if (!expand_list || !substitution_variable)
-        return ;   
+        return (NULL);   
 
     // inicializar nuevo nodo token
-    new_node = expand_create_node(substitution_variable, first_index, expand_type);
+    new_node = create_expand_node(substitution_variable, first_index, expand_type);
     if (!new_node)
-        return ;
+        return (NULL);
     //ft_printf("addback -> %s\n", new_node->token);
 
     // encontrar ultimo nodo y enlazar
-    last_node = expand_find_last_node(*expand_list);
+    last_node = find_expand_last_node(*expand_list);
     
     if (!last_node)     // caso lista vacio -> añadir en 1º nodo
         *expand_list = new_node;   
-    else            // lista no vacia      
-        last_node->next = new_node;
+    else
+		last_node->next = new_node;
+	return (new_node);
 }
 
-static t_expand *expand_create_node(char  *substitution_variable, int first_index, int expand_type)
+static t_expand *create_expand_node(char  *substitution_variable, int first_index, int expand_type)
 {
     t_expand *new_node;
 	
@@ -63,7 +64,7 @@ static t_expand *expand_create_node(char  *substitution_variable, int first_inde
     return  (new_node);
 }
 
-static t_expand	*expand_find_last_node(t_expand *token_list)
+static t_expand	*find_expand_last_node(t_expand *token_list)
 {    
     if (!token_list) // validation 
         return (NULL);
@@ -93,16 +94,3 @@ void print_expand_list(t_expand *expand_list)
         expand_node = expand_node->next;
     }
 }
-
-/* void print_expand_stack(t_expand *expand_stack)
-{
-	t_expand	*ptr_expand;
-
-	if (!expand_stack)
-		return ;
-	ptr_expand = (t_expand *)(expand_stack);
-	ft_printf("expand_stack:\nfirst_index -> %d\n", ptr_expand->first_index);
-	ft_printf("last_index -> %d\n", ptr_expand->last_index);
-	ft_printf("key -> %s\n", ptr_expand->key);
-	ft_printf("value -> %s\n", ptr_expand->value);	
-} */

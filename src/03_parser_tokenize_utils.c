@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/23 09:59:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/24 11:51:24 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void print_token_list(t_token *token_list)
         printf("\n");
         // IMPRESION LISTA NODOS EXPAND
         print_expand_list(token->expand_list);
-
         token = token->next;
     }
     printf("\n");

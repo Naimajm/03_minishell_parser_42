@@ -6,14 +6,14 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/23 16:19:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/24 12:08:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 void generate_expand_list(t_token *token); 
-void resolve_key_values(t_token *token, t_shell *shell);
+void resolve_expansion_values(t_token *token, t_shell *shell);
 
 void	activate_expand_operators(t_shell *shell)
 {
@@ -25,25 +25,26 @@ void	activate_expand_operators(t_shell *shell)
 
 	while (current_token)
 	{
-		if (current_token->type == SINGLE_QUOTES)  // no hay expansion $
+		if (current_token->type == SINGLE_QUOTES) // no hay expansion $
+		{
+			current_token = current_token->next;			
 			continue;
+		}  
 
-		// GENERAR LISTAS NODOS EXPAND
+		// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 		generate_expand_list(current_token);
 
-		// establecer KEY
-		resolve_key_values(current_token, shell);
-
-		// 2. RESOLVER LOS VALORES PARA CADA NODO DE EXPANSIÓN
-			// BUSCAR VALUE -
-			// shell->env
-			// shell->exit-status
-
+		// resolver valores
+		resolve_expansion_values(current_token, shell);
 
 		// PREFIJO +  INSERTAR VALUE - QUITAR SUBSTITUTION_VAR + SUFIJO
+
+		// IMPRIMIR NODOS EXPAND PARA DEPURAR
+        //print_expand_list(current_token->expand_list);
+		
 		current_token = current_token->next;
 	}	
-	//printf("final activate_expand_operators\n");
+	printf("final activate_expand_operators\n");
 }
 
 void generate_expand_list(t_token *token)
@@ -75,50 +76,26 @@ void generate_expand_list(t_token *token)
 	}
 }
 
-void resolve_key_values(t_token *token, t_shell *shell)
+void resolve_expansion_values(t_token *token, t_shell *shell)
 {
 	t_expand	*expand_node;
-	char		*key;
+	char		*value;
 
 	if (!token || !shell)
 		return ;
-	//key = NULL;
-	//(void)shell; // silenciar
 	expand_node = (t_expand *)(token->expand_list);
 	while (expand_node)
-	{		
-		// determinar key segun tipo de expansion
+	{
+		//value = NULL;
 		if (expand_node->type == LAST_EXIT_STATUS)
-		{
-			//printf ("proceso %i\n", LAST_EXIT_STATUS);
-			key = ft_strdup("$?");
-			expand_node->key = key;
-			expand_node->value = ft_itoa(shell->exit_status);
-		}			
+			value = ft_itoa(shell->exit_status);		
 		else if (expand_node->type == CURLY_BRACES)
-		{
-			key = extract_key(token->expand_list->substitution_str, 1); // index 0 -> $
-			key = ft_strtrim(key, "{}");  // cortar {}		
-
-			expand_node->key = key;
-			expand_node->value = get_environment_var(shell->environment, expand_node->key);
-			//printf ("key -> %s\n", key);		
-			//printf ("proceso %i\n", CURLY_BRACES);
-		}				
+			value = get_environment_var(shell->environment, expand_node->key);			
 		else if (expand_node->type == LITERAL)
-		{
-			//printf ("proceso %i\n", LITERAL);
-			key = ft_strdup(expand_node->substitution_str);
-			expand_node->key = key;
-			expand_node->value = ft_strdup(key);
-		}		
+			value = ft_strdup(expand_node->key);
 		else
-		{
-			key = extract_key(expand_node->substitution_str, 1); // index 0 -> $			
-			expand_node->key = key;		
-			expand_node->value = get_environment_var(shell->environment, expand_node->key);
-			//printf ("proceso %i -> key %s\n", BASIC_EXPANSION, key);
-		}	
+			value = get_environment_var(shell->environment, expand_node->key);
+		expand_node->value = value;
 		expand_node = expand_node->next;
 	}
 }
