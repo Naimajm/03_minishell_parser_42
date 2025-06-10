@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 12:23:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:37:30 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static t_expand *create_expand_node(char  *substitution_variable, int first_inde
 	new_node->substitution_str 	= ft_strdup(substitution_variable); 
 	if (!new_node->substitution_str)
 		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
-	new_node->last_index 		= first_index + ft_strlen(substitution_variable);	
+	new_node->last_index 		= first_index + ft_strlen(substitution_variable) - 1;	
 	new_node->key 				= NULL;	 // nombre variable extraida
 	new_node->value				= NULL;	
 

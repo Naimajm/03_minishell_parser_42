@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 11:51:24 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:41:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,11 @@ void print_token_list(t_token *token_list)
         //ft_printf("current -> %p // ", token);
         //ft_printf("next -> %p\n\n", token->next);
 
-        printf("raw_token -> %s", token->raw_token); // VALIDACION SECUENCIA TOKENSVS BASH
+        //printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
+        printf("final_token -> %s\n", token->final_token);  // TOKEN YA EXPANDIDO
 
-        printf("\n");
         // IMPRESION LISTA NODOS EXPAND
-        print_expand_list(token->expand_list);
+        //print_expand_list(token->expand_list);
         token = token->next;
     }
     printf("\n");

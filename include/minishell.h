@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 12:15:31 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/05/24 13:50:21 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void	print_token_list(t_token *token_list);
 void	activate_expand_operators(t_shell *shell);
 void	generate_expand_list(t_token *token);
 void	resolve_expansion_values(t_token *token, t_shell *shell);
+void	insert_expand_value(t_token *token);
 
 //  05_parser_expand_extract.c 
 int		basic_expander(t_token *token, int first_index);
@@ -134,7 +135,7 @@ int		literal_expander(t_token *token, int first_index);
 char	*extract_substitution_segment(char *input, int index_first_char);
 
 //  06_parser_expand_key_value.c
-char	*insert_expand_value(char *token, t_expand *expand);
+//char	*insert_expand_value(char *token, t_expand *expand);
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 

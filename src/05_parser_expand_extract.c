@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 12:19:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:39:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,20 +79,27 @@ int	curly_braces_expander(t_token *token, int first_index)
 
 	if (!token)
 		return (FAILURE);	
-	final_index = first_index + 2;
+	final_index = first_index + 2; 		// Saltar "${"
 	while (token->raw_token[final_index] && token->raw_token[final_index] != '}')
 		final_index++;
-	if (token->raw_token[final_index] != '}')
-		return (FAILURE); // No se encontró llave de cierre
+	if (token->raw_token[final_index] != '}') // No se encontró llave de cierre
+		return (FAILURE); 	
+
 	substitution_str = ft_substr(token->raw_token, first_index, (final_index - first_index + 1));
 	if (!substitution_str)
 		return (FAILURE);
+
 	len_input = ft_strlen(substitution_str);
+	//printf("len_input _> %i\n", len_input);
+	
 	expand_node = add_expand_node(&token->expand_list, substitution_str, first_index, CURLY_BRACES);
 	
-	key = extract_key(substitution_str, 1); // index 0 -> $
-	key = ft_strtrim(key, "{}");  // cortar {}
+	key = extract_key(substitution_str, 1); 	// index 0 -> $
+	key = ft_strtrim(key, "{}");  				// cortar {}
 	expand_node->key = key;
+
+	// calcular last_index del nodo expand
+	expand_node->last_index = first_index + len_input - 1;
 	
 	//value = get_environment_var(shell->environment, expand_node->key);
 	//set_expand_key_value(expand_node, key, value);	

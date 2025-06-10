@@ -6,14 +6,15 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 12:08:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:56:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void generate_expand_list(t_token *token); 
-void resolve_expansion_values(t_token *token, t_shell *shell);
+void	generate_expand_list(t_token *token); 
+void	resolve_expansion_values(t_token *token, t_shell *shell);
+void	insert_expand_value(t_token *token);
 
 void	activate_expand_operators(t_shell *shell)
 {
@@ -37,13 +38,17 @@ void	activate_expand_operators(t_shell *shell)
 		// resolver valores
 		resolve_expansion_values(current_token, shell);
 
+		// INSERTAR VALORE EN TOKEN -> FINAL TOKEN
 		// PREFIJO +  INSERTAR VALUE - QUITAR SUBSTITUTION_VAR + SUFIJO
+		insert_expand_value(current_token);
+
 
 		// IMPRIMIR NODOS EXPAND PARA DEPURAR
         //print_expand_list(current_token->expand_list);
 		
 		current_token = current_token->next;
 	}	
+	//print_token_list(shell->token_list);	
 	printf("final activate_expand_operators\n");
 }
 
@@ -83,7 +88,7 @@ void resolve_expansion_values(t_token *token, t_shell *shell)
 
 	if (!token || !shell)
 		return ;
-	expand_node = (t_expand *)(token->expand_list);
+	expand_node = (t_expand *) token->expand_list;
 	while (expand_node)
 	{
 		//value = NULL;
@@ -98,6 +103,56 @@ void resolve_expansion_values(t_token *token, t_shell *shell)
 		expand_node->value = value;
 		expand_node = expand_node->next;
 	}
+}
+
+// INSERTAR VALORE EN TOKEN -> FINAL TOKEN
+void	insert_expand_value(t_token *token)
+{
+    t_expand	*current_node;
+    char		*result;
+    char		*new_result;
+    char		*temp;
+    int			last_position;
+
+    if (!token || !token->expand_list)   // NO HAY EXPANSION VARIABLE
+    {		
+        token->final_token = ft_strdup(token->raw_token);
+        return ;
+    }	
+    
+    current_node = (t_expand *) token->expand_list;
+    result = ft_strdup("");
+    last_position = 0;
+
+    while (current_node)
+    {        
+        if (current_node->first_index > last_position) // Añadir texto antes de la variable
+        {
+            temp = ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
+            new_result = ft_strjoin(result, temp);
+            free(result);
+            free(temp);
+            result = new_result;
+        }        
+        // Añadir el valor expandido
+		new_result = ft_strjoin(result, current_node->value);
+		free(result);
+		result = new_result;
+
+        last_position = current_node->last_index + 1;
+        current_node = current_node->next;
+    }
+    // Añadir el resto del token después de la última expansión
+    if (token->raw_token[last_position])
+    {
+        temp = ft_strdup(&token->raw_token[last_position]);
+        new_result = ft_strjoin(result, temp);
+        free(result);
+        free(temp);
+        result = new_result;
+    }
+    token->final_token = result;
+    //printf("token->final_token -> %s\n\n", token->final_token);
 }
 
 
