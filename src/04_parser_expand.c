@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 11:56:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:50:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	generate_expand_list(t_token *token); 
 void	resolve_expansion_values(t_token *token, t_shell *shell);
 void	insert_expand_value(t_token *token);
+char 	*ft_strjoin_free(char *str1, char *str2);
 
 void	activate_expand_operators(t_shell *shell)
 {
@@ -110,49 +111,50 @@ void	insert_expand_value(t_token *token)
 {
     t_expand	*current_node;
     char		*result;
-    char		*new_result;
-    char		*temp;
-    int			last_position;
+	char		*prefix;
+    int			 last_position;
 
     if (!token || !token->expand_list)   // NO HAY EXPANSION VARIABLE
     {		
         token->final_token = ft_strdup(token->raw_token);
         return ;
-    }	
-    
-    current_node = (t_expand *) token->expand_list;
-    result = ft_strdup("");
-    last_position = 0;
+    }	    
+    current_node 	= (t_expand *) token->expand_list;
+    result 			= ft_strdup("");
+    last_position 	= 0;
 
     while (current_node)
     {        
         if (current_node->first_index > last_position) // Añadir texto antes de la variable
         {
-            temp = ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
-            new_result = ft_strjoin(result, temp);
-            free(result);
-            free(temp);
-            result = new_result;
+			prefix	= ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
+			result	= ft_strjoin_free(result, prefix);
+			free(prefix);
         }        
         // Añadir el valor expandido
-		new_result = ft_strjoin(result, current_node->value);
-		free(result);
-		result = new_result;
+		result = ft_strjoin_free(result, current_node->value);		
 
         last_position = current_node->last_index + 1;
         current_node = current_node->next;
     }
     // Añadir el resto del token después de la última expansión
     if (token->raw_token[last_position])
-    {
-        temp = ft_strdup(&token->raw_token[last_position]);
-        new_result = ft_strjoin(result, temp);
-        free(result);
-        free(temp);
-        result = new_result;
-    }
+		result = ft_strjoin_free(result, &token->raw_token[last_position]);
+		
     token->final_token = result;
     //printf("token->final_token -> %s\n\n", token->final_token);
+}
+
+// Función auxiliar que libera automáticamente el primer parámetro
+char *ft_strjoin_free(char *str1, char *str2)
+{
+    char *result;
+    
+    if (!str1 || !str2)
+        return (NULL);
+    result = ft_strjoin(str1, str2);
+    free(str1);
+    return (result);
 }
 
 
