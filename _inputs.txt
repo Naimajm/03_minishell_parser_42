@@ -15,7 +15,6 @@
 
 'aa $HOME bb \$literal ${HOME}xxx $?z zz'
 
-
 casos especiales '$ ' o '$"' '$
 "aa$HOMEzz $ $"
 caso especial '$?'
@@ -28,3 +27,12 @@ caso especial '$?'
 "test ey
 cmd1 'test | "test
 "Hola '$USER'" 
+
+####  TESTEO 
+
+# Test básico
+echo "echo hello" | valgrind --leak-check=full ./minishell
+
+# Test expansion
+echo "$HOME" "$?" "\$literal" "${HOME}xxx" | valgrind --leak-check=full ./minishell
+echo "aa $HOME $? bb \$literal ${HOME}xxx zz" | valgrind --leak-check=full ./minishell

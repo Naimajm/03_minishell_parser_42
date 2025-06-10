@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   06_parser_expand_key_value.c                       :+:      :+:    :+:   */
+/*   06_parser_expand_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 13:41:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:57:24 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
+char	*extract_substitution_segment(char *raw_token, int first_index);
 
 // EXTRAER KEY DE SUBSTITUTION_STR
 char	*extract_key(char *token, int first_index)
@@ -72,45 +73,25 @@ char	*get_environment_var(char **env, char *variable)
 	return (value);	
 }
 
-// INSERTAR VALORE EN TOKEN -> FINAL TOKEN
-/* char	*insert_expand_value(char *raw_token, t_expand *expand)
+char	*extract_substitution_segment(char *raw_token, int first_index)
 {
-	char	*final_token;
+	char	*substitution_str;
 	int		index;
-	int		index_token;
-	int		index_expand;
 
-	if (!raw_token || !expand)
+	if (!raw_token)
 		return (NULL);
-	// reserva total
-	final_token = (char *) malloc(sizeof(char) * (ft_strlen(raw_token) - (expand->last_index - expand->first_index) + (ft_strlen(expand->value) + 1)));
-	index = 0;
-	index_token = 0;
-	index_expand = 0;
-	//ft_printf("expand_var->first_index -> %d\n", expand->first_index);
-
-	// copia token hasta $
-	while (index < (expand->first_index - 1))
-	{
-		final_token[index] = raw_token[index_token];
+	index = first_index;		
+	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
+	while (!is_space(raw_token[index])
+		&& !is_operator(raw_token[index])
+		&& !is_quote(raw_token[index])
+		&& raw_token[index])
 		index++;
-		index_token++;
-	}
-	// copia valor expandido	
-	while (expand->value[index_expand])
-	{
-		final_token[index] = expand->value[index_expand];
-		index++;
-		index_expand++;
-	}
-	index_token = expand->last_index;
-	// copia resto token
-	while (raw_token[index_token])
-	{
-		final_token[index] = raw_token[index_token];
-		index++;
-		index_token++;
-	}	
-	final_token[index] = '\0'; // terminador nulo
-	return (final_token);
-} */
+		
+	// copiar sub substr
+	substitution_str = ft_substr(raw_token, first_index, (index - first_index));
+	if (!substitution_str)
+		return (NULL);
+	//ft_printf("variable -> %s\n", variable);
+	return (substitution_str);
+}

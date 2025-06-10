@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   05_parser_expand_extract.c                         :+:      :+:    :+:   */
+/*   05_parser_expand_list.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 11:39:42 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:55:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int		basic_expander(t_token *token, int first_index);
 int		last_exit_status_expander(t_token *token, int first_index);
 int		curly_braces_expander(t_token *token, int first_index);
 int		literal_expander(t_token *token, int first_index);
-char	*extract_substitution_segment(char *raw_token, int first_index);
 
 int	basic_expander(t_token *token, int first_index)
 {
@@ -131,28 +130,3 @@ int	literal_expander(t_token *token, int first_index)
 	free(substitution_str);	
 	return (len_input);
 }
-
-char	*extract_substitution_segment(char *raw_token, int first_index)
-{
-	char	*substitution_str;
-	int		index;
-
-	if (!raw_token)
-		return (NULL);
-	index = first_index;		
-	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
-	while (!is_space(raw_token[index])
-		&& !is_operator(raw_token[index])
-		&& !is_quote(raw_token[index])
-		&& raw_token[index])
-		index++;
-		
-	// copiar sub substr
-	substitution_str = ft_substr(raw_token, first_index, (index - first_index));
-	if (!substitution_str)
-		return (NULL);
-	//ft_printf("variable -> %s\n", variable);
-	return (substitution_str);
-}
-
-

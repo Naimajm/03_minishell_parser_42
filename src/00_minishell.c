@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/23 09:56:37 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 14:17:15 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,6 @@ int	main(int	argc, char **argv, char **env)
 
 	// INICIO
 	start_minishell(PROMPT, env);
-
+		
 	return (SUCCESS);
 }

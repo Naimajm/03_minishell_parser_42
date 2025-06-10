@@ -23,9 +23,8 @@ SRC_DIR			:= ./src
 SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_minishell.c 01_init_shell.c \
 				02_parser_tokenize.c 03_parser_tokenize_utils.c \
 				04_parser_expand.c\
-				05_parser_expand_extract.c 06_parser_expand_key_value.c\
-				07_parser_expand_utils.c \
-				08_utils.c 09_free_functions.c \
+				05_parser_expand_list.c 06_parser_expand_utils.c 07_parser_expand_struct.c \
+				08_utils.c 09_utils_2.c 09_free_functions.c \
 				15_utils_process.c)
 
 OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)

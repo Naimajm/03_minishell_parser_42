@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/24 13:50:21 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:58:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,21 +125,20 @@ void	print_token_list(t_token *token_list);
 void	activate_expand_operators(t_shell *shell);
 void	generate_expand_list(t_token *token);
 void	resolve_expansion_values(t_token *token, t_shell *shell);
-void	insert_expand_value(t_token *token);
+void	insert_expansion_values(t_token *token);
 
-//  05_parser_expand_extract.c 
+//  05_parser_expand_list.c
 int		basic_expander(t_token *token, int first_index);
 int		last_exit_status_expander(t_token *token, int first_index);
 int		curly_braces_expander(t_token *token, int first_index);
 int		literal_expander(t_token *token, int first_index);
-char	*extract_substitution_segment(char *input, int index_first_char);
 
-//  06_parser_expand_key_value.c
-//char	*insert_expand_value(char *token, t_expand *expand);
+//  06_parser_expand_utils.c
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
+char	*extract_substitution_segment(char *input, int index_first_char);
 
-//	07_parser_expand_utils.c
+//	07_parser_expand_struct.c
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);
 void 	print_expand_list(t_expand *expand_list);
 
@@ -149,6 +148,9 @@ int 	find_index_char(const char *str, char character);
 int		is_quote(char character);
 int		is_operator(char character);
 int		is_space(char character);
+
+// 09_utils_2.c
+char *ft_strjoin_free(char *str1, char *str2);
 
 // 09_free_functions.c
 void	cleanup_minishell(t_shell *shell);

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 12:50:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 14:15:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	generate_expand_list(t_token *token); 
 void	resolve_expansion_values(t_token *token, t_shell *shell);
-void	insert_expand_value(t_token *token);
-char 	*ft_strjoin_free(char *str1, char *str2);
+void	insert_expansion_values(t_token *token);
+int		insert_expand_node_value(t_token *token);
 
 void	activate_expand_operators(t_shell *shell)
 {
@@ -31,22 +31,14 @@ void	activate_expand_operators(t_shell *shell)
 		{
 			current_token = current_token->next;			
 			continue;
-		}  
-
-		// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
-		generate_expand_list(current_token);
-
-		// resolver valores
-		resolve_expansion_values(current_token, shell);
-
-		// INSERTAR VALORE EN TOKEN -> FINAL TOKEN
-		// PREFIJO +  INSERTAR VALUE - QUITAR SUBSTITUTION_VAR + SUFIJO
-		insert_expand_value(current_token);
-
-
-		// IMPRIMIR NODOS EXPAND PARA DEPURAR
-        //print_expand_list(current_token->expand_list);
+		}  		
+		generate_expand_list(current_token); // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 		
+		resolve_expansion_values(current_token, shell); // resolver valores		
+
+		insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> FINAL TOKEN
+
+        //print_expand_list(current_token->expand_list);		
 		current_token = current_token->next;
 	}	
 	//print_token_list(shell->token_list);	
@@ -107,11 +99,8 @@ void resolve_expansion_values(t_token *token, t_shell *shell)
 }
 
 // INSERTAR VALORE EN TOKEN -> FINAL TOKEN
-void	insert_expand_value(t_token *token)
+void	insert_expansion_values(t_token *token)
 {
-    t_expand	*current_node;
-    char		*result;
-	char		*prefix;
     int			 last_position;
 
     if (!token || !token->expand_list)   // NO HAY EXPANSION VARIABLE
@@ -119,46 +108,40 @@ void	insert_expand_value(t_token *token)
         token->final_token = ft_strdup(token->raw_token);
         return ;
     }	    
-    current_node 	= (t_expand *) token->expand_list;
-    result 			= ft_strdup("");
-    last_position 	= 0;
+	// insertar valores expandidos de cada nodo
+	last_position = insert_expand_node_value(token);
 
-    while (current_node)
-    {        
-        if (current_node->first_index > last_position) // Añadir texto antes de la variable
+    // Añadir el resto del token después de la última expansión
+    if (token->raw_token[last_position])
+		token->final_token = ft_strjoin_free(token->final_token, &token->raw_token[last_position]);
+    //printf("token->final_token -> %s\n\n", token->final_token);
+}
+
+int	insert_expand_node_value(t_token *token)
+{
+	t_expand	*current_node;
+	char		*result;
+	char		*prefix;
+	int			 last_position;
+
+	if (!token)
+		return (0);
+	current_node = (t_expand *) token->expand_list;
+	result = ft_strdup("");
+	last_position 	= 0;
+	while (current_node)
+	{
+		if (current_node->first_index > last_position) // Añadir texto antes de la variable
         {
 			prefix	= ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
 			result	= ft_strjoin_free(result, prefix);
 			free(prefix);
-        }        
-        // Añadir el valor expandido
-		result = ft_strjoin_free(result, current_node->value);		
-
-        last_position = current_node->last_index + 1;
-        current_node = current_node->next;
-    }
-    // Añadir el resto del token después de la última expansión
-    if (token->raw_token[last_position])
-		result = ft_strjoin_free(result, &token->raw_token[last_position]);
-		
-    token->final_token = result;
-    //printf("token->final_token -> %s\n\n", token->final_token);
+        }       
+		result = ft_strjoin_free(result, current_node->value);	 // Añadir el valor expandido
+		last_position = current_node->last_index + 1;
+		current_node = current_node->next;
+	}
+	token->final_token = result;
+	//printf("insert_expand_node_value -> %s\n", token->final_token);
+	return  (last_position);
 }
-
-// Función auxiliar que libera automáticamente el primer parámetro
-char *ft_strjoin_free(char *str1, char *str2)
-{
-    char *result;
-    
-    if (!str1 || !str2)
-        return (NULL);
-    result = ft_strjoin(str1, str2);
-    free(str1);
-    return (result);
-}
-
-
-
-
-
-
