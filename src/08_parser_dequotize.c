@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/11 22:15:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:43:41 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ void	remove_quotes(t_token *token)
 			{
 				token->final_token[index_final] = token->expanded_token[index_expanded];
 				printf("token->final_token[index_final]-> %c",token->final_token[index_final]);
-				index_expanded++;			
+				index_expanded++;	
+				index_final++;			
 			}
 			// verificar para cierre final comilla
 			if (token->expanded_token[index_expanded] == quote)
