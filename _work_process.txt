@@ -17,9 +17,9 @@
 		- [✓] Manejar comillas anidadas o mezcladas correctamente (ej. "Hola '$USER'").
 
 	🔹 HITO 3: Expansión de variables de entorno
-		- [ ] Detectar $VAR y reemplazar por su valor.
-		- [ ] Manejar $? (último código de salida).
-		- [ ] Soportar $VAR dentro de comillas dobles.
+		- [✓] Detectar $VAR y reemplazar por su valor.
+		- [✓] Manejar $? (último código de salida).
+		- [✓] Soportar $VAR dentro de comillas dobles.
 		- [✓] Ignorar expansión dentro de comillas simples.
 
 	🔹 HITO 4: Reconocimiento de redirecciones

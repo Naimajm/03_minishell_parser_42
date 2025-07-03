@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 14:14:09 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/11 21:12:57 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,18 @@ void	free_token_list(t_token **token_list)
 	while (*token_list)
 	{
 		temp_ptr = temp_ptr->next;
-		// borrar raw_token
-		if ((*token_list)->raw_token)
+		
+		if ((*token_list)->raw_token) 		// borrar raw_token
 			free((*token_list)->raw_token);
-		// borrar final_token
+		
+		if ((*token_list)->expanded_token) 	// borrar final_token
+			free((*token_list)->expanded_token);
+
 		if ((*token_list)->final_token)
 			free((*token_list)->final_token);
 
 		// Liberar lista de expansiones
-		free_expand_list((*token_list)->expand_list);
+		free_expand_stack((*token_list)->expand_list);
 		
 		free(*token_list);
 		*token_list = NULL;

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 13:58:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:34:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ typedef struct s_token
 {
 	int			type;
 	char		*raw_token;	
+	char		*expanded_token;	
 	char		*final_token;	
 	t_expand	*expand_list; // lista nodos expansion variables
 	
@@ -141,6 +142,10 @@ char	*extract_substitution_segment(char *input, int index_first_char);
 //	07_parser_expand_struct.c
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);
 void 	print_expand_list(t_expand *expand_list);
+
+// 08_parser_dequotize.c
+void	dequotize(t_token *token_list);
+void	remove_quotes(t_token *token);
 
 // 08_utils.c
 void	print_message_and_exit(char *message, int fd, int exit_code);

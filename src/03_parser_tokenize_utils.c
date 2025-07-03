@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 11:41:58 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/11 20:49:56 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,10 @@ static t_token *token_create_node(char  *input, int token_type)
     new_node->raw_token      = ft_strdup(input);
     if (!new_node->raw_token)
         print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
-    new_node->type          = token_type;
-    new_node->final_token   = NULL;
+
+    new_node->type              = token_type;
+    new_node->expanded_token    = NULL;
+    new_node->final_token       = NULL;
 
     new_node->expand_list   = NULL;
     new_node->next	        = NULL;
@@ -89,6 +91,7 @@ void print_token_list(t_token *token_list)
         //ft_printf("next -> %p\n\n", token->next);
 
         //printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
+        printf("expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO
         printf("final_token -> %s\n", token->final_token);  // TOKEN YA EXPANDIDO
 
         // IMPRESION LISTA NODOS EXPAND

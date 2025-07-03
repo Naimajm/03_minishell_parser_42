@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 14:17:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/11 20:52:48 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,14 @@ void	input_parser(t_shell *shell)
 	ft_printf("Tokenizer...				OK\n");
 	tokenizer(shell);
 
-	// validacion lista tokens	
-	//print_token_list(shell->token_list);
-
 	// check error sintaxis tokens
 
 	ft_printf("Expand variables $...			OK\n");
 	activate_expand_operators(shell);
+
+	ft_printf("Tokens -> dequotize and join $...	OK\n");
+	dequotize(shell->token_list);
+	
 
 	// verificacion	
 	print_token_list(shell->token_list);	

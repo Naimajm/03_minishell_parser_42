@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 14:15:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:09:13 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	insert_expansion_values(t_token *token)
 
     if (!token || !token->expand_list)   // NO HAY EXPANSION VARIABLE
     {		
-        token->final_token = ft_strdup(token->raw_token);
+        token->expanded_token = ft_strdup(token->raw_token);
         return ;
     }	    
 	// insertar valores expandidos de cada nodo
@@ -113,7 +113,7 @@ void	insert_expansion_values(t_token *token)
 
     // Añadir el resto del token después de la última expansión
     if (token->raw_token[last_position])
-		token->final_token = ft_strjoin_free(token->final_token, &token->raw_token[last_position]);
+		token->expanded_token = ft_strjoin_free(token->expanded_token, &token->raw_token[last_position]);
     //printf("token->final_token -> %s\n\n", token->final_token);
 }
 
@@ -141,7 +141,7 @@ int	insert_expand_node_value(t_token *token)
 		last_position = current_node->last_index + 1;
 		current_node = current_node->next;
 	}
-	token->final_token = result;
+	token->expanded_token = result;
 	//printf("insert_expand_node_value -> %s\n", token->final_token);
 	return  (last_position);
 }

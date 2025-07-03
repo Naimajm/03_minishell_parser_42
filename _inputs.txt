@@ -36,3 +36,6 @@ echo "echo hello" | valgrind --leak-check=full ./minishell
 # Test expansion
 echo "$HOME" "$?" "\$literal" "${HOME}xxx" | valgrind --leak-check=full ./minishell
 echo "aa $HOME $? bb \$literal ${HOME}xxx zz" | valgrind --leak-check=full ./minishell
+
+#Test Patrick
+echo "cat ho"la' a'$e" tal'l   ,qu'e" hac"e"s | valgrind --leak-check=full ./minishell
