@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/09 14:18:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:50:45 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,22 +80,27 @@ static t_token	*token_find_last_node(t_token *token_list)
 void print_token_list(t_token *token_list)
 {
     t_token *token;
+    int token_number;
 
     if (!token_list)
         return ;  
     token = (t_token *)(token_list);
+    token_number = 1;
     while (token)
     {
-        ft_printf("token -> %s [type %d]\n", token->raw_token, token->type);
+        ft_printf("token [%i]-> %s\n", token_number, token->raw_token);
+        ft_printf("type -> %i // ", token->type);
         ft_printf("current -> %p // ", token);
         ft_printf("next -> %p\n", token->next);
 
         printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
-        printf("expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO
+        
+        print_expand_list(token->expand_list); // IMPRESION LISTA NODOS EXPAND
+        
+        printf("expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO 
         printf("final_token -> %s\n\n", token->final_token);  // TOKEN YA EXPANDIDO
 
-        // IMPRESION LISTA NODOS EXPAND
-        //print_expand_list(token->expand_list);
+        token_number++;
         token = token->next;
     }
     printf("\n");

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/09 21:17:17 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:00:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,8 @@ void	dequotize(t_token *token_list)
 	current_token = (t_token *) token_list;
 	while (current_token)
 	{
-		// quitar comillas
-		if (current_token->type == SINGLE_QUOTES 
-			|| current_token->type == DOUBLE_QUOTES 
+		// quitar comillas (current_token->type == SINGLE_QUOTES ?? poner en condicional)
+		if (current_token->type == DOUBLE_QUOTES 
 			|| current_token->type == NO_QUOTES)
 		{
 			remove_quotes(current_token);
@@ -43,6 +42,24 @@ void	dequotize(t_token *token_list)
 
 // funcion para quitar comillas de 'expanded_token' a 'final_token'
 void	remove_quotes(t_token *token)
+{
+	//int		index;
+	//char 	quote;
+	//int		first_index;
+
+	if (!token || !token->expanded_token)
+		return ;
+	//index 			= 0;
+	//first_index		= 0;
+
+	//quote = token->expanded_token[0]; // definir inicio comilla doble o simple
+
+	token->final_token = ft_substr(token->expanded_token, 1, ft_strlen(token->expanded_token) - 2); 
+	
+	//printf("(remove_quotes) token->final_token-> %s\n",token->final_token);
+}
+
+/* void	remove_quotes(t_token *token)
 {
 	int		index;
 	char 	quote;
@@ -73,4 +90,4 @@ void	remove_quotes(t_token *token)
 		}			
 	}
 	//printf("(remove_quotes) token->final_token-> %s\n",token->final_token);
-}
+} */

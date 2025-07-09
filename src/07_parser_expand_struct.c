@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 13:58:30 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:45:38 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,15 @@ static t_expand	*find_expand_last_node(t_expand *token_list)
 void print_expand_list(t_expand *expand_list)
 {
 	t_expand	*expand_node;
+	int	number_node;
 	
 	if (!expand_list)
 		return ;    
 	expand_node = (t_expand *)(expand_list);
+	number_node = 1;
     while (expand_node)
     {
-        printf("expand_stack:\n");
+        printf("expand_node: [%i]\n", number_node);
 		printf("type -> %d\n", expand_node->type);
 		printf("first_index -> %d\n", expand_node->first_index);
 		printf("last_index -> %d\n", expand_node->last_index);
@@ -91,6 +93,8 @@ void print_expand_list(t_expand *expand_list)
 		printf("key -> %s\n", expand_node->key);
 		printf("value -> %s\n", expand_node->value);			
 		printf("current node -> %p // next -> %p\n\n", expand_node, expand_node->next);	
+
+		number_node++;
         expand_node = expand_node->next;
     }
 }
