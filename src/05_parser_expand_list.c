@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 13:55:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 20:54:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,9 @@ int	basic_expander(t_token *token, int first_index)
 
 	key = extract_key(substitution_str, 1); // index 0 -> $	
 	expand_node->key = key;
-
-	//value = get_environment_var(shell->environment, token->expand_list->key);	
-	//set_expand_key_value(token->expand_list, key, value);	
 	free(substitution_str);	
+
+	//printf("(basic_expander) len_input -> %i\n", len_input);	
 	return (len_input);	
 }
 
@@ -100,8 +99,6 @@ int	curly_braces_expander(t_token *token, int first_index)
 	// calcular last_index del nodo expand
 	expand_node->last_index = first_index + len_input - 1;
 	
-	//value = get_environment_var(shell->environment, expand_node->key);
-	//set_expand_key_value(expand_node, key, value);	
 	free(substitution_str);	
 	return (len_input); //ft_printf("quote_token -> %s\n", token);	
 }
@@ -125,8 +122,6 @@ int	literal_expander(t_token *token, int first_index)
 	key = ft_strdup(substitution_str);
 	expand_node->key = key;
 	
-	//value = ft_strdup(key);
-	//set_expand_key_value(expand_node, key, value);
 	free(substitution_str);	
 	return (len_input);
 }

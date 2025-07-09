@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/09 19:53:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:10:46 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,10 @@ void	activate_expand_operators(t_shell *shell)
 
 	while (current_token)
 	{
-		if (current_token->type == SINGLE_QUOTES) // no hay expansion $
-		{
-			current_token = current_token->next;			
-			continue;
-		}  		
+		//printf("(activate_expand_operators) token->raw_token -> %s\n", current_token->raw_token);	
+
 		generate_expand_list(current_token); // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
-		
+
 		resolve_expansion_values(current_token, shell); // resolver valores		
 
 		insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
@@ -103,9 +100,11 @@ void	insert_expansion_values(t_token *token)
 {
     int			 last_position;
 
+	//printf("(insert_expansion_values) token->raw_token -> %s\n", token->raw_token);	
     if (!token || !token->expand_list)   // NO HAY EXPANSION VARIABLE
-    {		
+    {	
         token->expanded_token = ft_strdup(token->raw_token);
+		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
         return ;
     }	    
 	// insertar valores expandidos de cada nodo
@@ -114,7 +113,7 @@ void	insert_expansion_values(t_token *token)
     // Añadir el resto del token después de la última expansión
     if (token->raw_token[last_position])
 		token->expanded_token = ft_strjoin_free(token->expanded_token, &token->raw_token[last_position]);
-    //printf("token->final_token -> %s\n\n", token->final_token);
+    //printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
 }
 
 int	insert_expand_node_value(t_token *token)
