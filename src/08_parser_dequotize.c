@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/11 22:15:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 20:23:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,88 +34,39 @@ void	dequotize(t_token *token_list)
 		{
 			remove_quotes(current_token);
 		}
-		printf("dequotize / final->token -> %s", current_token->final_token);
+		printf("(dequotize) token->final_token-> %s\n", current_token->final_token);
 		current_token = current_token->next;
 	}
 	
 }
 
+// funcion para quitar comillas de 'expanded_token' a 'final_token'
 void	remove_quotes(t_token *token)
 {
 	int		index_expanded;
-	int 	index_final;
 	char 	quote;
+	int		first_index;
 
 	if (!token)
 		return ;
 	index_expanded 	= 0;
-	index_final		= 0;
+	first_index		= 0;
 	while (token->expanded_token[index_expanded])
 	{
 		if (is_quote(token->expanded_token[index_expanded]))
-		{
-			// definir inicio comilla doble o simple
-			quote = token->expanded_token[index_expanded];
+		{			
+			quote = token->expanded_token[index_expanded]; // definir inicio comilla doble o simple
 			index_expanded++;
-			// copiar texto sin comillas
+			first_index = index_expanded;			
 			while (token->expanded_token[index_expanded] &&
-					token->expanded_token[index_expanded] != quote)
-			{
-				token->final_token[index_final] = token->expanded_token[index_expanded];
-				printf("token->final_token[index_final]-> %c",token->final_token[index_final]);
+					token->expanded_token[index_expanded] != quote)  // calcular indice string entre comilla inicial y final
 				index_expanded++;			
-			}
-			// verificar para cierre final comilla
-			if (token->expanded_token[index_expanded] == quote)
+			token->final_token = ft_substr(token->expanded_token, first_index, index_expanded - first_index); // copiar texto sin comillas			
+			if (token->expanded_token[index_expanded] == quote) // verificar para cierre final comilla
 				index_expanded++;			
 		}
 		else
-		{
-			token->final_token[index_final] = token->expanded_token[index_expanded];
-			index_expanded++;
-			index_final++;			
-		}			
+			token->final_token = ft_substr(token->expanded_token, 0, ft_strlen(token->expanded_token));	
 	}
-	token->final_token[index_final] = '\0'; // terminador nulo	
+	//printf("(remove_quotes) token->final_token-> %s\n",token->final_token);
 }
-
-// funcion para quitar comillas de 'expanded_token' a 'final_token'
-/* void	remove_quotes(t_token *token)
-{
-	int		index_expanded;
-	int 	index_final;
-	char 	quote;
-
-	if (!token)
-		return ;
-	index_expanded 	= 0;
-	index_final		= 0;
-	while (token->expanded_token[index_expanded])
-	{
-		if (is_quote(token->expanded_token[index_expanded]))
-		{
-			// definir comilla doble o simple
-			quote = token->expanded_token[index_expanded];
-			index_expanded++;
-			// copiar texto sin comillas
-			while (token->expanded_token[index_expanded] &&
-					token->expanded_token[index_expanded] != quote)
-			{
-				token->final_token[index_final] = token->expanded_token[index_expanded];
-				printf("token->final_token[index_final]-> %c",token->final_token[index_final]);
-				index_expanded++;
-				index_final++;				
-			}
-			// verificar para cierre final comilla
-			if (token->expanded_token[index_expanded] == quote)
-				index_expanded++;			
-		}
-		else
-		{
-			token->final_token[index_final] = token->expanded_token[index_expanded];
-			index_expanded++;
-			index_final++;			
-		}			
-	}
-	token->final_token[index_final] = '\0'; // terminador nulo	
-} */

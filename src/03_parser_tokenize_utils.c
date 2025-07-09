@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/11 20:49:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:18:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,13 @@ void print_token_list(t_token *token_list)
     token = (t_token *)(token_list);
     while (token)
     {
-        //ft_printf("token -> %s [type %d]\n", token->raw_token, token->type);
-        //ft_printf("current -> %p // ", token);
-        //ft_printf("next -> %p\n\n", token->next);
+        ft_printf("token -> %s [type %d]\n", token->raw_token, token->type);
+        ft_printf("current -> %p // ", token);
+        ft_printf("next -> %p\n", token->next);
 
-        //printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
+        printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
         printf("expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO
-        printf("final_token -> %s\n", token->final_token);  // TOKEN YA EXPANDIDO
+        printf("final_token -> %s\n\n", token->final_token);  // TOKEN YA EXPANDIDO
 
         // IMPRESION LISTA NODOS EXPAND
         //print_expand_list(token->expand_list);

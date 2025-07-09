@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 19:09:13 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/09 19:53:04 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ void	activate_expand_operators(t_shell *shell)
 		
 		resolve_expansion_values(current_token, shell); // resolver valores		
 
-		insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> FINAL TOKEN
+		insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
 
         //print_expand_list(current_token->expand_list);		
 		current_token = current_token->next;
 	}	
 	//print_token_list(shell->token_list);	
-	printf("final activate_expand_operators\n");
+	//printf("final activate_expand_operators\n");
 }
 
 void generate_expand_list(t_token *token)
