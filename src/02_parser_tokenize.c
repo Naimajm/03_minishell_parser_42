@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 19:10:48 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/03 14:19:00 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	quotes_tokenizer(t_shell *shell, int index_first_char)
 
 	delimiter		= shell->input[index_first_char];
 	current_index 	= index_first_char + 1;  // quitar comilla
+	token_type 		= 0;
 	len_input 		= 0;	
 	while (shell->input[current_index] && shell->input[current_index] != delimiter)
 		current_index++;
