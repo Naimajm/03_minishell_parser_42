@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 19:34:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:03:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@
 # define ERROR_ENVIRONMENT				"Error\n Environment unavailable or empty\n"
 # define ERROR_OPEN_FILE				"Error\n Opening file\n"
 # define ERROR_INPUT_READER				"Error\n Error read input\n"
-# define ERROR_STRUCT_INITIALIZATION	"Error\n structure initialization error\n"
-
- 
+# define ERROR_STRUCT_INITIALIZATION	"Error\n structure initialization error\n" 
 
 # define ERROR_QUOTE_SYNTAX	"Error\n Simple/double quote syntax. Not closed\n"
 
@@ -57,7 +55,6 @@
 # define PIPE					8		// 8 -> operador | PIPE
 
 // categorizacion VARIABLES EXPANDIDAS
-//# define NO_EXPANSION			0		// 0 -> no expansion
 # define BASIC_EXPANSION		1		// 1 -> expansion basica
 # define CURLY_BRACES			2		// 2 -> expansion basica con llaves {}
 # define LAST_EXIT_STATUS		3		// 3 -> caso especial $? -> ultimo exit_status
@@ -83,11 +80,27 @@ typedef struct s_token
 	int			type;
 	char		*raw_token;	
 	char		*expanded_token;	
-	char		*final_token;	
+	char		*noquotes_token;
+
+	//char		*joined_token;
+	//bool		require_join;
+	
 	t_expand	*expand_list; // lista nodos expansion variables
 	
 	struct	s_token	*next;	
 }			t_token;
+
+// WORD TOKENS
+typedef struct s_word_token
+{
+	int			word_type;
+	char		*raw_word;
+	char		*joined_word;
+
+
+	struct	s_word_token *next;
+	
+}			t_word_token;
 
 // SHELL
 typedef struct s_shell
@@ -112,15 +125,19 @@ char	*input_reader(char *prompt);
 t_shell *initialize_shell(void);
 void	load_environment_variables(t_shell *shell, char **environment_var);
 
-// 02_parser_tokenize.c
+// 02_parser_word.c
+
+// 02.1_parser_word_utils.c 
+
+// 03_parser_tokenize.c
 void	tokenizer(t_shell *shell);
-int		word_tokenizer(t_shell *shell, int index_first_char);
+int		noquotes_tokenizer(t_shell *shell, int index_first_char);
 int		quotes_tokenizer(t_shell *shell, int index_first_char);
 int		operator_tokenizer(t_shell *shell, int index_first_char);
 
-// 03_parser_tokenize_utils.c
+// 03.1_parser_tokenize_utils.c
 void	add_token_node(t_token **token_list, char  *input, int token_type);
-void	print_token_list(t_token *token_list);
+void	print_tokens_list(t_token *token_list);
 	
 //  04_parser_expand.c
 void	activate_expand_operators(t_shell *shell);
@@ -128,22 +145,23 @@ void	generate_expand_list(t_token *token);
 void	resolve_expansion_values(t_token *token, t_shell *shell);
 void	insert_expansion_values(t_token *token);
 
-//  05_parser_expand_list.c
+//  04.1_parser_expand_list.c
 int		basic_expander(t_token *token, int first_index);
 int		last_exit_status_expander(t_token *token, int first_index);
 int		curly_braces_expander(t_token *token, int first_index);
 int		literal_expander(t_token *token, int first_index);
 
-//  06_parser_expand_utils.c
+//  04.2_parser_expand_extract.c
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 char	*extract_substitution_segment(char *input, int index_first_char);
 
-//	07_parser_expand_struct.c
+//	04.3_parser_expand_utils.c
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);
-void 	print_expand_list(t_expand *expand_list);
+void 	print_expand_nodes_list(t_expand *expand_list);
 
-// 08_parser_dequotize.c
+// 04.4_parser_dequotize.c
+void	join_tokens(t_token *token_list);
 void	dequotize(t_token *token_list);
 void	remove_quotes(t_token *token);
 
@@ -155,7 +173,7 @@ int		is_operator(char character);
 int		is_space(char character);
 
 // 09_utils_2.c
-char *ft_strjoin_free(char *str1, char *str2);
+char	*ft_strjoin_free(char *str1, char *str2);
 
 // 09_free_functions.c
 void	cleanup_minishell(t_shell *shell);

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 10:13:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/10 14:34:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:52:45 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	print_config_shell(t_shell *shell)
 	//print_strings_array(shell->environment);
 
 	ft_printf("input -> %s\n", shell->input);	
-	print_token_list(shell->token_list);
+	print_tokens_list(shell->token_list);
 }
 
 void	print_strings_array(char **array)

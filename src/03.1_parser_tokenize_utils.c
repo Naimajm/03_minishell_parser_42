@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   03_parser_tokenize_utils.c                         :+:      :+:    :+:   */
+/*   03.1_parser_tokenize_utils.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/09 21:50:45 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:58:51 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_token	*token_find_last_node(t_token *token_list);
-static t_token *token_create_node(char  *input, int type_token);
-void print_token_list(t_token *token_list);
+static t_token	*find_last_token_node(t_token *token_list);
+static t_token *create_token_node(char  *input, int type_token);
+void print_tokens_list(t_token *token_list);
 
 void	add_token_node(t_token **token_list, char  *input, int token_type)
 {
@@ -26,13 +26,13 @@ void	add_token_node(t_token **token_list, char  *input, int token_type)
         return ;   
 
     // inicializar nuevo nodo token
-    new_node = token_create_node(input, token_type);
+    new_node = create_token_node(input, token_type);
     if (!new_node)
         return ;
     //ft_printf("addback -> %s\n", new_node->token);
 
     // encontrar ultimo nodo y enlazar
-    last_node = token_find_last_node(*token_list);
+    last_node = find_last_token_node(*token_list);
     
     if (!last_node)     // caso lista vacio -> añadir en 1º nodo
         *token_list = new_node;   
@@ -40,7 +40,7 @@ void	add_token_node(t_token **token_list, char  *input, int token_type)
         last_node->next = new_node;
 }
 
-static t_token *token_create_node(char  *input, int token_type)
+static t_token *create_token_node(char  *input, int token_type)
 {
     t_token *new_node;
 
@@ -56,7 +56,10 @@ static t_token *token_create_node(char  *input, int token_type)
 
     new_node->type              = token_type;
     new_node->expanded_token    = NULL;
-    new_node->final_token       = NULL;
+    new_node->noquotes_token    = NULL;
+
+    //new_node->joined_token      = NULL;
+    //new_node->require_join      = false;
 
     new_node->expand_list   = NULL;
     new_node->next	        = NULL;
@@ -65,7 +68,7 @@ static t_token *token_create_node(char  *input, int token_type)
     return  (new_node);
 }
 
-static t_token	*token_find_last_node(t_token *token_list)
+static t_token	*find_last_token_node(t_token *token_list)
 {
     // validation 
     if (!token_list)
@@ -77,7 +80,7 @@ static t_token	*token_find_last_node(t_token *token_list)
 	return (token_list);
 }
 
-void print_token_list(t_token *token_list)
+void print_tokens_list(t_token *token_list)
 {
     t_token *token;
     int token_number;
@@ -88,17 +91,17 @@ void print_token_list(t_token *token_list)
     token_number = 1;
     while (token)
     {
-        ft_printf("token [%i]-> %s\n", token_number, token->raw_token);
-        ft_printf("type -> %i // ", token->type);
-        ft_printf("current -> %p // ", token);
-        ft_printf("next -> %p\n", token->next);
+        printf("token [%i]-> %s\n", token_number, token->raw_token);
+        printf("type -> %i // ", token->type);
+        printf("current -> %p // ", token);
+        printf("next -> %p\n", token->next);
 
         printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
         
-        print_expand_list(token->expand_list); // IMPRESION LISTA NODOS EXPAND
+        print_expand_nodes_list(token->expand_list); // IMPRESION LISTA NODOS EXPAND
         
         printf("expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO 
-        printf("final_token -> %s\n\n", token->final_token);  // TOKEN YA EXPANDIDO
+        printf("noquotes_token -> %s\n\n", token->noquotes_token);  // TOKEN sin comillas
 
         token_number++;
         token = token->next;

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/06/11 21:12:57 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:47:30 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,21 @@ void	free_token_list(t_token **token_list)
 		if ((*token_list)->raw_token) 		// borrar raw_token
 			free((*token_list)->raw_token);
 		
-		if ((*token_list)->expanded_token) 	// borrar final_token
+		if ((*token_list)->expanded_token) 	// borrar expanded_token
 			free((*token_list)->expanded_token);
 
-		if ((*token_list)->final_token)
-			free((*token_list)->final_token);
+		if ((*token_list)->noquotes_token) 	
+			free((*token_list)->noquotes_token);
 
-		// Liberar lista de expansiones
-		free_expand_stack((*token_list)->expand_list);
+		/* if ((*token_list)->joined_token) 	
+			free((*token_list)->joined_token); */
+		
+		free_expand_stack((*token_list)->expand_list); // Liberar lista de expansiones
 		
 		free(*token_list);
 		*token_list = NULL;
-		// reestablecer puntero 1º nodo
-		*token_list = temp_ptr;  
+		
+		*token_list = temp_ptr;   // reestablecer puntero 1º nodo
 	}
 	ft_printf(FREE_TOKENS);
 }

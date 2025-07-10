@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02_parser_tokenize.c                               :+:      :+:    :+:   */
+/*   03_parser_tokenize.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/03 14:19:00 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:58:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	word_tokenizer(t_shell *shell, int index_first_char);
+int	noquotes_tokenizer(t_shell *shell, int index_first_char);
 int	quotes_tokenizer(t_shell *shell, int index_first_char);
 int	operator_tokenizer(t_shell *shell, int index_first_char);
 
@@ -33,7 +33,7 @@ void	tokenizer(t_shell *shell)
 		else if (is_operator(shell->input[index]))
 			token_len = operator_tokenizer(shell, index);		
 		else // 1º letra palabra simple sin inicio comillas
-			token_len = word_tokenizer(shell, index);	
+			token_len = noquotes_tokenizer(shell, index);	
 		if (token_len == FAILURE)	// error
 			return ;
 		if (token_len == 0)	 // caso especial input = 0;
@@ -43,7 +43,7 @@ void	tokenizer(t_shell *shell)
 	}		
 }
 
-int	word_tokenizer(t_shell *shell, int index_first_char)
+int	noquotes_tokenizer(t_shell *shell, int index_first_char)
 {
 	char	*token_input;
 	int		index;

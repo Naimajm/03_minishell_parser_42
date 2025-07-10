@@ -20,11 +20,12 @@ INCLUDES		:= -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(INCLUDES_DIR)
 EXT_LIBRARYS 	:= $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
 
 SRC_DIR			:= ./src
-SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_minishell.c 01_init_shell.c \
-				02_parser_tokenize.c 03_parser_tokenize_utils.c \
-				04_parser_expand.c\
-				05_parser_expand_list.c 06_parser_expand_utils.c 07_parser_expand_struct.c \
-				08_parser_dequotize.c \
+SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_minishell.c \
+				01_init_shell.c 02_parser_word.c 02.1_parser_word_utils.c \
+				03_parser_tokenize.c 03.1_parser_tokenize_utils.c \
+				04_parser_expand.c \
+				04.1_parser_expand_list.c 04.2_parser_expand_extract.c \
+				04.3_parser_expand_utils.c 04.4_parser_dequotize.c \
 				08_utils.c 09_utils_2.c 09_free_functions.c \
 				15_utils_process.c)
 

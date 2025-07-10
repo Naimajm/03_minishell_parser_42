@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   07_parser_expand_struct.c                          :+:      :+:    :+:   */
+/*   04.3_parser_expand_utils.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/09 21:45:38 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:58:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static t_expand *create_expand_node(char  *variable, int first_index, int expand_type);
 static t_expand	*find_expand_last_node(t_expand *token_list);
-void print_expand_list(t_expand *expand_list);
+void print_expand_nodes_list(t_expand *expand_list);
 
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type)
 {
@@ -74,7 +74,7 @@ static t_expand	*find_expand_last_node(t_expand *token_list)
 	return (token_list); // retorna puntero a ultimo nodo
 }
 
-void print_expand_list(t_expand *expand_list)
+void print_expand_nodes_list(t_expand *expand_list)
 {
 	t_expand	*expand_node;
 	int	number_node;
