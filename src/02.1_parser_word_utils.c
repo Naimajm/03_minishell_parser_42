@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 17:29:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 22:41:05 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,18 @@ void	add_word_node(t_word_token **word_list, char  *input, char word_type)
     t_word_token *new_node;
     t_word_token *last_node;
 
-    // validation inputs
-    if (!word_list || !input)
+    if (!word_list || !input) 						// validation inputs
         return ;   
-
-    // inicializar nuevo nodo token
-    new_node = create_word_node(input, word_type);
+    
+    new_node = create_word_node(input, word_type); 	// inicializar nuevo nodo token
     if (!new_node)
         return ;
-    //ft_printf("addback -> %s\n", new_node->token);
-
-    // encontrar ultimo nodo y enlazar
-    last_node = find_word_last_node(*word_list);
+		
+    last_node = find_word_last_node(*word_list); 	// encontrar ultimo nodo y enlazar
     
-    if (!last_node)     // caso lista vacio -> añadir en 1º nodo
+    if (!last_node)     							// caso lista vacio -> añadir en 1º nodo
         *word_list = new_node;   
-    else            // lista no vacia      
+    else            								// lista no vacia      
         last_node->next = new_node;
 }
 
@@ -67,13 +63,12 @@ static t_word_token *create_word_node(char  *input, char word_type)
 
 static t_word_token	*find_word_last_node(t_word_token *word_list)
 {
-    // validation 
-    if (!word_list)
+    
+    if (!word_list) 					// validation 
         return (NULL);
 
     while (word_list->next)
-		word_list = word_list-> next;
-    // retorna puntero a ultimo nodo
+		word_list = word_list-> next; 	// retorna puntero a ultimo nodo    
 	return (word_list);
 }
 
@@ -88,16 +83,19 @@ void print_words_list(t_word_token *word_list)
     node_index = 1;
     while (word_token)
     {
-        printf("word [%i]\n", node_index);
-        printf("word_type -> %c // ", word_token->word_type);
-        printf("current -> %p // ", word_token);
-        printf("next -> %p\n", word_token->next);
+		printf("┌───────────┐\n");
+        printf("| word [%i]  |\n", node_index);		
+		printf("└───────────┘\n");
+        printf("	word_type -> %c // ", word_token->word_type);
+        printf("	current -> %p // ", word_token);
+        printf("	next -> %p\n", word_token->next);
 
-        printf("raw_word -> %s\n\n", word_token->raw_word);    
+        printf("	raw_word -> %s\n\n", word_token->raw_word);    
         
         print_tokens_list(word_token->tokens_list); // IMPRESION LISTA NODOS EXPAND
 
-		printf("processed_word -> %s\n", word_token->processed_word); 
+		printf("└──> processed_word -> %s\n", word_token->processed_word); 
+		printf("─────────────────────────────\n\n");
         node_index++;
         word_token = word_token->next;
     }

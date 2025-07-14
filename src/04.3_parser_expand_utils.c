@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 17:26:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 22:31:00 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,17 @@ void print_expand_nodes_list(t_expand *expand_list)
 	node_index = 1;
     while (expand_node)
     {
-        printf("expand_node: [%i]\n", node_index);
-		printf("type -> %d\n", expand_node->type);
-		printf("first_index -> %d\n", expand_node->first_index);
-		printf("last_index -> %d\n", expand_node->last_index);
-		printf("substitution_variable -> %s\n", expand_node->substitution_str);
-		printf("key -> %s\n", expand_node->key);
-		printf("value -> %s\n", expand_node->value);			
-		printf("current node -> %p // next -> %p\n\n", expand_node, expand_node->next);	
+		printf("	└───────┐\n");
+		printf("	  	┌───────────────────┐\n");
+        printf("		| expand_node: [%i]  |\n", node_index);
+		printf("		└───────────────────┘\n");
+		printf("			current node -> %p // next -> %p\n", expand_node, expand_node->next);
+		printf("			type -> %d\n", expand_node->type);
+		printf("			first_index -> %d\n", expand_node->first_index);
+		printf("			last_index -> %d\n", expand_node->last_index);
+		printf("			substitution_variable -> %s\n", expand_node->substitution_str);
+		printf("			key -> %s\n", expand_node->key);
+		printf("		└──>value -> %s\n", expand_node->value);		
 
 		node_index++;
         expand_node = expand_node->next;

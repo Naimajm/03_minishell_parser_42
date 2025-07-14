@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 13:54:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 22:45:47 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	noquotes_tokenizer(t_shell *shell, int index_first_char);
 int	quotes_tokenizer(t_shell *shell, int index_first_char);
-int	operator_extractor(t_shell *shell, int index_first_char);
+int	operator_tokenizer(t_shell *shell, int index_first_char);
 
 void	tokenizer(t_shell *shell)
 {
@@ -26,17 +26,17 @@ void	tokenizer(t_shell *shell)
 	index = 0;	
 	while (shell->input[index])
 	{
-		while (is_space(shell->input[index])) // ignorar espacios iniciales 
+		while (is_space(shell->input[index])) 			// ignorar espacios iniciales 
 			index++;
-		if (is_quote(shell->input[index])) // '\'' -> LITERAL // '\"' -> EXPANSION VARIABLE
+		if (is_quote(shell->input[index])) 				// '\'' -> LITERAL // '\"' -> EXPANSION VARIABLE
 			token_len = quotes_tokenizer(shell, index);
 		else if (is_operator(shell->input[index]))
-			token_len = operator_extractor(shell, index);		
-		else // 1º letra palabra simple sin inicio comillas
+			token_len = operator_tokenizer(shell, index);		
+		else 											// 1º letra palabra simple sin inicio comillas
 			token_len = noquotes_tokenizer(shell, index);	
-		if (token_len == FAILURE)	// error
+		if (token_len == FAILURE)						// error
 			return ;
-		if (token_len == 0)	 // caso especial input = 0;
+		if (token_len == 0)	 							// caso especial input = 0;
 			index++;
 		else
 			index += token_len;				
@@ -53,9 +53,11 @@ int	noquotes_tokenizer(t_shell *shell, int index_first_char)
 		return (FAILURE);
 	index = index_first_char;
 	len_input = 0;	
-	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
-	while (!is_space(shell->input[index]) && !is_operator(shell->input[index]) 
-		&& shell->input[index] !=  '\"' && shell->input[index])
+	
+	while (!is_space(shell->input[index]) // longitud de caracteres de la palabra -> limites > < | " " '"' /0
+		&& !is_operator(shell->input[index]) 
+		&& shell->input[index] !=  '\"' 
+		&& shell->input[index])
 		index++;	
 	token_input = ft_substr(shell->input, index_first_char, (index - index_first_char)); // copiar sub substr
 	if (!token_input)
@@ -96,32 +98,32 @@ int	quotes_tokenizer(t_shell *shell, int index_first_char)
 	return (len_input);
 }
 
-/* int	operator_tokenizer(t_shell *shell, int index_first_char)
+int	operator_tokenizer(t_shell *shell, int index_first_char)
 {
 	int		len_input;
 
-	if (shell->input[index_first_char] == '>') // operadores especiales -> OUTFILE o APPEND
+	if (shell->input[index_first_char] == '>') 			// operadores especiales -> OUTFILE o APPEND
 	{
 		if (shell->input[index_first_char + 1] == '>')
 		{
-			add_token_node(&shell->words_list, ">>", APPEND);
+			add_token_node(&shell->words_list->tokens_list, ">>", APPEND);
 			return (len_input = 2);
 		}				
 		else
-			add_token_node(&shell->words_list, ">", OUTFILE);		
+			add_token_node(&shell->words_list->tokens_list, ">", OUTFILE);		
 	}		
-	else if (shell->input[index_first_char] == '<') // operadores especiales -> INFILE o HERE_DOC
+	else if (shell->input[index_first_char] == '<') 	// operadores especiales -> INFILE o HERE_DOC
 	{
 		if (shell->input[index_first_char + 1] == '<')
 		{
-			add_token_node(&shell->words_list, "<<", HERE_DOC);
+			add_token_node(&shell->words_list->tokens_list, "<<", HERE_DOC);
 			return (len_input = 2);
 		}			
 		else
-			add_token_node(&shell->words_list, "<", INFILE);							
+			add_token_node(&shell->words_list->tokens_list, "<", INFILE);							
 	}		
-	else if (shell->input[index_first_char] == '|') // operadores especiales -> PIPE
-		add_token_node(&shell->words_list, "|", PIPE);	
+	else if (shell->input[index_first_char] == '|') 	// operadores especiales -> PIPE
+		add_token_node(&shell->words_list->tokens_list, "|", PIPE);	
 	return (len_input = 1);
-} */
+}
 

@@ -10,11 +10,12 @@
 // WORDS TOKENS
 
 h"ola $HOME "caracola
+h"ola $HOME "caracola | valgrind --leak-check=full ./minishell
 
 
 // EXPANSION VARIABLES 
 
-"$HOME" "$?" "\$literal" "${HOME}xxx"
+aa"$HOME"zz   bb"$?"yy   cc"\$literal"  "${HOME}xxx"ww
 
 "aa $HOME $? bb \$literal ${HOME}xxx zz"
 

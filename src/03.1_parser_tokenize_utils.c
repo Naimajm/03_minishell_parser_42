@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 17:33:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 22:35:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,17 +91,19 @@ void print_tokens_list(t_token *token_list)
     node_index = 1;
     while (token)
     {
-        printf("token [%i]-> %s\n", node_index, token->raw_token);
-        printf("type -> %i // ", token->type);
-        printf("current -> %p // ", token);
-        printf("next -> %p\n", token->next);
+        printf("    └───┐\n");
+        printf("    ┌───────────┐\n");
+        printf("    | token [%i] |\n", node_index);
+        printf("    └───────────┘\n");
+        printf("        type -> %i // ", token->type);
+        printf("current -> %p // next -> %p\n", token, token->next);
 
-        printf("raw_token -> %s\n", token->raw_token);      
-        printf("expanded_token -> %s\n\n", token->expanded_token);  // TOKEN YA EXPANDIDO 
+        printf("        raw_token -> %s\n", token->raw_token);      
+        printf("        expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO 
         
         print_expand_nodes_list(token->expand_list); // IMPRESION LISTA NODOS EXPAND        
         
-        printf("noquotes_token -> %s\n\n", token->noquotes_token);  // TOKEN sin comillas
+        printf("        └──> noquotes_token -> %s\n\n", token->noquotes_token);  // TOKEN sin comillas
 
         node_index++;
         token = token->next;
