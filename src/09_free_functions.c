@@ -6,23 +6,23 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/10 12:47:30 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:51:47 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_token_list(t_token **token_list);
+void	free_tokens_list(t_token **token_list);
 void	free_matrix(char **matrix);
 
 void	cleanup_minishell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	// free lista tokens
-	if (shell->token_list)
-		free_token_list(&shell->token_list);
-		
+	// free lista words
+	if (shell->words_list)
+		free_words_list(&shell->words_list);
+
 	// free copia variables entorno
 	if (shell->environment)
 		free_matrix(shell->environment);
@@ -32,36 +32,66 @@ void	cleanup_minishell(t_shell *shell)
 	ft_printf(FREE_ALL_SHELL);
 }
 
-void	free_token_list(t_token **token_list)
+void	free_words_list(t_word_token **words_list)
 {
-	t_token	*temp_ptr;
+	t_word_token	*current_node;
+	t_word_token	*next_node;
+
+	if (!words_list)
+        return ;
+
+	current_node = (t_word_token *) *words_list;
+	while (current_node)
+	{
+		next_node = current_node->next;
+
+		// Liberar strings
+		if (current_node->raw_word)
+			free(current_node->raw_word);
+		if (current_node->processed_word)
+			free(current_node->processed_word);
+
+		// Liberar lista de tokens
+		if (current_node->tokens_list)
+			free_tokens_list(&current_node->tokens_list);
+
+		// Liberar nodo actual
+		free(current_node);
+		current_node = next_node;
+	}    
+	*words_list = NULL;
+    ft_printf(FREE_WORDS_LIST);
+}
+
+void	free_tokens_list(t_token **token_list)
+{
+	t_token	*current_node;
+	t_token	*next_node;
 
 	if (!token_list)
 		return ;
-	temp_ptr = *token_list; // establecer puntero 1º nodo inicio lista
-	while (*token_list)
+	current_node = (t_token *) *token_list;
+	while (current_node)
 	{
-		temp_ptr = temp_ptr->next;
+		next_node = current_node->next;
 		
-		if ((*token_list)->raw_token) 		// borrar raw_token
-			free((*token_list)->raw_token);
-		
-		if ((*token_list)->expanded_token) 	// borrar expanded_token
-			free((*token_list)->expanded_token);
+		// Liberar strings
+		if (current_node->raw_token) 		// borrar raw_token
+			free(current_node->raw_token);		
+		if (current_node->expanded_token) 	// borrar expanded_token
+			free(current_node->expanded_token);
+		if (current_node->noquotes_token) 	
+			free(current_node->noquotes_token);
 
-		if ((*token_list)->noquotes_token) 	
-			free((*token_list)->noquotes_token);
+		// Liberar lista nodos expand		
+		if (current_node->expand_list)
+			free_expand_stack((*token_list)->expand_list);
 
-		/* if ((*token_list)->joined_token) 	
-			free((*token_list)->joined_token); */
-		
-		free_expand_stack((*token_list)->expand_list); // Liberar lista de expansiones
-		
-		free(*token_list);
-		*token_list = NULL;
-		
-		*token_list = temp_ptr;   // reestablecer puntero 1º nodo
+		// Liberar nodo actual
+		free(current_node);		
+		current_node = next_node; 
 	}
+	*token_list = NULL;
 	ft_printf(FREE_TOKENS);
 }
 

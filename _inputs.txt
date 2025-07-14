@@ -7,6 +7,11 @@
 
  "ho<< $? la" "car$a<>|cola" "" ' ey'
 
+// WORDS TOKENS
+
+h"ola $HOME "caracola
+
+
 // EXPANSION VARIABLES 
 
 "$HOME" "$?" "\$literal" "${HOME}xxx"
@@ -20,6 +25,8 @@ casos especiales '$ ' o '$"' '$
 caso especial '$?'
 
 "$ff{HOME}ff" -> {HOME}ff
+
+
 
 
 ## ERROR SINTAXIS

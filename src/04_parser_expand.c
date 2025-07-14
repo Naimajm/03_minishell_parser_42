@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/10 12:58:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:02:41 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ void	activate_expand_operators(t_shell *shell)
 {
 	t_token	*current_token;
 
-	if (!shell->token_list)
+	if (!shell->words_list->tokens_list)
 		return ;
-	current_token = (t_token *) shell->token_list;
+	current_token = (t_token *) shell->words_list->tokens_list;
 
 	while (current_token)
 	{

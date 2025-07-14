@@ -6,105 +6,100 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/10 13:01:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 17:29:49 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_token *create_word_node(char  *input, int type_token);
-static t_token	*find_word_last_node(t_token *token_list);
-void print_tokens_list(t_token *token_list);
+static t_word_token *create_word_node(char  *input, char word_type);
+static t_word_token	*find_word_last_node(t_word_token *word_list);
+void print_words_list(t_word_token *word_list);
 
-void	add_word_node(t_token **token_list, char  *input, int token_type)
+void	add_word_node(t_word_token **word_list, char  *input, char word_type)
 {
-    t_token *new_node;
-    t_token *last_node;
+    t_word_token *new_node;
+    t_word_token *last_node;
 
     // validation inputs
-    if (!token_list || !input)
+    if (!word_list || !input)
         return ;   
 
     // inicializar nuevo nodo token
-    new_node = create_token_node(input, token_type);
+    new_node = create_word_node(input, word_type);
     if (!new_node)
         return ;
     //ft_printf("addback -> %s\n", new_node->token);
 
     // encontrar ultimo nodo y enlazar
-    last_node = find_last_token_node(*token_list);
+    last_node = find_word_last_node(*word_list);
     
     if (!last_node)     // caso lista vacio -> añadir en 1º nodo
-        *token_list = new_node;   
+        *word_list = new_node;   
     else            // lista no vacia      
         last_node->next = new_node;
 }
 
-static t_token *create_word_node(char  *input, int token_type)
+static t_word_token *create_word_node(char  *input, char word_type)
 {
-    t_token *new_node;
+    t_word_token *new_node;
 
     if (!input)
         return (NULL);
 
-    new_node = (t_token *) malloc(sizeof(t_token));
+    new_node = (t_word_token *) malloc(sizeof(t_word_token));
     if (!new_node)
         print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
-    new_node->raw_token      = ft_strdup(input);
-    if (!new_node->raw_token)
+		
+    new_node->raw_word      = ft_strdup(input);
+    if (!new_node->raw_word)
         print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 
-    new_node->type              = token_type;
-    new_node->expanded_token    = NULL;
-    new_node->noquotes_token    = NULL;
+    new_node->word_type         = word_type;
+    new_node->processed_word    = NULL;
 
-    //new_node->joined_token      = NULL;
-    //new_node->require_join      = false;
-
-    new_node->expand_list   = NULL;
+    new_node->tokens_list	= NULL;
     new_node->next	        = NULL;
 
-    //ft_printf("new_node -> %s\n", new_node->token);
+    //ft_printf("new_word_node -> %s\n", new_node->token);
     return  (new_node);
 }
 
-static t_token	*find_word_last_node(t_token *token_list)
+static t_word_token	*find_word_last_node(t_word_token *word_list)
 {
     // validation 
-    if (!token_list)
+    if (!word_list)
         return (NULL);
 
-    while (token_list->next)
-		token_list = token_list-> next;
+    while (word_list->next)
+		word_list = word_list-> next;
     // retorna puntero a ultimo nodo
-	return (token_list);
+	return (word_list);
 }
 
-void print_words_list(t_token *token_list)
+void print_words_list(t_word_token *word_list)
 {
-    t_token *token;
-    int token_number;
+    t_word_token *word_token;
+    int node_index;
 
-    if (!token_list)
+    if (!word_list)
         return ;  
-    token = (t_token *)(token_list);
-    token_number = 1;
-    while (token)
+    word_token = (t_word_token *)(word_list);
+    node_index = 1;
+    while (word_token)
     {
-        printf("token [%i]-> %s\n", token_number, token->raw_token);
-        printf("type -> %i // ", token->type);
-        printf("current -> %p // ", token);
-        printf("next -> %p\n", token->next);
+        printf("word [%i]\n", node_index);
+        printf("word_type -> %c // ", word_token->word_type);
+        printf("current -> %p // ", word_token);
+        printf("next -> %p\n", word_token->next);
 
-        printf("raw_token -> %s\n", token->raw_token);      // VALIDACION SECUENCIA TOKENSVS BASH
+        printf("raw_word -> %s\n\n", word_token->raw_word);    
         
-        print_expand_nodes_list(token->expand_list); // IMPRESION LISTA NODOS EXPAND
-        
-        printf("expanded_token -> %s\n", token->expanded_token);  // TOKEN YA EXPANDIDO 
-        printf("noquotes_token -> %s\n\n", token->noquotes_token);  // TOKEN sin comillas
+        print_tokens_list(word_token->tokens_list); // IMPRESION LISTA NODOS EXPAND
 
-        token_number++;
-        token = token->next;
+		printf("processed_word -> %s\n", word_token->processed_word); 
+        node_index++;
+        word_token = word_token->next;
     }
     printf("\n");
 }

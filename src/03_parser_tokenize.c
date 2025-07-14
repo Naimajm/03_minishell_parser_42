@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/10 12:58:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:54:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	noquotes_tokenizer(t_shell *shell, int index_first_char);
 int	quotes_tokenizer(t_shell *shell, int index_first_char);
-int	operator_tokenizer(t_shell *shell, int index_first_char);
+int	operator_extractor(t_shell *shell, int index_first_char);
 
 void	tokenizer(t_shell *shell)
 {
@@ -31,7 +31,7 @@ void	tokenizer(t_shell *shell)
 		if (is_quote(shell->input[index])) // '\'' -> LITERAL // '\"' -> EXPANSION VARIABLE
 			token_len = quotes_tokenizer(shell, index);
 		else if (is_operator(shell->input[index]))
-			token_len = operator_tokenizer(shell, index);		
+			token_len = operator_extractor(shell, index);		
 		else // 1º letra palabra simple sin inicio comillas
 			token_len = noquotes_tokenizer(shell, index);	
 		if (token_len == FAILURE)	// error
@@ -61,7 +61,7 @@ int	noquotes_tokenizer(t_shell *shell, int index_first_char)
 	if (!token_input)
 		return (FAILURE);
 	len_input = ft_strlen(token_input);
-	add_token_node(&shell->token_list, token_input, NO_QUOTES);			
+	add_token_node(&shell->words_list->tokens_list, token_input, NO_QUOTES);			
 	free(token_input);
 	//ft_printf("token -> %s\n", token);
 	return (len_input);
@@ -91,12 +91,12 @@ int	quotes_tokenizer(t_shell *shell, int index_first_char)
 	else if (delimiter == '\'')
 		token_type = SINGLE_QUOTES;
 	len_input =  ft_strlen(token_input);
-	add_token_node(&shell->token_list, token_input, token_type);
+	add_token_node(&shell->words_list->tokens_list, token_input, token_type);
 	free(token_input);
 	return (len_input);
 }
 
-int	operator_tokenizer(t_shell *shell, int index_first_char)
+/* int	operator_tokenizer(t_shell *shell, int index_first_char)
 {
 	int		len_input;
 
@@ -104,24 +104,24 @@ int	operator_tokenizer(t_shell *shell, int index_first_char)
 	{
 		if (shell->input[index_first_char + 1] == '>')
 		{
-			add_token_node(&shell->token_list, ">>", APPEND);
+			add_token_node(&shell->words_list, ">>", APPEND);
 			return (len_input = 2);
 		}				
 		else
-			add_token_node(&shell->token_list, ">", OUTFILE);		
+			add_token_node(&shell->words_list, ">", OUTFILE);		
 	}		
 	else if (shell->input[index_first_char] == '<') // operadores especiales -> INFILE o HERE_DOC
 	{
 		if (shell->input[index_first_char + 1] == '<')
 		{
-			add_token_node(&shell->token_list, "<<", HERE_DOC);
+			add_token_node(&shell->words_list, "<<", HERE_DOC);
 			return (len_input = 2);
 		}			
 		else
-			add_token_node(&shell->token_list, "<", INFILE);							
+			add_token_node(&shell->words_list, "<", INFILE);							
 	}		
 	else if (shell->input[index_first_char] == '|') // operadores especiales -> PIPE
-		add_token_node(&shell->token_list, "|", PIPE);	
+		add_token_node(&shell->words_list, "|", PIPE);	
 	return (len_input = 1);
-}
+} */
 

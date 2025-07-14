@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/10 12:52:45 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 17:33:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,20 +58,24 @@ void	start_minishell(char *prompt, char **environment_var)
 
 void	input_parser(t_shell *shell)
 {
-	ft_printf("Tokenizer...				OK\n");
+	printf("Word Tokenizer...				OK\n\n");
+	lexical_analyzer(shell);
+	//test_lexical_analyzer(shell);
+
+	printf("Tokenizer...					OK\n\n");
 	tokenizer(shell);
 
 	// check error sintaxis tokens
 
-	ft_printf("Tokens -> Expand variables $...			OK\n");
+	printf("Tokens -> Expand variables $...			OK\n\n");
 	activate_expand_operators(shell);
 
-	ft_printf("Tokens -> dequotize and join $...	OK\n\n");
-	dequotize(shell->token_list);	
+	printf("Tokens -> dequotize and join $...		OK\n\n");
+	dequotize(shell->words_list->tokens_list);	
 
 
 	// verificacion	
-	print_tokens_list(shell->token_list);	
+	print_words_list(shell->words_list);	
 }
 
 char	*input_reader(char *prompt)

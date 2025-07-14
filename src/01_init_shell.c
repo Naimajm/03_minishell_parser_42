@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/05/22 16:52:14 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 12:50:59 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_shell *initialize_shell(void)
 		
 	shell->input 		= NULL;
 	shell->environment	= NULL;
-	shell->token_list 	= NULL;
+	shell->words_list 	= NULL;
 
 	shell->exit_status	= 0;
 	shell->last_exit_status = 0;

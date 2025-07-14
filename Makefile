@@ -27,7 +27,8 @@ SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_minishell.c \
 				04.1_parser_expand_list.c 04.2_parser_expand_extract.c \
 				04.3_parser_expand_utils.c 04.4_parser_dequotize.c \
 				08_utils.c 09_utils_2.c 09_free_functions.c \
-				15_utils_process.c)
+				15_utils_process.c \
+				16_testing.c)
 
 OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)
 
