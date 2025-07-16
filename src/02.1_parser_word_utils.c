@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 22:41:05 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 23:25:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,30 +74,30 @@ static t_word_token	*find_word_last_node(t_word_token *word_list)
 
 void print_words_list(t_word_token *word_list)
 {
-    t_word_token *word_token;
+    t_word_token *word;
     int node_index;
 
     if (!word_list)
         return ;  
-    word_token = (t_word_token *)(word_list);
+    word = (t_word_token *)(word_list);
     node_index = 1;
-    while (word_token)
+    while (word)
     {
 		printf("┌───────────┐\n");
         printf("| word [%i]  |\n", node_index);		
 		printf("└───────────┘\n");
-        printf("	word_type -> %c // ", word_token->word_type);
-        printf("	current -> %p // ", word_token);
-        printf("	next -> %p\n", word_token->next);
+        printf("	word_type -> %c // ", word->word_type);
+        printf("current -> %p // ", word);
+        printf("next -> %p\n", word->next);
 
-        printf("	raw_word -> %s\n\n", word_token->raw_word);    
+        printf("	raw_word -> %s\n\n", word->raw_word);    
         
-        print_tokens_list(word_token->tokens_list); // IMPRESION LISTA NODOS EXPAND
+        print_tokens_list(word->tokens_list); // IMPRESION LISTA NODOS EXPAND
 
-		printf("└──> processed_word -> %s\n", word_token->processed_word); 
-		printf("─────────────────────────────\n\n");
+		printf("	└──> processed_word -> %s\n", word->processed_word); 
+		printf("	─────────────────────────────\n\n");
         node_index++;
-        word_token = word_token->next;
+        word = word->next;
     }
     printf("\n");
 }

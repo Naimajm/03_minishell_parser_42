@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 21:42:39 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/15 00:20:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,19 +141,19 @@ void	add_word_node(t_word_token **word_list, char  *input, char word_type);
 void 	print_words_list(t_word_token *word_list);
 
 // 03_parser_tokenize.c
-void	tokenizer(t_shell *shell);
-int		noquotes_tokenizer(t_shell *shell, int index_first_char);
-int		quotes_tokenizer(t_shell *shell, int index_first_char);
-int		operator_tokenizer(t_shell *shell, int index_first_char);
+void	tokenizer(t_word_token *words_list);
+int		noquotes_tokenizer(t_word_token *word, int index_first_char);
+int		quotes_tokenizer(t_word_token *word, int index_first_char);
+int		operator_tokenizer(t_word_token *word, int index_first_char);
 
 // 03.1_parser_tokenize_utils.c
 void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_tokens_list(t_token *token_list);
 	
 //  04_parser_expand.c
-void	activate_expand_operators(t_shell *shell);
+void	activate_expand_operators(t_word_token *words_list, char **environment, int exit_status);
 void	generate_expand_list(t_token *token);
-void	resolve_expansion_values(t_token *token, t_shell *shell);
+void 	resolve_expansion_values(t_token *token, char **environment, int exit_status);
 void	insert_expansion_values(t_token *token);
 
 //  04.1_parser_expand_list.c
@@ -172,8 +172,7 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 void 	print_expand_nodes_list(t_expand *expand_list);
 
 //  04.4_parser_dequotize.c
-void	join_tokens(t_token *token_list);
-void	dequotize(t_token *token_list);
+void	dequotize(t_word_token *words_list);
 void	remove_quotes(t_token *token);
 
 // 08_utils.c

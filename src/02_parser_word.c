@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 17:23:46 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/14 23:41:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ void	lexical_analyzer(t_shell *shell)
 	{
 		while (is_space(shell->input[index])) // ignorar espacios iniciales 
 			index++;
+
+		// Verificar si llegamos al final después de saltar espacios
+        if (!shell->input[index])
+            break;
 
 		// CLASIFICACION WORD // OPERATOR
 		if (is_operator(shell->input[index]))

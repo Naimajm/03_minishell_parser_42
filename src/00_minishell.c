@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 17:33:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/15 00:43:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,13 @@ void	start_minishell(char *prompt, char **environment_var)
 {
 	char	*input;
 	t_shell	*shell;	
-
-	// validacion inputs
-	if (!prompt || !environment_var)
+	
+	if (!prompt || !environment_var)						// validacion inputs
 		return ;
 	input = NULL;
-	// inicializar shell
-	shell = initialize_shell();
-	// cargar variables entorno
-	load_environment_variables(shell, environment_var);	
+	
+	shell = initialize_shell();								// inicializar shell	
+	load_environment_variables(shell, environment_var);		// cargar variables entorno
 	
 	// loop ppal
 	while (1)
@@ -63,15 +61,15 @@ void	input_parser(t_shell *shell)
 	//test_lexical_analyzer(shell);
 
 	printf("Tokenizer...					OK\n\n");
-	tokenizer(shell);
+	tokenizer(shell->words_list);
 
 	// check error sintaxis tokens
 
 	printf("Tokens -> Expand variables $...			OK\n\n");
-	activate_expand_operators(shell);
+	activate_expand_operators(shell->words_list, shell->environment, shell->exit_status);
 
 	printf("Tokens -> dequotize and join $...		OK\n\n");
-	dequotize(shell->words_list->tokens_list);	
+	dequotize(shell->words_list);	
 
 
 	// verificacion	
@@ -85,8 +83,8 @@ char	*input_reader(char *prompt)
 	input = readline(prompt);
 	if (!input)
 		print_message_and_exit(ERROR_INPUT_READER, STDERR_FILENO, FAILURE);
-	// añadir a historial si input no vacio	
-	if (input[0] != '\0') 
+	
+	if (input[0] != '\0')  // añadir a historial si input no vacio	
 		add_history(input);
 	return (input);
 }

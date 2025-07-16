@@ -6,40 +6,44 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 13:02:41 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/15 00:17:15 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 void	generate_expand_list(t_token *token); 
-void	resolve_expansion_values(t_token *token, t_shell *shell);
+void 	resolve_expansion_values(t_token *token, char **environment, int exit_status);
 void	insert_expansion_values(t_token *token);
 int		insert_expand_node_value(t_token *token);
 
-void	activate_expand_operators(t_shell *shell)
+void	activate_expand_operators(t_word_token *words_list, char **environment, int exit_status)
 {
-	t_token	*current_token;
+	t_word_token	*current_word;
+	t_token			*current_token;
 
-	if (!shell->words_list->tokens_list)
+	if (!words_list)
 		return ;
-	current_token = (t_token *) shell->words_list->tokens_list;
+	current_word = (t_word_token *) words_list;
 
-	while (current_token)
+	while (current_word)
 	{
-		//printf("(activate_expand_operators) token->raw_token -> %s\n", current_token->raw_token);	
+		current_token = (t_token *) current_word->tokens_list;
+		while (current_token)
+		{
+			//printf("(activate_expand_operators) token->raw_token -> %s\n", current_token->raw_token);	
 
-		generate_expand_list(current_token); // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
+			generate_expand_list(current_token); // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
+			resolve_expansion_values(current_token, environment, exit_status); // resolver valores	
+			insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
 
-		resolve_expansion_values(current_token, shell); // resolver valores		
-
-		insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
-
-        //print_expand_list(current_token->expand_list);		
-		current_token = current_token->next;
+			//print_expand_list(current_token->expand_list);		
+			current_token = current_token->next;
+		}	
+		current_word = current_word->next;
 	}	
-	//print_token_list(shell->token_list);	
-	//printf("final activate_expand_operators\n");
+	//printf("(activate_expand_operators)\n");
+	//print_token_list(shell->token_list);		
 }
 
 void generate_expand_list(t_token *token)
@@ -71,25 +75,25 @@ void generate_expand_list(t_token *token)
 	}
 }
 
-void resolve_expansion_values(t_token *token, t_shell *shell)
+void resolve_expansion_values(t_token *token, char **environment, int exit_status)
 {
 	t_expand	*expand_node;
 	char		*value;
 
-	if (!token || !shell)
+	if (!token || !environment)
 		return ;
 	expand_node = (t_expand *) token->expand_list;
 	while (expand_node)
 	{
 		//value = NULL;
 		if (expand_node->type == LAST_EXIT_STATUS)
-			value = ft_itoa(shell->exit_status);		
+			value = ft_itoa(exit_status);		
 		else if (expand_node->type == CURLY_BRACES)
-			value = get_environment_var(shell->environment, expand_node->key);			
+			value = get_environment_var(environment, expand_node->key);			
 		else if (expand_node->type == LITERAL)
 			value = ft_strdup(expand_node->key);
 		else
-			value = get_environment_var(shell->environment, expand_node->key);
+			value = get_environment_var(environment, expand_node->key);
 		expand_node->value = value;
 		expand_node = expand_node->next;
 	}
