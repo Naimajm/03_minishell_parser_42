@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02.1_parser_word_utils.c                           :+:      :+:    :+:   */
+/*   02.1_parser_lexical_utils.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 23:25:03 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:33:27 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,11 @@ void print_words_list(t_word_token *word_list)
         printf("current -> %p // ", word);
         printf("next -> %p\n", word->next);
 
-        printf("	raw_word -> %s\n\n", word->raw_word);    
+        printf("	raw_word                    -> %s\n", word->raw_word);    
         
         print_tokens_list(word->tokens_list); // IMPRESION LISTA NODOS EXPAND
 
-		printf("	└──> processed_word -> %s\n", word->processed_word); 
+		printf("	└──> processed_word         -> %s\n", word->processed_word); 
 		printf("	─────────────────────────────\n\n");
         node_index++;
         word = word->next;

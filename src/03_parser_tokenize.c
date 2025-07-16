@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 23:54:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:00:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ int	noquotes_tokenizer(t_word_token *word, int index_first_char)
 	
 	while (!is_space(raw_word[index]) // longitud de caracteres de la palabra -> limites > < | " " '"' /0
 		&& !is_operator(raw_word[index]) 
-		&& raw_word[index] !=  '\"' 
+		//&& raw_word[index] !=  '\"' 
+		&& !is_quote(raw_word[index]) 
 		&& raw_word[index])
 		index++;	
 		
@@ -87,26 +88,38 @@ int	quotes_tokenizer(t_word_token *word, int index_first_char)
 	char	*raw_word;
 	char	*token_input;
 	char	delimiter;	
-	int		current_index;	
+	int		index;	
 	int		token_type;
 	int		len_input;
 
 	raw_word 		= (char *) word->raw_word;
-	delimiter		= raw_word[index_first_char];
-	current_index 	= index_first_char + 1;  // quitar comilla
+	delimiter		= raw_word[index_first_char];	// Comilla de apertura
+	index 			= index_first_char + 1;  		// Empezar después de la comilla
 	token_type 		= 0;
-	len_input 		= 0;	
-	while (raw_word[current_index] && raw_word[current_index] != delimiter)
-		current_index++;
-	if (raw_word[current_index] != delimiter) // validacion falta de comilla de cierre
+	len_input 		= 0;
+
+	// Buscar comilla de cierre
+	while (raw_word[index] && raw_word[index] != delimiter)
+		index++;
+
+	if (raw_word[index] == delimiter)
+		index++;
+	else					// validacion falta de comilla de cierre
 		print_message_and_exit(ERROR_QUOTE_SYNTAX, STDERR_FILENO, FAILURE);
-	token_input = ft_substr(raw_word, index_first_char, (current_index - index_first_char + 1)); // copia expresion con comillas incluidas
+
+
+	token_input = ft_substr(raw_word, index_first_char, (index - index_first_char)); // copia expresion con comillas incluidas
 	if (!token_input)
 		return (FAILURE);	
+
+	// Determinar tipo de token
 	if (delimiter == '\"')
 		token_type = DOUBLE_QUOTES;
 	else if (delimiter == '\'')
 		token_type = SINGLE_QUOTES;
+	else
+		token_type = NO_QUOTES;
+
 	len_input =  ft_strlen(token_input);
 	add_token_node(&word->tokens_list, token_input, token_type);
 	free(token_input);

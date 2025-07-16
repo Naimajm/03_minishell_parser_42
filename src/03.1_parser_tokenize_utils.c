@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 23:49:35 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:21:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,12 @@ void print_tokens_list(t_token *token_list)
         printf("		type -> %i // ", token->type);
         printf("current -> %p // next -> %p\n", token, token->next);
 
-        printf("		raw_token -> %s\n", token->raw_token);         
+        printf("		raw_token           -> %s\n", token->raw_token);         
         
         print_expand_nodes_list(token->expand_list);                            // IMPRESION LISTA NODOS EXPAND 
 		
-		printf("		expanded_token -> %s\n\n", token->expanded_token);        // TOKEN YA EXPANDIDO         
-        printf("		└──> noquotes_token -> %s\n\n", token->noquotes_token); // TOKEN sin comillas
+		printf("		expanded_token      -> %s\n", token->expanded_token);   // TOKEN YA EXPANDIDO         
+        printf("		└──> noquotes_token -> %s\n", token->noquotes_token); // TOKEN sin comillas
 
         node_index++;
         token = token->next;

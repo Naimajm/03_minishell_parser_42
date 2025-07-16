@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/15 00:36:31 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:14:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // FUNCIONES PARA QUITAR COMILLAS + UNIR TOKENS
 void	remove_quotes(t_token *token);
 
-void	dequotize(t_word_token *words_list)
+void	dequotize_tokens(t_word_token *words_list)
 {
 	t_word_token	*current_word;
 

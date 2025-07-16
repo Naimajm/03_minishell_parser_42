@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/15 00:20:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:35:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,8 @@ typedef struct s_token
 	char		*raw_token;	
 	char		*expanded_token;	
 	char		*noquotes_token;
-
-	//char		*joined_token;
-	//bool		require_join;
 	
-	t_expand	*expand_list; // lista nodos expansion variables
+	t_expand	*expand_list; 			// lista nodos expansion variables
 	
 	struct		s_token	*next;	
 }				t_token;
@@ -103,7 +100,7 @@ typedef struct s_word_token
 	char		*raw_word;
 	char		*processed_word;
 
-	t_token		*tokens_list;  // lista tokens para expansion variables
+	t_token		*tokens_list;  			// lista tokens para expansion variables
 	struct		s_word_token *next;
 	
 }				t_word_token;
@@ -131,12 +128,12 @@ char	*input_reader(char *prompt);
 t_shell *initialize_shell(void);
 void	load_environment_variables(t_shell *shell, char **environment_var);
 
-// 02_parser_word.c
+// 02_parser_lexical.c
 void	lexical_analyzer(t_shell *shell);
 int		word_extractor(t_shell *shell, int index_first_char);
 int		operator_extractor(t_shell *shell, int index_first_char);
 
-// 02.1_parser_word_utils.c
+// 02.1_parser_lexical_utils.c
 void	add_word_node(t_word_token **word_list, char  *input, char word_type);
 void 	print_words_list(t_word_token *word_list);
 
@@ -172,8 +169,12 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 void 	print_expand_nodes_list(t_expand *expand_list);
 
 //  04.4_parser_dequotize.c
-void	dequotize(t_word_token *words_list);
+void	dequotize_tokens(t_word_token *words_list);
 void	remove_quotes(t_token *token);
+
+// 05_parser_process.c
+void	generate_processed_word(t_word_token **words_list);
+void	insert_tokens_node_values(t_word_token *word);
 
 // 08_utils.c
 void	print_message_and_exit(char *message, int fd, int exit_code);

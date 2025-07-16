@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02_parser_word.c                                   :+:      :+:    :+:   */
+/*   02_parser_lexical.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 23:41:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:33:23 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,8 @@ void	lexical_analyzer(t_shell *shell)
 	{
 		while (is_space(shell->input[index])) // ignorar espacios iniciales 
 			index++;
-
-		// Verificar si llegamos al final después de saltar espacios
-        if (!shell->input[index])
+		
+        if (!shell->input[index]) // Verificar si llegamos al final después de saltar espacios
             break;
 
 		// CLASIFICACION WORD // OPERATOR
@@ -49,41 +48,59 @@ void	lexical_analyzer(t_shell *shell)
 
 int	word_extractor(t_shell *shell, int index_first_char)
 {
-	char	*token_input;
-	int		index;
-	int		len_input;
-	char	quote;
+    char	*token_input;
+    int		index;
+    int		len_input;
+    char	current_quote;
+    bool	quote_state;  			// false = fuera, true = dentro
+	char	character;
 
-	if (!shell->input)
-		return (FAILURE);
-	index = index_first_char;
-	len_input = 0;	
+    if (!shell->input)
+        return (FAILURE);    
+    index = index_first_char;    
+    current_quote = 0;
+	quote_state = false;
+    
+    while (shell->input[index])
+    {
+        character = shell->input[index];
+        
+		// caso DENTRO DE COMILLAS -> ignorar espacios y operadores
+        if (is_quote(character))
+        {
+            if (quote_state == 0) // Entrando en comillas
+            {                
+                current_quote = character;
+                quote_state = true;
+                index++;
+            }
+            else if (character == current_quote) // Saliendo de comillas del mismo tipo
+            {                
+                quote_state = false;
+                current_quote = 0;
+                index++;
+            }
+            else // Comilla diferente dentro de comillas actuales                     
+                index++; // Se trata como carácter literal
+        }
 
-	// CASO TOKEN CON COMILLAS DENTRO DE PALABRA
-	while (!is_space(shell->input[index]) && !is_operator(shell->input[index]) 
-		&& shell->input[index]) // Buscar el final de la palabra considerando comillas
-	{
-		// Si encontramos una comilla, buscar su cierre
-		if (is_quote(shell->input[index]))
-		{
-			quote = shell->input[index];
-			index++;
-			while (shell->input[index] && shell->input[index] != quote) // Buscar comilla de cierre
-				index++;
-			// Saltar comilla de cierre si existe
-			if (shell->input[index] == quote)
-				index++;
-		}
-		else
-			index++;
-	}
-	token_input = ft_substr(shell->input, index_first_char, (index - index_first_char)); // copiar sub substr
-	if (!token_input)
-		return (FAILURE);
-	len_input = ft_strlen(token_input);
-	add_word_node(&shell->words_list, token_input, WORD);			
-	free(token_input);	
-	return (len_input);
+		// caso FUERA DE COMILLAS -> espacios y operadores terminan la palabra
+        else if (quote_state == false && (is_space(character) || is_operator(character)))            
+            break;	
+		// Carácter normal o carácter dentro de comillas   	
+        else             
+            index++;      
+    }
+    
+    token_input = ft_substr(shell->input, index_first_char, (index - index_first_char));
+    if (!token_input)
+        return (FAILURE);
+    
+    len_input = ft_strlen(token_input);
+    add_word_node(&shell->words_list, token_input, WORD);
+    free(token_input);
+    
+    return (len_input);
 }
 
 int	operator_extractor(t_shell *shell, int index_first_char)

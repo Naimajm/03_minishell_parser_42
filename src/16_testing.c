@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 14:06:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 23:18:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:09:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,12 @@ void test_lexical_analyzer(t_shell *shell)
         "cat << EOF",
         "ls -la < input.txt",
         "echo 'test'\"double\"'end'",
+        "\"cat ho\"la' a'$e\" tal'l   ,qu'e\" hac\"e\"s",
         NULL
     };
 
     // Estructuras esperadas creadas usando add_word_node()
-    t_word_token *expected_results[12];
+    t_word_token *expected_results[13];
     
     // Test 0: "echo hello"
     expected_results[0] = NULL;
@@ -115,6 +116,11 @@ void test_lexical_analyzer(t_shell *shell)
     add_word_node(&expected_results[11], "echo", WORD);
     add_word_node(&expected_results[11], "'test'\"double\"'end'", WORD);
 
+    // Test 12: "\"cat ho\"la' a'$e\" tal'l   ,qu'e\" hac\"e\"s"  // NUEVO CASO
+    expected_results[12] = NULL;
+    add_word_node(&expected_results[12], "\"cat ho\"la' a'$e\" tal'l   ,qu'e\"", WORD);
+    add_word_node(&expected_results[12], "hac\"e\"s", WORD);
+
     // Ejecución Tests
     while (test_cases[index])
     {
@@ -152,7 +158,7 @@ void test_lexical_analyzer(t_shell *shell)
     
     // Limpiar estructuras esperadas
     index = 0;
-    while (index < 12)
+    while (index < 13)
     {
         free_words_list(&expected_results[index]);
         index++;

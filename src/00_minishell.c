@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/15 00:43:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:16:29 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,10 @@ void	start_minishell(char *prompt, char **environment_var)
 
 void	input_parser(t_shell *shell)
 {
-	printf("Word Tokenizer...				OK\n\n");
-	lexical_analyzer(shell);
-	//test_lexical_analyzer(shell);
+	printf("Lexical_analyzer...				OK\n\n");
+	lexical_analyzer(shell);	
 
-	printf("Tokenizer...					OK\n\n");
+	printf("Word -> Tokenizer...				OK\n\n");
 	tokenizer(shell->words_list);
 
 	// check error sintaxis tokens
@@ -68,11 +67,14 @@ void	input_parser(t_shell *shell)
 	printf("Tokens -> Expand variables $...			OK\n\n");
 	activate_expand_operators(shell->words_list, shell->environment, shell->exit_status);
 
-	printf("Tokens -> dequotize and join $...		OK\n\n");
-	dequotize(shell->words_list);	
-
-
-	// verificacion	
+	printf("Tokens -> Dequotize tokens...			OK\n\n");
+	dequotize_tokens(shell->words_list);	
+ 
+	printf("Word -> Join Tokens to 'processed_word'...	OK\n\n");
+	generate_processed_word(&shell->words_list);	
+	
+	printf("Test ->...					OK\n\n");
+	//test_lexical_analyzer(shell);
 	print_words_list(shell->words_list);	
 }
 

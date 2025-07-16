@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/15 00:17:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 17:27:36 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,9 @@ void	activate_expand_operators(t_word_token *words_list, char **environment, int
 		while (current_token)
 		{
 			//printf("(activate_expand_operators) token->raw_token -> %s\n", current_token->raw_token);	
-
-			generate_expand_list(current_token); // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
-			resolve_expansion_values(current_token, environment, exit_status); // resolver valores	
-			insert_expansion_values(current_token); // INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
+			generate_expand_list(current_token); 								// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
+			resolve_expansion_values(current_token, environment, exit_status); 	// resolver valores	
+			insert_expansion_values(current_token); 							// INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
 
 			//print_expand_list(current_token->expand_list);		
 			current_token = current_token->next;
@@ -53,7 +52,11 @@ void generate_expand_list(t_token *token)
 
 	if (!token)
 		return ; 	
-	index 		= 0;		
+	index 		= 0;	
+	
+	if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones        
+        return;
+	
 	while (token->raw_token[index]) // CATEGORIZACION EXPAND NODOS
 	{
 		if (token->raw_token[index] == '$' && token->raw_token[index + 1])
@@ -105,14 +108,13 @@ void	insert_expansion_values(t_token *token)
     int			 last_position;
 
 	//printf("(insert_expansion_values) token->raw_token -> %s\n", token->raw_token);	
-    if (!token || !token->expand_list)   // NO HAY EXPANSION VARIABLE
+    if (!token || !token->expand_list || token->type == SINGLE_QUOTES)   // tokens literale o NO HAY EXPANSION VARIABLE
     {	
         token->expanded_token = ft_strdup(token->raw_token);
 		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
         return ;
-    }	    
-	// insertar valores expandidos de cada nodo
-	last_position = insert_expand_node_value(token);
+    }			
+	last_position = insert_expand_node_value(token); // insertar valores expandidos de cada nodo
 
     // Añadir el resto del token después de la última expansión
     if (token->raw_token[last_position])
