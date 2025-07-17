@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:33:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 23:32:11 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,7 @@ static t_word_token *create_word_node(char  *input, char word_type)
 }
 
 static t_word_token	*find_word_last_node(t_word_token *word_list)
-{
-    
+{    
     if (!word_list) 					// validation 
         return (NULL);
 

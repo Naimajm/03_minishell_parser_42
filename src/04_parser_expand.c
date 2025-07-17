@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 17:27:36 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:08:23 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	insert_expansion_values(t_token *token)
     int			 last_position;
 
 	//printf("(insert_expansion_values) token->raw_token -> %s\n", token->raw_token);	
-    if (!token || !token->expand_list || token->type == SINGLE_QUOTES)   // tokens literale o NO HAY EXPANSION VARIABLE
+    if (!token || !token->expand_list || token->type == SINGLE_QUOTES)   // tokens literales o NO HAY EXPANSION VARIABLE
     {	
         token->expanded_token = ft_strdup(token->raw_token);
 		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);

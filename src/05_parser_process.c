@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:13 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:21:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 00:04:15 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /// UNIR TODOS LOS 'NOQUOTES_TOKEN' de los nodos Token EN 'processed_word' word
 
-void	insert_noquotes_token_node_value(t_word_token *word);
+void	insert_token_node(t_word_token *word);
 
 // INSERTAR VALORE EN TOKEN -> FINAL TOKEN
 void	generate_processed_word(t_word_token **words_list)
@@ -28,14 +28,14 @@ void	generate_processed_word(t_word_token **words_list)
 	{
 		printf("(generate_processed_word) word->raw_word 	-> %s\n", current_word->raw_word);
 
-		insert_noquotes_token_node_value(current_word);
+		insert_token_node(current_word);
 
 		printf("(generate_processed_word) word->processed_word 	-> %s\n\n", current_word->processed_word);
 		current_word = current_word->next;
 	}	
 }
  
-void	insert_noquotes_token_node_value(t_word_token *word)
+void	insert_token_node(t_word_token *word)
 {
 	t_token	*current_token;
 	char	*result;

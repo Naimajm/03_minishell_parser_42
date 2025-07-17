@@ -12,6 +12,8 @@
 h"ola $HOME "caracola
 h"ola $HOME "caracola | valgrind --leak-check=full ./minishell
 
+aa > aa >> bb << bb < cc 
+
 
 // EXPANSION VARIABLES 
 

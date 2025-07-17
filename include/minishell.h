@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:35:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 00:18:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,34 @@
 # define PROMPT				"minishell$ "
 
 # define FREE_ALL_SHELL		"Free\n Total cleaning minishell... OK\n"
-# define FREE_WORDS_LIST	"Free\n words list... OK\n"
-# define FREE_TOKENS		"Free\n cleaning Token List... OK\n"
+# define FREE_COMMANDS_LIST	"Free\n Commands list... OK\n"
+# define FREE_WORDS_LIST	"Free\n Words list... OK\n"
+# define FREE_TOKENS		"Free\n Token List... OK\n"
 # define FREE_MATRIX		"Free\n cleaning matrix... OK\n"
 
-// categorizacion WORD_TOKEN
-# define WORD					'W'		// W -> palabra generica no expandido
-# define OPERATOR				'O'		// O -> operador (< << > >> |)
+// categorizacion TIPOS WORD_TOKEN
+# define WORD					'W'		// W -> palabra generica no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
+//# define REDIRECTION_OPERATOR	'O'		// O -> operador (< << > >> |)
+// categorizacion OPERADORES REDIRECCION -> word_token->subtype
+# define OUTFILE				'O'		// 1 -> operador > OUTFILE
+# define APPEND					'A'		// 2 -> operador >> APPEND
+# define INFILE					'I'		// 3 -> operador < INFILE
+# define HERE_DOC				'H'		// 4 -> operador << HERE_DOC
+# define PIPE					'P'		// 5 -> operador | PIPE
 
 // categorizacion TOKENS
 //# define WORD					1		// 1 -> generico no operador		
+
 # define NO_QUOTES				2		// 2 -> palabras sin comillas
 # define SINGLE_QUOTES			3		// 3 -> palabras con comillas simples -> literal
 # define DOUBLE_QUOTES			4		// 4 -> palabras con comillas dobles -> expansion variables
-# define OUTFILE				5		// 5 -> operador > OUTFILE
-# define APPEND					6		// 6 -> operador >> APPEND
+# define OPERATOR				5		// 5 -> operador
+
+/* # define OUTFILE				5		// 5 -> operador > OUTFILE
+# define APPEND_OPERATOR		6		// 6 -> operador >> APPEND
 # define INFILE					7		// 7 -> operador < INFILE
 # define HERE_DOC				8		// 8 -> operador <> HERE_DOC
-# define PIPE					9		// 9 -> operador | PIPE
+# define PIPE					9		// 9 -> operador | PIPE */
 
 // categorizacion VARIABLES EXPANDIDAS
 # define BASIC_EXPANSION		1		// 1 -> expansion basica
@@ -101,9 +111,28 @@ typedef struct s_word_token
 	char		*processed_word;
 
 	t_token		*tokens_list;  			// lista tokens para expansion variables
-	struct		s_word_token *next;
-	
+	struct		s_word_token *next;	
 }				t_word_token;
+
+// LISTA COMANDOS
+typedef	struct 	s_command
+{
+	char		**args;		// Array de argumentos
+	char		*infile;	// Archivo de entrada	
+	char		*outfile;	// Archivo de salida
+	
+	/* bool		append_mode;
+	bool		heredoc_mode;	 */
+	int			redirect_mode;  // Modo append (>>),  Modo heredoc (<<), Modo infile (<), Modo outfile (>), Pipe (|)
+	char		*delimiter;		// heredoc_delimiter??
+	
+	bool		is_btn;			// ?
+	int			exit_status;
+
+	t_word_token *words_list;	// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES
+
+	struct 		s_command	*next;
+}				t_command;
 
 // SHELL
 typedef struct s_shell
@@ -115,6 +144,7 @@ typedef struct s_shell
 	int				last_exit_status;
 
 	t_word_token	*words_list;
+	t_command		*command_list;
 }			t_shell;
 
 // FUNCTIONS -----------------------------------------------------
@@ -174,7 +204,12 @@ void	remove_quotes(t_token *token);
 
 // 05_parser_process.c
 void	generate_processed_word(t_word_token **words_list);
-void	insert_tokens_node_values(t_word_token *word);
+void	insert_token_node(t_word_token *word);
+
+
+// 06.1_parser_command_builder.c
+
+
 
 // 08_utils.c
 void	print_message_and_exit(char *message, int fd, int exit_code);
@@ -188,10 +223,12 @@ char	*ft_strjoin_free(char *str1, char *str2);
 
 // 09_free_functions.c
 void	cleanup_minishell(t_shell *shell);
+void	free_commands_list(t_command **commands_list);
 void	free_words_list(t_word_token **words_list);
 void	free_tokens_list(t_token **token_list);
-void	free_expand_stack(t_expand *expand_stack);
-void	free_matrix(char **matrix);
+void	free_expands_list(t_expand *expand_stack);
+
+void	free_matrix(char **matrix);  // TODO -> LLEVAR A NUEVO ARCHIVO
 
 // 15_utils_process.c 
 void	print_text_file(const char *filename);

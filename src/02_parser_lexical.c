@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:33:23 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:43:36 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,23 +111,23 @@ int	operator_extractor(t_shell *shell, int index_first_char)
 	{
 		if (shell->input[index_first_char + 1] == '>')
 		{
-			add_word_node(&shell->words_list, ">>", OPERATOR);
+			add_word_node(&shell->words_list, ">>", APPEND);
 			return (len_input = 2);
 		}				
 		else
-			add_word_node(&shell->words_list, ">", OPERATOR);		
+			add_word_node(&shell->words_list, ">", OUTFILE);		
 	}		
 	else if (shell->input[index_first_char] == '<') // operadores especiales -> INFILE o HERE_DOC
 	{
 		if (shell->input[index_first_char + 1] == '<')
 		{
-			add_word_node(&shell->words_list, "<<", OPERATOR);
+			add_word_node(&shell->words_list, "<<", HERE_DOC);
 			return (len_input = 2);
 		}			
 		else
-			add_word_node(&shell->words_list, "<", OPERATOR);							
+			add_word_node(&shell->words_list, "<", INFILE);							
 	}		
 	else if (shell->input[index_first_char] == '|') // operadores especiales -> PIPE
-		add_word_node(&shell->words_list, "|", OPERATOR);	
+		add_word_node(&shell->words_list, "|", PIPE);	
 	return (len_input = 1);
 }

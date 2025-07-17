@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:00:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 23:20:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,24 +137,59 @@ int	operator_tokenizer(t_word_token *word, int index_first_char)
 	{
 		if (raw_word[index_first_char + 1] == '>')
 		{
-			add_token_node(&word->tokens_list, ">>", APPEND);
+			add_token_node(&word->tokens_list, ">>", OPERATOR);
 			return (len_input = 2);
 		}				
 		else
-			add_token_node(&word->tokens_list, ">", OUTFILE);		
+			add_token_node(&word->tokens_list, ">", OPERATOR);		
 	}		
 	else if (raw_word[index_first_char] == '<') 	// operadores especiales -> INFILE o HERE_DOC
 	{
 		if (raw_word[index_first_char + 1] == '<')
 		{
-			add_token_node(&word->tokens_list, "<<", HERE_DOC);
+			add_token_node(&word->tokens_list, "<<", OPERATOR);
 			return (len_input = 2);
 		}			
 		else
-			add_token_node(&word->tokens_list, "<", INFILE);							
+			add_token_node(&word->tokens_list, "<", OPERATOR);							
 	}		
 	else if (raw_word[index_first_char] == '|') 	// operadores especiales -> PIPE
-		add_token_node(&word->tokens_list, "|", PIPE);	
+		add_token_node(&word->tokens_list, "|", OPERATOR);	
 	return (len_input = 1);
 }
+
+/* int	operator_tokenizer(t_word_token *word, int index_first_char)
+{
+	char	*raw_word;
+	int		len_input;
+	char	*operator;
+
+	raw_word = (char *) word->raw_word;
+
+
+	if (raw_word[index_first_char] == '>') 			// operadores especiales -> OUTFILE o APPEND
+	{
+		if (raw_word[index_first_char + 1] == '>')
+		{
+			operator = ">";
+			add_token_node(&word->tokens_list, ">>", OPERATOR);
+			return (len_input = 2);
+		}				
+		else
+			add_token_node(&word->tokens_list, ">", OPERATOR);		
+	}		
+	else if (raw_word[index_first_char] == '<') 	// operadores especiales -> INFILE o HERE_DOC
+	{
+		if (raw_word[index_first_char + 1] == '<')
+		{
+			add_token_node(&word->tokens_list, "<<", OPERATOR);
+			return (len_input = 2);
+		}			
+		else
+			add_token_node(&word->tokens_list, "<", OPERATOR);							
+	}		
+	else if (raw_word[index_first_char] == '|') 	// operadores especiales -> PIPE
+		add_token_node(&word->tokens_list, "|", OPERATOR);	
+	return (len_input = 1);
+} */
 

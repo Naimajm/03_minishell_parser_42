@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 14:06:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:09:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:53:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void test_lexical_analyzer(t_shell *shell)
     expected_results[1] = NULL;
     add_word_node(&expected_results[1], "echo", WORD);
     add_word_node(&expected_results[1], "hello", WORD);
-    add_word_node(&expected_results[1], ">", OPERATOR);
+    add_word_node(&expected_results[1], ">", OUTFILE);
     add_word_node(&expected_results[1], "file.txt", WORD);
     
     // Test 2: "echo 'hello world'"
@@ -70,7 +70,7 @@ void test_lexical_analyzer(t_shell *shell)
     expected_results[4] = NULL;
     add_word_node(&expected_results[4], "cat", WORD);
     add_word_node(&expected_results[4], "file.txt", WORD);
-    add_word_node(&expected_results[4], "|", OPERATOR);
+    add_word_node(&expected_results[4], "|", PIPE);
     add_word_node(&expected_results[4], "grep", WORD);
     add_word_node(&expected_results[4], "pattern", WORD);
     
@@ -83,14 +83,14 @@ void test_lexical_analyzer(t_shell *shell)
     // Test 6: "echo>file.txt"
     expected_results[6] = NULL;
     add_word_node(&expected_results[6], "echo", WORD);
-    add_word_node(&expected_results[6], ">", OPERATOR);
+    add_word_node(&expected_results[6], ">", OUTFILE);
     add_word_node(&expected_results[6], "file.txt", WORD);
     
     // Test 7: "echo test >> output.txt"
     expected_results[7] = NULL;
     add_word_node(&expected_results[7], "echo", WORD);
     add_word_node(&expected_results[7], "test", WORD);
-    add_word_node(&expected_results[7], ">>", OPERATOR);
+    add_word_node(&expected_results[7], ">>", APPEND);
     add_word_node(&expected_results[7], "output.txt", WORD);
     
     // Test 8: "echo \"\""
@@ -101,14 +101,14 @@ void test_lexical_analyzer(t_shell *shell)
     // Test 9: "cat << EOF"
     expected_results[9] = NULL;
     add_word_node(&expected_results[9], "cat", WORD);
-    add_word_node(&expected_results[9], "<<", OPERATOR);
+    add_word_node(&expected_results[9], "<<", HERE_DOC);
     add_word_node(&expected_results[9], "EOF", WORD);
     
     // Test 10: "ls -la < input.txt"
     expected_results[10] = NULL;
     add_word_node(&expected_results[10], "ls", WORD);
     add_word_node(&expected_results[10], "-la", WORD);
-    add_word_node(&expected_results[10], "<", OPERATOR);
+    add_word_node(&expected_results[10], "<", INFILE);
     add_word_node(&expected_results[10], "input.txt", WORD);
     
     // Test 11: "echo 'test'\"double\"'end'"
