@@ -6,30 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 00:38:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 10:31:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// 	ANALISIS SINTACTICO PARA GENERACION LISTA DE COMANDOS
-
-void	syntax_analyzer(t_word_token *words_list, t_command **commands_list)
-{
-	// IDENTIFICAR OPERADORES
-	
-
-	// CREAR ESTRUCTURA COMANDOS
-	// create_command_structure()
-	
-	// VALIDACION SINTACTICA
-	//validate_syntax()
-	
-}
 
 
 // IGUAL FUNCIONALIDAD QUE ft_process_token ¡¡
-void create_command_structure(t_word_token *words_list, t_command **commands)
+/* void create_command_structure__cambiar(t_word_token *words_list, t_command **commands)
 {
     t_command 		*current_cmd = NULL;
     t_word_token 	*current_word = words_list;
@@ -47,14 +33,5 @@ void create_command_structure(t_word_token *words_list, t_command **commands)
         }
         current_word = current_word->next;
     }
-}
+} */
 
-int validate_syntax(t_command *commands)
-{
-    // Verificar:
-    // - No pipes al inicio/final
-    // - No operadores consecutivos
-    // - Argumentos después de redirects
-    // - Comillas balanceadas (ya hecho)
-    return (SUCCESS);
-}

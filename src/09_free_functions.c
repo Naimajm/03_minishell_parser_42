@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 00:20:07 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 10:44:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,6 @@ void	cleanup_minishell(t_shell *shell)
 	
 	if (shell->environment)						// free copia variables entorno
 		free_matrix(shell->environment);
-	
-	if (shell->words_list) 						// free lista words
-		free_words_list(&shell->words_list);
 
 	if (shell->command_list) 					// free lista comandos
 		free_commands_list(&shell->command_list);
@@ -53,6 +50,8 @@ void	free_commands_list(t_command **commands_list)
 		free_matrix(current_node->args);
 
 		// Liberar strings
+		if (current_node->chunk_input)
+			free(current_node->chunk_input);
 		if (current_node->infile)
 			free(current_node->infile);
 		if (current_node->outfile)
@@ -62,7 +61,7 @@ void	free_commands_list(t_command **commands_list)
 		
 		// Liberar lista words
 		if (current_node->words_list)
-			free_words_list(current_node->words_list);
+			free_words_list(&current_node->words_list);
 		
 		free(current_node); 	// Liberar nodo actual
 		current_node = next_node;

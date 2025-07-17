@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 10:13:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/14 13:03:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:05:10 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ void	print_config_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	// imprimir copia variables entorno
-	//print_strings_array(shell->environment);
+	
+	//print_strings_array(shell->environment); // imprimir copia variables entorno
 
 	ft_printf("input -> %s\n", shell->input);	
-	print_tokens_list(shell->words_list->tokens_list);
+	print_commands_list(shell->command_list);	
 }
 
 void	print_strings_array(char **array)

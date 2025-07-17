@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 23:20:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 10:57:36 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	tokenizer(t_word_token *words_list)
 	char	*raw_word;
 	int		index;
 	int		token_len;
-
 
 	if (!words_list)
 		return ; 	

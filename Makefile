@@ -21,12 +21,12 @@ EXT_LIBRARYS 	:= $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCH
 
 SRC_DIR			:= ./src
 SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_minishell.c \
-				01_init_shell.c \
-				02_parser_lexical.c 02.1_parser_lexical_utils.c \
-				03_parser_tokenize.c 03.1_parser_tokenize_utils.c \
+				01_init_shell.c 01.1_parser_syntax.c \
+				02_parser_lexical.c 02.1_parser_lexical_builder.c \
+				03_parser_tokenize.c 03.1_parser_tokenize_builder.c \
 				04_parser_expand.c \
-				04.1_parser_expand_list.c 04.2_parser_expand_extract.c \
-				04.3_parser_expand_utils.c 04.4_parser_dequotize.c \
+				04.1_parser_expand_list.c 04.2_parser_expand_extract.c 04.3_parser_expand_builder.c \
+				04.4_parser_dequotize.c \
 				05_parser_process.c \
 				06_parser_syntax.c 06.1_parser_command_builder.c \
 				08_utils.c 09_utils_2.c 09_free_functions.c \

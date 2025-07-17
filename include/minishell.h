@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 00:18:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:10:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,13 +117,15 @@ typedef struct s_word_token
 // LISTA COMANDOS
 typedef	struct 	s_command
 {
+	char		*chunk_input;		// NUEVO -> trozo input perteneciente a este proceso
+
 	char		**args;		// Array de argumentos
 	char		*infile;	// Archivo de entrada	
 	char		*outfile;	// Archivo de salida
 	
 	/* bool		append_mode;
 	bool		heredoc_mode;	 */
-	int			redirect_mode;  // Modo append (>>),  Modo heredoc (<<), Modo infile (<), Modo outfile (>), Pipe (|)
+	int			redirect_mode;  // NUEVO !! Modo append (>>),  Modo heredoc (<<), Modo infile (<), Modo outfile (>), Pipe (|)
 	char		*delimiter;		// heredoc_delimiter??
 	
 	bool		is_btn;			// ?
@@ -143,7 +145,6 @@ typedef struct s_shell
 	int				exit_status;
 	int				last_exit_status;
 
-	t_word_token	*words_list;
 	t_command		*command_list;
 }			t_shell;
 
@@ -151,6 +152,7 @@ typedef struct s_shell
 
 // 00_minishell.c
 void	start_minishell(char *prompt, char **environment_var);
+void	process_comands(t_shell *shell);
 void	input_parser(t_shell *shell);
 char	*input_reader(char *prompt);
 
@@ -158,12 +160,17 @@ char	*input_reader(char *prompt);
 t_shell *initialize_shell(void);
 void	load_environment_variables(t_shell *shell, char **environment_var);
 
-// 02_parser_lexical.c
-void	lexical_analyzer(t_shell *shell);
-int		word_extractor(t_shell *shell, int index_first_char);
-int		operator_extractor(t_shell *shell, int index_first_char);
+// 01.1_parser_syntax.c
+void	syntax_analyzer(t_shell *shell);
+void	create_commands_structure(t_shell *shell);
+int 	is_pipe(char character);
 
-// 02.1_parser_lexical_utils.c
+// 02_parser_lexical.c
+void	lexical_analyzer(t_command *process_list);
+int		word_extractor(t_command *process_list, int index_first_char);
+int	operator_extractor(t_command *process_list, int index_first_char);
+
+// 02.1_parser_lexical_builder.c
 void	add_word_node(t_word_token **word_list, char  *input, char word_type);
 void 	print_words_list(t_word_token *word_list);
 
@@ -173,7 +180,7 @@ int		noquotes_tokenizer(t_word_token *word, int index_first_char);
 int		quotes_tokenizer(t_word_token *word, int index_first_char);
 int		operator_tokenizer(t_word_token *word, int index_first_char);
 
-// 03.1_parser_tokenize_utils.c
+// 03.1_parser_tokenize_builder.c
 void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_tokens_list(t_token *token_list);
 	
@@ -194,7 +201,7 @@ char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 char	*extract_substitution_segment(char *input, int index_first_char);
 
-//	04.3_parser_expand_utils.c
+//	04.3_parser_expand_builder.c
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);
 void 	print_expand_nodes_list(t_expand *expand_list);
 
@@ -206,19 +213,21 @@ void	remove_quotes(t_token *token);
 void	generate_processed_word(t_word_token **words_list);
 void	insert_token_node(t_word_token *word);
 
+// 06_parser_syntax.c
 
 // 06.1_parser_command_builder.c
-
-
+void	add_command_node(t_command **commands_list, char *input);
+void	print_commands_list(t_command *commands_list);
 
 // 08_utils.c
-void	print_message_and_exit(char *message, int fd, int exit_code);
+//int		skip_spaces(char *input, int index);
 int 	find_index_char(const char *str, char character);
 int		is_quote(char character);
 int		is_operator(char character);
 int		is_space(char character);
 
 // 09_utils_2.c
+void	print_message_and_exit(char *message, int fd, int exit_code);
 char	*ft_strjoin_free(char *str1, char *str2);
 
 // 09_free_functions.c

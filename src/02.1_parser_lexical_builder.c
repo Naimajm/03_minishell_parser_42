@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02.1_parser_lexical_utils.c                        :+:      :+:    :+:   */
+/*   02.1_parser_lexical_builder.c                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 23:32:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:33:37 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,19 +82,20 @@ void print_words_list(t_word_token *word_list)
     node_index = 1;
     while (word)
     {
-		printf("┌───────────┐\n");
-        printf("| word [%i]  |\n", node_index);		
-		printf("└───────────┘\n");
-        printf("	word_type -> %c // ", word->word_type);
+        printf("\t └───┐\n");
+		printf("\t ┌───────────┐\n");
+        printf("\t | word [%i]  |\n", node_index);		
+		printf("\t └───────────┘\n");
+        printf("\t\t word_type -> %c // ", word->word_type);
         printf("current -> %p // ", word);
         printf("next -> %p\n", word->next);
 
-        printf("	raw_word                    -> %s\n", word->raw_word);    
+        printf("\t\t raw_word \t\t-> %s\n", word->raw_word);    
         
         print_tokens_list(word->tokens_list); // IMPRESION LISTA NODOS EXPAND
 
-		printf("	└──> processed_word         -> %s\n", word->processed_word); 
-		printf("	─────────────────────────────\n\n");
+		printf("\t\t └──> processed_word \t\t-> %s\n", word->processed_word); 
+		printf("\t\t ─────────────────── \n\n");
         node_index++;
         word = word->next;
     }

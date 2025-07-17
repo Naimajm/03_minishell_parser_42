@@ -6,12 +6,13 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:16:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:16:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void	process_comands(t_shell *shell);
 void	input_parser(t_shell *shell);
 char	*input_reader(char *prompt);
 
@@ -56,26 +57,44 @@ void	start_minishell(char *prompt, char **environment_var)
 
 void	input_parser(t_shell *shell)
 {
+	printf("Syntax_analyzer...				OK\n\n");
+	syntax_analyzer(shell);
+
+	// check error sintaxis tokens? o commands?
+
 	printf("Lexical_analyzer...				OK\n\n");
-	lexical_analyzer(shell);	
+	lexical_analyzer(shell->command_list);	
 
-	printf("Word -> Tokenizer...				OK\n\n");
-	tokenizer(shell->words_list);
-
-	// check error sintaxis tokens
-
-	printf("Tokens -> Expand variables $...			OK\n\n");
-	activate_expand_operators(shell->words_list, shell->environment, shell->exit_status);
-
-	printf("Tokens -> Dequotize tokens...			OK\n\n");
-	dequotize_tokens(shell->words_list);	
- 
-	printf("Word -> Join Tokens to 'processed_word'...	OK\n\n");
-	generate_processed_word(&shell->words_list);	
+	process_comands(shell);
 	
-	printf("Test ->...					OK\n\n");
+	//printf("Test ->...					OK\n\n");
 	//test_lexical_analyzer(shell);
-	print_words_list(shell->words_list);	
+	
+	print_commands_list(shell->command_list);
+	//print_words_list(shell->words_list);	
+}
+
+void	process_comands(t_shell *shell)
+{
+	t_command	*current_command;
+
+	current_command = (t_command *) shell->command_list;
+	while (current_command)
+	{
+		//printf("Word -> Tokenizer...				OK\n\n");
+		tokenizer(current_command->words_list);
+
+		//printf("Tokens -> Expand variables $...			OK\n\n");
+		activate_expand_operators(current_command->words_list, shell->environment, shell->exit_status);
+
+		//printf("Tokens -> Dequotize tokens...			OK\n\n");
+		dequotize_tokens(current_command->words_list);	
+
+		//printf("Word -> Join Tokens to 'processed_word'...	OK\n\n");
+		generate_processed_word(&current_command->words_list);	
+		
+		current_command = current_command->next;
+	}	
 }
 
 char	*input_reader(char *prompt)

@@ -6,65 +6,73 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 22:43:36 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:41:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	word_extractor(t_shell *shell, int index_first_char);
-int	operator_extractor(t_shell *shell, int index_first_char);
+int	word_extractor(t_command *process_list, int index_first_char);
+int	operator_extractor(t_command *process_list, int index_first_char);
 
-void	lexical_analyzer(t_shell *shell)
+void	lexical_analyzer(t_command *commands_list)
 {
-	int		index;
-	int		word_len;
+	t_command	*current_command;
+	char		*chunck_input;
+	int			index;
+	int			chunk_len;
 
-	if (!shell || !shell->input)
-		return ; 	
-	index = 0;	
-	while (shell->input[index])
-	{
-		while (is_space(shell->input[index])) // ignorar espacios iniciales 
-			index++;
+	if (!commands_list || !commands_list->chunk_input)
+		return ; 
 		
-        if (!shell->input[index]) // Verificar si llegamos al final después de saltar espacios
-            break;
+	current_command = (t_command *) commands_list;
 
-		// CLASIFICACION WORD // OPERATOR
-		if (is_operator(shell->input[index]))
-			word_len = operator_extractor(shell, index);
-		else
-			word_len = word_extractor(shell, index);
-		if (word_len == FAILURE)	// error
-			return ;
-		if (word_len == 0)	 // caso especial input = 0;
-			index++;
-		else
-			index += word_len;				
+	while (current_command)
+	{
+		index = 0;	
+		chunck_input = current_command->chunk_input;
+		while (chunck_input[index])
+		{
+			while (is_space(chunck_input[index])) // ignorar espacios iniciales 
+				index++;		
+			if (!chunck_input[index]) // Verificar si llegamos al final después de saltar espacios
+				break;
+
+			// CLASIFICACION WORD // OPERATOR
+			if (is_operator(chunck_input[index]))
+				chunk_len = operator_extractor(current_command, index);  
+			else
+				chunk_len = word_extractor(current_command, index);
+			if (chunk_len == FAILURE)	// error
+				return ;
+			if (chunk_len == 0)	 // caso especial input = 0;
+				index++;
+			else
+				index += chunk_len;				
+		}	
+		current_command = current_command->next;
 	}	
-	//print_words_list(shell->words_list);
 }
 
-int	word_extractor(t_shell *shell, int index_first_char)
+int	word_extractor(t_command *command, int index_first_char)
 {
-    char	*token_input;
+    char	*chunck_input;
     int		index;
     int		len_input;
     char	current_quote;
     bool	quote_state;  			// false = fuera, true = dentro
 	char	character;
 
-    if (!shell->input)
+    if (!command->chunk_input)
         return (FAILURE);    
     index = index_first_char;    
     current_quote = 0;
 	quote_state = false;
     
-    while (shell->input[index])
+    while (command->chunk_input[index])
     {
-        character = shell->input[index];
-        
+        character = command->chunk_input[index];
+      
 		// caso DENTRO DE COMILLAS -> ignorar espacios y operadores
         if (is_quote(character))
         {
@@ -92,42 +100,42 @@ int	word_extractor(t_shell *shell, int index_first_char)
             index++;      
     }
     
-    token_input = ft_substr(shell->input, index_first_char, (index - index_first_char));
-    if (!token_input)
+    chunck_input = ft_substr(command->chunk_input, index_first_char, (index - index_first_char));
+    if (!chunck_input)
         return (FAILURE);
     
-    len_input = ft_strlen(token_input);
-    add_word_node(&shell->words_list, token_input, WORD);
-    free(token_input);
+    len_input = ft_strlen(chunck_input);
+    add_word_node(&command->words_list, chunck_input, WORD);
+    free(chunck_input);
     
     return (len_input);
 }
 
-int	operator_extractor(t_shell *shell, int index_first_char)
+int	operator_extractor(t_command *commands_list, int index_first_char)
 {
 	int		len_input;
 
-	if (shell->input[index_first_char] == '>') // operadores especiales -> OUTFILE o APPEND
+	if (commands_list->chunk_input[index_first_char] == '>') // operadores especiales -> OUTFILE o APPEND
 	{
-		if (shell->input[index_first_char + 1] == '>')
+		if (commands_list->chunk_input[index_first_char + 1] == '>')
 		{
-			add_word_node(&shell->words_list, ">>", APPEND);
+			add_word_node(&commands_list->words_list, ">>", APPEND);
 			return (len_input = 2);
 		}				
 		else
-			add_word_node(&shell->words_list, ">", OUTFILE);		
+			add_word_node(&commands_list->words_list, ">", OUTFILE);		
 	}		
-	else if (shell->input[index_first_char] == '<') // operadores especiales -> INFILE o HERE_DOC
+	else if (commands_list->chunk_input[index_first_char] == '<') // operadores especiales -> INFILE o HERE_DOC
 	{
-		if (shell->input[index_first_char + 1] == '<')
+		if (commands_list->chunk_input[index_first_char + 1] == '<')
 		{
-			add_word_node(&shell->words_list, "<<", HERE_DOC);
+			add_word_node(&commands_list->words_list, "<<", HERE_DOC);
 			return (len_input = 2);
 		}			
 		else
-			add_word_node(&shell->words_list, "<", INFILE);							
+			add_word_node(&commands_list->words_list, "<", INFILE);							
 	}		
-	else if (shell->input[index_first_char] == '|') // operadores especiales -> PIPE
-		add_word_node(&shell->words_list, "|", PIPE);	
+	else if (commands_list->chunk_input[index_first_char] == '|') // operadores especiales -> PIPE
+		add_word_node(&commands_list->words_list, "|", PIPE);	
 	return (len_input = 1);
 }

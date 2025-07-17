@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   03.1_parser_tokenize_utils.c                       :+:      :+:    :+:   */
+/*   03.1_parser_tokenize_builder.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/16 21:21:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:26:59 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,21 +80,21 @@ void print_tokens_list(t_token *token_list)
         return ;  
     token = (t_token *)(token_list);
     node_index = 1;
-    while (token)
+    while (token) 
     {
-        printf("	└───┐\n");
-        printf("	┌───────────┐\n");
-        printf("	| token [%i] |\n", node_index);
-        printf("	└───────────┘\n");
-        printf("		type -> %i // ", token->type);
+        printf("\t\t └───┐\n");
+        printf("\t\t ┌───────────┐\n");
+        printf("\t\t | token [%i] |\n", node_index);
+        printf("\t\t └───────────┘\n");
+        printf("\t\t\t type -> %i // ", token->type);
         printf("current -> %p // next -> %p\n", token, token->next);
 
-        printf("		raw_token           -> %s\n", token->raw_token);         
+        printf("\t\t\t raw_token \t\t-> %s\n", token->raw_token);         
         
         print_expand_nodes_list(token->expand_list);                            // IMPRESION LISTA NODOS EXPAND 
 		
-		printf("		expanded_token      -> %s\n", token->expanded_token);   // TOKEN YA EXPANDIDO         
-        printf("		└──> noquotes_token -> %s\n", token->noquotes_token); // TOKEN sin comillas
+		printf("\t\t\t expanded_token \t-> %s\n", token->expanded_token);   // TOKEN YA EXPANDIDO         
+        printf("\t\t\t └──> noquotes_token \t-> %s\n", token->noquotes_token); // TOKEN sin comillas
 
         node_index++;
         token = token->next;

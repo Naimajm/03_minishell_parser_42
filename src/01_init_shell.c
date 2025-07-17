@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 00:06:22 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:03:55 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ t_shell *initialize_shell(void)
 	shell->exit_status		= 0;
 	shell->last_exit_status = 0;
 
-	shell->words_list 	= NULL;
 	shell->command_list	= NULL;		
 	return (shell);
 }

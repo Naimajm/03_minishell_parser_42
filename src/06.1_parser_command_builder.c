@@ -6,61 +6,62 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 00:02:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 13:20:05 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_command	*create_command_node();
+static t_command	*create_command_node(char *input);
 static t_command	*find_command_last_node(t_command *commands_list);
 void 				print_commands_list(t_command *commands_list);
-// static void	print_arguments_list(char **arguments);
 
-void	add_command_node(t_command **commands_list)
+void	add_command_node(t_command **commands_list, char *input)
 {
-    t_word_token *new_node;
-    t_word_token *last_node;
+    t_command *new_node;
+    t_command *last_node;
 
-    if (!commands_list) 							// validation inputs
+    if (!commands_list || !input) 						// validation inputs
         return ;   
     
-    new_node = create_command_node(); 				// inicializar nuevo nodo token
+    new_node = create_command_node(input); 				// inicializar nuevo nodo token
     if (!new_node)
         return ;		
-    last_node = find_word_last_node(*commands_list); // encontrar ultimo nodo y enlazar
+    last_node = find_command_last_node(*commands_list); 	// encontrar ultimo nodo y enlazar
     
-    if (!last_node)     							
-        *commands_list = new_node;   				// caso lista vacio -> añadir en 1º nodo
+    if (!last_node)     								
+        *commands_list = new_node;   					// caso lista vacio -> añadir en 1º nodo
     else            								    
-        last_node->next = new_node;					// lista no vacia  
+        last_node->next = new_node;						// lista no vacia  
 }
 
-static t_command *create_command_node()
+static t_command *create_command_node(char *input)
 {
     t_command *new_node;
 
-    /* if (!word)
-        return (NULL); */
+    if (!input)
+        return (NULL);
 
     new_node = (t_command *) malloc(sizeof(t_command));
-    if (!new_node)
-        print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+	if (!new_node)
+		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
-    //new_node->args      = ft_strdup(word);
-	new_node->args			= NULL;
-    /* if (!new_node->args)
-        print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE); */
+	new_node->chunk_input = ft_strdup(input);
+	if (!new_node->chunk_input)
+        print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+
+	new_node->args			= NULL;    
 
     new_node->infile        = NULL;
     new_node->outfile    	= NULL;
 
-    new_node->redirect_mode	= NULL;
+    new_node->redirect_mode	= 0;
 	new_node->delimiter		= NULL;	
     
 	new_node->is_btn		= false;
 	new_node->exit_status	= 0;
 
+	new_node->words_list	= NULL;
 	new_node->next	        = NULL;
     //ft_printf("new_word_node -> %s\n", new_node->token);
     return  (new_node);
@@ -89,26 +90,28 @@ void print_commands_list(t_command *commands_list)
 		printf("┌──────────────┐\n");
         printf("| command [%i]  |\n", node_index);		
 		printf("└──────────────┘\n");
-        printf("	redirect_mode -> %c // ", command->redirect_mode);
+        printf("\t redirect_mode \t-> %c // ", command->redirect_mode);
         printf("current -> %p // ", command);
         printf("next -> %p\n", command->next);
 
-        printf("	args      		\n");  
-		print_strings_array(command->args);
+		printf("\t chunck_input \t-> %s\n", command->chunk_input); 
 		
-		printf("	infile      	-> %s\n", command->infile);    
-		printf("	outfile        	-> %s\n", command->outfile);    
-
-		printf("	redirect_mode   -> %i\n", command->redirect_mode);  
-		printf("	delimiter  		-> %s\n", command->delimiter);  
-
-		printf("	is_btn  		-> %i\n", command->delimiter);
-		printf("	exit_status  	-> %i\n", command->exit_status);        
         
-        print_words_list(command->words_list); 	// IMPRESION LISTA NODOS EXPAND
+		
+		printf("\t infile \t-> %s\n", command->infile);    
+		printf("\t outfile \t-> %s\n", command->outfile);    
 
-		//printf("	└──> processed_word         -> %s\n", command); 
-		printf("	─────────────────────────────\n\n");
+		printf("\t redirect_mode \t-> %i\n", command->redirect_mode);  
+		printf("\t delimiter \t-> %s\n", command->delimiter);  
+
+		printf("\t is_btn \t-> %i\n", command->is_btn);
+		printf("\t exit_status \t-> %i\n", command->exit_status);        
+        
+		print_words_list(command->words_list); 	// IMPRESION LISTA NODOS EXPAND
+
+		printf("\t └──> args \n");  
+		print_strings_array(command->args);
+		printf("\t ───────── \n\n");
         node_index++;
         command = command->next;
     }
