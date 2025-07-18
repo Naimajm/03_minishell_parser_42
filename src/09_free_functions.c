@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 10:44:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:00:07 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ void	free_commands_list(t_command **commands_list)
 			free(current_node->infile);
 		if (current_node->outfile)
 			free(current_node->outfile);
-		if (current_node->delimiter)
-			free(current_node->delimiter);
+		if (current_node->heredoc_delimiter)
+			free(current_node->heredoc_delimiter);
 		
 		// Liberar lista words
 		if (current_node->words_list)
@@ -76,7 +76,7 @@ void	free_words_list(t_word_token **words_list)
 	t_word_token	*next_node;
 
 	if (!words_list)
-        return ;
+		return ;
 
 	current_node = (t_word_token *) *words_list;
 	while (current_node)
@@ -97,7 +97,7 @@ void	free_words_list(t_word_token **words_list)
 		current_node = next_node;
 	}    
 	*words_list = NULL;
-    ft_printf(FREE_WORDS_LIST);
+	ft_printf(FREE_WORDS_LIST);
 }
 
 void	free_tokens_list(t_token **token_list)

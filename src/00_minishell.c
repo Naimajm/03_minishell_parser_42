@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 13:16:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:58:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,13 @@ void	input_parser(t_shell *shell)
 	printf("Lexical_analyzer...				OK\n\n");
 	lexical_analyzer(shell->command_list);	
 
+	printf("Process Comands...				OK\n\n");
 	process_comands(shell);
+
+	printf("Generating execution structure...	OK\n\n");
+	build_execution_structure(shell->command_list);
+
+	
 	
 	//printf("Test ->...					OK\n\n");
 	//test_lexical_analyzer(shell);

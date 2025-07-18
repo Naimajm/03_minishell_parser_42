@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:13 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 00:04:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:59:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	insert_token_node(t_word_token *word)
 		return ;
 	
 	if (word->processed_word) // Liberar processed_word anterior si existe
-    {
-        free(word->processed_word);
-        word->processed_word = NULL;
-    }
+	{
+		free(word->processed_word);
+		word->processed_word = NULL;
+	}
 	result = ft_strdup(""); // Inicializar resultado con string vacío
 	if (!result)
 		return ;	

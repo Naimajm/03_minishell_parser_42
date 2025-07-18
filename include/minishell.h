@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 13:10:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/17 19:33:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@
 
 // categorizacion TIPOS WORD_TOKEN
 # define WORD					'W'		// W -> palabra generica no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
-//# define REDIRECTION_OPERATOR	'O'		// O -> operador (< << > >> |)
-// categorizacion OPERADORES REDIRECCION -> word_token->subtype
 # define OUTFILE				'O'		// 1 -> operador > OUTFILE
 # define APPEND					'A'		// 2 -> operador >> APPEND
 # define INFILE					'I'		// 3 -> operador < INFILE
@@ -62,7 +60,7 @@
 # define NO_QUOTES				2		// 2 -> palabras sin comillas
 # define SINGLE_QUOTES			3		// 3 -> palabras con comillas simples -> literal
 # define DOUBLE_QUOTES			4		// 4 -> palabras con comillas dobles -> expansion variables
-# define OPERATOR				5		// 5 -> operador
+# define OPERATOR				5		// 5 -> operador (< << > >> |)
 
 /* # define OUTFILE				5		// 5 -> operador > OUTFILE
 # define APPEND_OPERATOR		6		// 6 -> operador >> APPEND
@@ -111,6 +109,7 @@ typedef struct s_word_token
 	char		*processed_word;
 
 	t_token		*tokens_list;  			// lista tokens para expansion variables
+	
 	struct		s_word_token *next;	
 }				t_word_token;
 
@@ -119,25 +118,26 @@ typedef	struct 	s_command
 {
 	char		*chunk_input;		// NUEVO -> trozo input perteneciente a este proceso
 
-	char		**args;		// Array de argumentos
-	char		*infile;	// Archivo de entrada	
-	char		*outfile;	// Archivo de salida
+	char		**args;				// Array de argumentos
+
+	char		*infile;			// Archivo de entrada	
+	char		*outfile;			// Archivo de salida
+	char		*heredoc_delimiter;	// heredoc_delimiter
 	
 	/* bool		append_mode;
 	bool		heredoc_mode;	 */
-	int			redirect_mode;  // NUEVO !! Modo append (>>),  Modo heredoc (<<), Modo infile (<), Modo outfile (>), Pipe (|)
-	char		*delimiter;		// heredoc_delimiter??
+	char		redirect_mode;  	// NUEVO !! Modo append (>>),  Modo heredoc (<<), Modo infile (<), Modo outfile (>), Pipe (|)	
 	
-	bool		is_btn;			// ?
+	bool		is_builtin;		// flag si el comando es builtin
 	int			exit_status;
 
-	t_word_token *words_list;	// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES
+	t_word_token *words_list;	// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
 
 	struct 		s_command	*next;
 }				t_command;
 
 // SHELL
-typedef struct s_shell
+typedef struct	s_shell
 {
 	char			*input;
 	char			**environment;
@@ -146,7 +146,7 @@ typedef struct s_shell
 	int				last_exit_status;
 
 	t_command		*command_list;
-}			t_shell;
+}				t_shell;
 
 // FUNCTIONS -----------------------------------------------------
 
@@ -165,10 +165,14 @@ void	syntax_analyzer(t_shell *shell);
 void	create_commands_structure(t_shell *shell);
 int 	is_pipe(char character);
 
+// 01.3_parser_command_builder.c
+void	add_command_node(t_command **commands_list, char *input);
+void	print_commands_list(t_command *commands_list);
+
 // 02_parser_lexical.c
 void	lexical_analyzer(t_command *process_list);
 int		word_extractor(t_command *process_list, int index_first_char);
-int	operator_extractor(t_command *process_list, int index_first_char);
+int		operator_extractor(t_command *process_list, int index_first_char);
 
 // 02.1_parser_lexical_builder.c
 void	add_word_node(t_word_token **word_list, char  *input, char word_type);
@@ -214,13 +218,11 @@ void	generate_processed_word(t_word_token **words_list);
 void	insert_token_node(t_word_token *word);
 
 // 06_parser_syntax.c
-
-// 06.1_parser_command_builder.c
-void	add_command_node(t_command **commands_list, char *input);
-void	print_commands_list(t_command *commands_list);
+void    build_execution_structure(t_command *commands_list);
+void    extract_command_arguments(t_command *command);
+void    extract_redirections(t_command *command);
 
 // 08_utils.c
-//int		skip_spaces(char *input, int index);
 int 	find_index_char(const char *str, char character);
 int		is_quote(char character);
 int		is_operator(char character);
@@ -245,6 +247,6 @@ void	print_config_shell(t_shell *shell);
 void	print_strings_array(char **array);
 
 // 16_testing.c
-void test_lexical_analyzer(t_shell *shell);
+void	test_lexical_analyzer(t_shell *shell);
 
 #endif

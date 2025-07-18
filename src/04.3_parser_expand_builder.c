@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 13:28:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:59:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,32 +18,32 @@ void print_expand_nodes_list(t_expand *expand_list);
 
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type)
 {
-    t_expand *new_node;
-    t_expand *last_node;
+	t_expand *new_node;
+	t_expand *last_node;
 
-    // validation inputs
-    if (!expand_list || !substitution_variable)
-        return (NULL);   
+	// validation inputs
+	if (!expand_list || !substitution_variable)
+		return (NULL);   
 
-    // inicializar nuevo nodo token
-    new_node = create_expand_node(substitution_variable, first_index, expand_type);
-    if (!new_node)
-        return (NULL);
-    //ft_printf("addback -> %s\n", new_node->token);
+	// inicializar nuevo nodo token
+	new_node = create_expand_node(substitution_variable, first_index, expand_type);
+	if (!new_node)
+		return (NULL);
+	//ft_printf("addback -> %s\n", new_node->token);
 
-    // encontrar ultimo nodo y enlazar
-    last_node = find_expand_last_node(*expand_list);
-    
-    if (!last_node)     // caso lista vacio -> añadir en 1º nodo
-        *expand_list = new_node;   
-    else
+	// encontrar ultimo nodo y enlazar
+	last_node = find_expand_last_node(*expand_list);
+	
+	if (!last_node)     // caso lista vacio -> añadir en 1º nodo
+		*expand_list = new_node;   
+	else
 		last_node->next = new_node;
 	return (new_node);
 }
 
 static t_expand *create_expand_node(char  *substitution_variable, int first_index, int expand_type)
 {
-    t_expand *new_node;
+	t_expand *new_node;
 	
 	if (!substitution_variable)
 		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
@@ -61,15 +61,15 @@ static t_expand *create_expand_node(char  *substitution_variable, int first_inde
 	new_node->value				= NULL;	
 
 	new_node->next 				= NULL;
-    return  (new_node);
+	return  (new_node);
 }
 
 static t_expand	*find_expand_last_node(t_expand *token_list)
 {    
-    if (!token_list) // validation 
-        return (NULL);
+	if (!token_list) // validation 
+		return (NULL);
 
-    while (token_list->next)
+	while (token_list->next)
 		token_list = token_list-> next;    
 	return (token_list); // retorna puntero a ultimo nodo
 }
@@ -83,11 +83,11 @@ void print_expand_nodes_list(t_expand *expand_list)
 		return ;    
 	expand_node = (t_expand *)(expand_list);
 	node_index = 1;
-    while (expand_node)
-    {
+	while (expand_node)
+	{
 		printf("\t\t\t └────┐\n");
 		printf("\t\t\t ┌───────────────────┐\n");
-        printf("\t\t\t | expand_node: [%i]  |\n", node_index);
+		printf("\t\t\t | expand_node: [%i]  |\n", node_index);
 		printf("\t\t\t └───────────────────┘\n");
 		printf("\t\t\t\t current node -> %p // next -> %p\n", expand_node, expand_node->next);
 		printf("\t\t\t\t first_index \t-> %d\n", expand_node->first_index);
@@ -97,6 +97,6 @@ void print_expand_nodes_list(t_expand *expand_list)
 		printf("\t\t\t\t └──> value \t-> %s\n", expand_node->value);		
 
 		node_index++;
-        expand_node = expand_node->next;
-    }
+		expand_node = expand_node->next;
+	}
 }

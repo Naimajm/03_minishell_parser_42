@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 10:49:33 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:00:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,23 @@
 // Función auxiliar para saltar espacios
 /* int skip_spaces(char *input, int index)
 {
-    while (input[index] && is_space(input[index]))
-        index++;
-    return (index);
+	while (input[index] && is_space(input[index]))
+		index++;
+	return (index);
 } */
 
 int find_index_char(const char *str, char character)
 {
-    int index;    
+	int index;    
 
-    index = 0;
-    while (str[index])
-    {
-        if (character == str[index])
-            return (index);
-        index++; 
-    }
-    return (0);
+	index = 0;
+	while (str[index])
+	{
+		if (character == str[index])
+			return (index);
+		index++; 
+	}
+	return (0);
 }
 
 int	is_quote(char character)

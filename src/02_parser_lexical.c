@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/17 11:41:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 11:59:09 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,59 +56,59 @@ void	lexical_analyzer(t_command *commands_list)
 
 int	word_extractor(t_command *command, int index_first_char)
 {
-    char	*chunck_input;
-    int		index;
-    int		len_input;
-    char	current_quote;
-    bool	quote_state;  			// false = fuera, true = dentro
+	char	*chunck_input;
+	int		index;
+	int		len_input;
+	char	current_quote;
+	bool	quote_state;  			// false = fuera, true = dentro
 	char	character;
 
-    if (!command->chunk_input)
-        return (FAILURE);    
-    index = index_first_char;    
-    current_quote = 0;
+	if (!command->chunk_input)
+		return (FAILURE);    
+	index = index_first_char;    
+	current_quote = 0;
 	quote_state = false;
-    
-    while (command->chunk_input[index])
-    {
-        character = command->chunk_input[index];
-      
+	
+	while (command->chunk_input[index])
+	{
+		character = command->chunk_input[index];
+	  
 		// caso DENTRO DE COMILLAS -> ignorar espacios y operadores
-        if (is_quote(character))
-        {
-            if (quote_state == 0) // Entrando en comillas
-            {                
-                current_quote = character;
-                quote_state = true;
-                index++;
-            }
-            else if (character == current_quote) // Saliendo de comillas del mismo tipo
-            {                
-                quote_state = false;
-                current_quote = 0;
-                index++;
-            }
-            else // Comilla diferente dentro de comillas actuales                     
-                index++; // Se trata como carácter literal
-        }
+		if (is_quote(character))
+		{
+			if (quote_state == 0) // Entrando en comillas
+			{                
+				current_quote = character;
+				quote_state = true;
+				index++;
+			}
+			else if (character == current_quote) // Saliendo de comillas del mismo tipo
+			{                
+				quote_state = false;
+				current_quote = 0;
+				index++;
+			}
+			else // Comilla diferente dentro de comillas actuales                     
+				index++; // Se trata como carácter literal
+		}
 
 		// caso FUERA DE COMILLAS -> espacios y operadores terminan la palabra
-        else if (quote_state == false && (is_space(character) || is_operator(character)))            
-            break;	
+		else if (quote_state == false && (is_space(character) || is_operator(character)))            
+			break;	
 		// Carácter normal o carácter dentro de comillas   	
-        else             
-            index++;      
-    }
-    
-    chunck_input = ft_substr(command->chunk_input, index_first_char, (index - index_first_char));
-    if (!chunck_input)
-        return (FAILURE);
-    
-    len_input = ft_strlen(chunck_input);
-    add_word_node(&command->words_list, chunck_input, WORD);
-    free(chunck_input);
-    
-    return (len_input);
+		else             
+			index++;      
+	}
+	
+	chunck_input = ft_substr(command->chunk_input, index_first_char, (index - index_first_char));
+	if (!chunck_input)
+		return (FAILURE);
+	
+	len_input = ft_strlen(chunck_input);
+	add_word_node(&command->words_list, chunck_input, WORD);
+	free(chunck_input);
+	
+	return (len_input);
 }
 
 int	operator_extractor(t_command *commands_list, int index_first_char)
