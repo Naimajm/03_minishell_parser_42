@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   06_parser_syntax.c                                 :+:      :+:    :+:   */
+/*   07_execution_builder.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:16:41 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:42:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void    extract_command_arguments(t_command *command);
 void    extract_redirections(t_command *command);
-int     count_word_arguments(t_word_token *words_list);
+int     count_word_arguments(t_word *words_list);
 
 void    build_execution_structure(t_command *commands_list)
 {
@@ -36,13 +36,13 @@ void    extract_command_arguments(t_command *command)
 {
 	int index;
 	int args_count;
-	t_word_token *current_word;
+	t_word *current_word;
 
 	if (!command)
 		return ;
 	index       = 0;
 	args_count  = 0;
-	current_word = (t_word_token *) command->words_list;
+	current_word = (t_word *) command->words_list;
 	
 	count_word_arguments(current_word); 	// calculo total argumentos -> WORD (no operadores)
 
@@ -51,7 +51,7 @@ void    extract_command_arguments(t_command *command)
 	if (!command->args)
 		return ;
 	
-	current_word = (t_word_token *) command->words_list; 	// Llenar argv con processed_word
+	current_word = (t_word *) command->words_list; 	// Llenar argv con processed_word
 	while (current_word)
 	{
 		if (current_word->word_type == WORD)
@@ -68,9 +68,9 @@ void    extract_command_arguments(t_command *command)
 
 void    extract_redirections(t_command *command)
 {
-	t_word_token    *current_word;
+	t_word    *current_word;
 
-	current_word = (t_word_token *) command->words_list;
+	current_word = (t_word *) command->words_list;
 	while (current_word)
 	{
 		
@@ -99,12 +99,12 @@ void    extract_redirections(t_command *command)
 // FUNCIONES AUXILIARES
 
 // calculo total argumentos -> WORD (no operadores)
-int count_word_arguments(t_word_token *words_list)
+int count_word_arguments(t_word *words_list)
 {
-	t_word_token    *current_word;
+	t_word    *current_word;
 	int args_count;
 
-	current_word    = (t_word_token *) words_list;
+	current_word    = (t_word *) words_list;
 	args_count      = 0;
 	while (current_word)
 	{

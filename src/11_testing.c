@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   16_testing.c                                       :+:      :+:    :+:   */
+/*   11_testing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 14:06:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:02:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:46:55 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static int compare_word_token_structures(t_word_token *actual, t_word_token *expected);
+static int compare_word_token_structures(t_word *actual, t_word *expected);
 
 void test_lexical_analyzer(t_shell *shell)
 {
@@ -43,7 +43,7 @@ void test_lexical_analyzer(t_shell *shell)
 	};
 
 	// Estructuras esperadas creadas usando add_word_node()
-	t_word_token *expected_results[13];
+	t_word *expected_results[13];
 	
 	// Test 0: "echo hello"
 	expected_results[0] = NULL;
@@ -174,10 +174,10 @@ void test_lexical_analyzer(t_shell *shell)
 }
 
 // Función de comparación de estructuras t_word_token
-static int compare_word_token_structures(t_word_token *actual, t_word_token *expected)
+static int compare_word_token_structures(t_word *actual, t_word *expected)
 {
-	t_word_token *current_actual = actual;
-	t_word_token *current_expected = expected;
+	t_word *current_actual = actual;
+	t_word *current_expected = expected;
 	
 	// Comparar nodo por nodo
 	while (current_actual && current_expected)

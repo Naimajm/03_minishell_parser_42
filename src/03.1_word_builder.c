@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02.1_parser_lexical_builder.c                      :+:      :+:    :+:   */
+/*   03.1_word_builder.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 11:59:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:33:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_word_token *create_word_node(char  *input, char word_type);
-static t_word_token	*find_word_last_node(t_word_token *word_list);
-void print_words_list(t_word_token *word_list);
+static t_word *create_word_node(char  *input, char word_type);
+static t_word	*find_word_last_node(t_word *word_list);
+void print_words_list(t_word *word_list);
 
-void	add_word_node(t_word_token **word_list, char  *input, char word_type)
+void	add_word_node(t_word **word_list, char  *input, char word_type)
 {
-	t_word_token *new_node;
-	t_word_token *last_node;
+	t_word *new_node;
+	t_word *last_node;
 
 	if (!word_list || !input) 						// validation inputs
 		return ;   
@@ -36,14 +36,14 @@ void	add_word_node(t_word_token **word_list, char  *input, char word_type)
 		last_node->next = new_node;
 }
 
-static t_word_token *create_word_node(char  *input, char word_type)
+static t_word *create_word_node(char  *input, char word_type)
 {
-	t_word_token *new_node;
+	t_word *new_node;
 
 	if (!input)
 		return (NULL);
 
-	new_node = (t_word_token *) malloc(sizeof(t_word_token));
+	new_node = (t_word *) malloc(sizeof(t_word));
 	if (!new_node)
 		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
@@ -60,7 +60,7 @@ static t_word_token *create_word_node(char  *input, char word_type)
 	return  (new_node);
 }
 
-static t_word_token	*find_word_last_node(t_word_token *word_list)
+static t_word	*find_word_last_node(t_word *word_list)
 {    
 	if (!word_list) 					// validation 
 		return (NULL);
@@ -70,14 +70,14 @@ static t_word_token	*find_word_last_node(t_word_token *word_list)
 	return (word_list);
 }
 
-void print_words_list(t_word_token *word_list)
+void print_words_list(t_word *word_list)
 {
-	t_word_token *word;
+	t_word *word;
 	int node_index;
 
 	if (!word_list)
 		return ;  
-	word = (t_word_token *)(word_list);
+	word = (t_word *)(word_list);
 	node_index = 1;
 	while (word)
 	{

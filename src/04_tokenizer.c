@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   03_parser_tokenize.c                               :+:      :+:    :+:   */
+/*   04_tokenizer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 11:59:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:33:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	noquotes_tokenizer(t_word_token *word, int index_first_char);
-int	quotes_tokenizer(t_word_token *word, int index_first_char);
-int	operator_tokenizer(t_word_token *word, int index_first_char);
+int	noquotes_tokenizer(t_word *word, int index_first_char);
+int	quotes_tokenizer(t_word *word, int index_first_char);
+int	operator_tokenizer(t_word *word, int index_first_char);
 
-void	tokenizer(t_word_token *words_list)
+void	tokenizer(t_word *words_list)
 {
-	t_word_token	*current_word;
+	t_word	*current_word;
 	char	*raw_word;
 	int		index;
 	int		token_len;
 
 	if (!words_list)
 		return ; 	
-	current_word = (t_word_token *) words_list;		
+	current_word = (t_word *) words_list;		
 
 	while (current_word)
 	{
@@ -52,7 +52,7 @@ void	tokenizer(t_word_token *words_list)
 	}			
 }
 
-int	noquotes_tokenizer(t_word_token *word, int index_first_char)
+int	noquotes_tokenizer(t_word *word, int index_first_char)
 {
 	char	*raw_word;
 	char	*token_input;
@@ -82,7 +82,7 @@ int	noquotes_tokenizer(t_word_token *word, int index_first_char)
 	return (len_input);
 }
 
-int	quotes_tokenizer(t_word_token *word, int index_first_char)
+int	quotes_tokenizer(t_word *word, int index_first_char)
 {
 	char	*raw_word;
 	char	*token_input;
@@ -125,7 +125,7 @@ int	quotes_tokenizer(t_word_token *word, int index_first_char)
 	return (len_input);
 }
 
-int	operator_tokenizer(t_word_token *word, int index_first_char)
+int	operator_tokenizer(t_word *word, int index_first_char)
 {
 	char	*raw_word;
 	int		len_input;

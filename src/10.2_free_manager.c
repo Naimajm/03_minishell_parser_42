@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   09_free_functions.c                                :+:      :+:    :+:   */
+/*   10.2_free_manager.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:00:07 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:45:11 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 void	free_commands_list(t_command **commands_list);
-void	free_words_list(t_word_token **words_list);
+void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
 void	free_expands_list(t_expand *expand_stack);
 void	free_matrix(char **matrix);
@@ -70,15 +70,15 @@ void	free_commands_list(t_command **commands_list)
 	ft_printf(FREE_COMMANDS_LIST);	
 }
 
-void	free_words_list(t_word_token **words_list)
+void	free_words_list(t_word **words_list)
 {
-	t_word_token	*current_node;
-	t_word_token	*next_node;
+	t_word	*current_node;
+	t_word	*next_node;
 
 	if (!words_list)
 		return ;
 
-	current_node = (t_word_token *) *words_list;
+	current_node = (t_word *) *words_list;
 	while (current_node)
 	{
 		next_node = current_node->next;

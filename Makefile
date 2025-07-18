@@ -20,18 +20,16 @@ INCLUDES		:= -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(INCLUDES_DIR)
 EXT_LIBRARYS 	:= $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
 
 SRC_DIR			:= ./src
-SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_minishell.c \
-				01_init_shell.c 01.1_parser_syntax.c 01.3_parser_command_builder.c \
-				02_parser_lexical.c 02.1_parser_lexical_builder.c \
-				03_parser_tokenize.c 03.1_parser_tokenize_builder.c \
-				04_parser_expand.c \
-				04.1_parser_expand_list.c 04.2_parser_expand_extract.c 04.3_parser_expand_builder.c \
-				04.4_parser_dequotize.c \
-				05_parser_process.c \
-				06_parser_syntax.c \
-				08_utils.c 09_utils_2.c 09_free_functions.c \
-				15_utils_process.c \
-				16_testing.c)
+SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c 01_shell_init.c \
+				02_syntax_analyzer.c 02.1_command_builder.c \
+				03_lexical_analyzer.c 03.1_word_builder.c \
+				04_tokenizer.c 04.1_token_builder.c \
+				05_variable_expander.c \
+				05.1_expand_list.c 05.2_expand_extractor.c 05.3_expand_builder.c 05.4_dequotizer.c \
+				06_word_processor.c \
+				07_execution_builder.c \
+				10_utils_core.c 10.1_utils_strings.c 10.2_free_manager.c 10.3_utils_debug.c \
+				11_testing.c)
 
 OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)
 

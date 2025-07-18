@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   04_parser_expand.c                                 :+:      :+:    :+:   */
+/*   05_variable_expander.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 11:59:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:36:56 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@ void 	resolve_expansion_values(t_token *token, char **environment, int exit_stat
 void	insert_expansion_values(t_token *token);
 int		insert_expand_node_value(t_token *token);
 
-void	activate_expand_operators(t_word_token *words_list, char **environment, int exit_status)
+void	activate_expand_operators(t_word *words_list, char **environment, int exit_status)
 {
-	t_word_token	*current_word;
+	t_word	*current_word;
 	t_token			*current_token;
 
 	if (!words_list)
 		return ;
-	current_word = (t_word_token *) words_list;
+	current_word = (t_word *) words_list;
 
 	while (current_word)
 	{

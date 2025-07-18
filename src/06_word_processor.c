@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   05_parser_process.c                                :+:      :+:    :+:   */
+/*   06_word_processor.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:13 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 11:59:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:41:16 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 /// UNIR TODOS LOS 'NOQUOTES_TOKEN' de los nodos Token EN 'processed_word' word
 
-void	insert_token_node(t_word_token *word);
+void	insert_token_node(t_word *word);
 
 // INSERTAR VALORE EN TOKEN -> FINAL TOKEN
-void	generate_processed_word(t_word_token **words_list)
+void	generate_processed_word(t_word **words_list)
 {
-	t_word_token	*current_word;
+	t_word	*current_word;
 	
 	if (!words_list)
 		return ;	
-	current_word = (t_word_token *) *words_list;	
+	current_word = (t_word *) *words_list;	
 	while (current_word)
 	{
 		printf("(generate_processed_word) word->raw_word 	-> %s\n", current_word->raw_word);
@@ -35,7 +35,7 @@ void	generate_processed_word(t_word_token **words_list)
 	}	
 }
  
-void	insert_token_node(t_word_token *word)
+void	insert_token_node(t_word *word)
 {
 	t_token	*current_token;
 	char	*result;

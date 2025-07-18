@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   04.4_parser_dequotize.c                            :+:      :+:    :+:   */
+/*   05.4_dequotizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 11:59:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:40:13 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 // FUNCIONES PARA QUITAR COMILLAS + UNIR TOKENS
 void	remove_quotes(t_token *token);
 
-void	dequotize_tokens(t_word_token *words_list)
+void	dequotize_tokens(t_word *words_list)
 {
-	t_word_token	*current_word;
+	t_word	*current_word;
 
 	if (!words_list)
 		return ;
-	current_word = (t_word_token *) words_list;
+	current_word = (t_word *) words_list;
 	while (current_word)
 	{
 		remove_quotes(current_word->tokens_list);
