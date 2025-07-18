@@ -6,23 +6,24 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:42:58 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:39:31 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void    extract_command_arguments(t_command *command);
-void    extract_redirections(t_command *command);
+void    extract_command_arguments(t_cmd *command);
+void    extract_redirections(t_cmd *command);
 int     count_word_arguments(t_word *words_list);
+bool 	is_builtin_command(char *command);
 
-void    build_execution_structure(t_command *commands_list)
+void    build_execution_structure(t_cmd *commands_list)
 {
-	t_command * current_command;
+	t_cmd * current_command;
 
 	if (!commands_list)
 		return ;
-	current_command = (t_command *) commands_list;
+	current_command = (t_cmd *) commands_list;
 	while (current_command)
 	{
 		extract_command_arguments(current_command);
@@ -32,7 +33,7 @@ void    build_execution_structure(t_command *commands_list)
 	}    
 }
 
-void    extract_command_arguments(t_command *command)
+void    extract_command_arguments(t_cmd *command)
 {
 	int index;
 	int args_count;
@@ -41,10 +42,9 @@ void    extract_command_arguments(t_command *command)
 	if (!command)
 		return ;
 	index       = 0;
-	args_count  = 0;
 	current_word = (t_word *) command->words_list;
 	
-	count_word_arguments(current_word); 	// calculo total argumentos -> WORD (no operadores)
+	args_count = count_word_arguments(current_word); 	// calculo total argumentos -> WORD (no operadores)
 
 	// reserva memoria total argumentos
 	command->args = (char **) malloc(sizeof(char *) * (args_count + 1));
@@ -64,39 +64,73 @@ void    extract_command_arguments(t_command *command)
 		current_word = current_word->next;
 	}
 	command->args[index] = NULL; // terminador nulo char **    
+
+	// verificar si es comando builtin
+	if (command->args[0])
+        command->is_btn = is_builtin_command(command->args[0]);
 }
 
-void    extract_redirections(t_command *command)
+void    extract_redirections(t_cmd *command)
 {
-	t_word    *current_word;
+    t_word *current_word;
 
-	current_word = (t_word *) command->words_list;
-	while (current_word)
-	{
-		
-		if (current_word->word_type != WORD)
-			command->redirect_mode = current_word->word_type;	// etiquetar modo redirect
-
-		if (current_word->word_type == OUTFILE || current_word->word_type == APPEND) 	// CASO REDIRECCION OUT
-		{            
-			if (current_word->next && current_word->next->word_type == WORD)
-				command->outfile = ft_strdup(current_word->next->processed_word);     
-		}         
-		else if (current_word->word_type == INFILE) 								// CASO REDIRECCION IN -> INFILE
-		{
-			if (current_word->next && current_word->next->word_type == WORD)
-				command->infile = ft_strdup(current_word->next->processed_word);                  
-		}
-		else if (current_word->word_type == HERE_DOC) 								// CASO REDIRECCION delimitador
-		{
-			if (current_word->next && current_word->next->word_type == WORD)
-				command->heredoc_delimiter = ft_strdup(current_word->next->processed_word);         
-		}        
-		current_word = current_word->next;
-	}    
+    if (!command)
+        return;
+        
+    current_word = command->words_list;
+    while (current_word)
+    {
+        if (current_word->word_type == OUTFILE) 	// CASO REDIRECCION OUT
+        {            
+            if (current_word->next && current_word->next->word_type == WORD)
+                command->outfile = ft_strdup(current_word->next->processed_word);
+        }
+        else if (current_word->word_type == APPEND) 	// CASO REDIRECCION APPEND
+        {            
+            if (current_word->next && current_word->next->word_type == WORD)
+            {
+                command->outfile = ft_strdup(current_word->next->processed_word);
+                command->append = true;
+            }
+        }
+        else if (current_word->word_type == INFILE) 	// CASO REDIRECCION IN -> INFILE
+        {
+            if (current_word->next && current_word->next->word_type == WORD)
+                command->infile = ft_strdup(current_word->next->processed_word);
+        }
+        else if (current_word->word_type == HERE_DOC) 	// CASO REDIRECCION delimitador
+        {
+            if (current_word->next && current_word->next->word_type == WORD)
+            {
+                command->delimiter = ft_strdup(current_word->next->processed_word);
+                command->hd = true;
+            }
+        }        
+        current_word = current_word->next;
+    }    
 }
 
 // FUNCIONES AUXILIARES
+
+// Verificar si commando es builtin
+bool is_builtin_command(char *command)
+{
+    char	*builtins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
+    int 	index;
+	bool	is_builtin;
+	
+	if (!command)
+		return (false);
+	index 		= 0;
+	is_builtin 	= false;        
+    while (builtins[index])
+    {
+		if (ft_strncmp(command, builtins[index], ft_strlen(command)) == 0)
+            is_builtin = true;
+        index++;
+    }
+    return (is_builtin);
+}
 
 // calculo total argumentos -> WORD (no operadores)
 int count_word_arguments(t_word *words_list)

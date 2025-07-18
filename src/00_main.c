@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:24:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:20:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ void	input_parser(t_shell *shell)
 
 void	process_comands(t_shell *shell)
 {
-	t_command	*current_command;
+	t_cmd	*current_command;
 
-	current_command = (t_command *) shell->command_list;
+	current_command = (t_cmd *) shell->command_list;
 	while (current_command)
 	{
 		//printf("Word -> Tokenizer...				OK\n\n");

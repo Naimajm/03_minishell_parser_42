@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:47:07 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:35:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ typedef struct s_word
 }				t_word;
 
 // LISTA COMANDOS
-typedef	struct 	s_command
+/* typedef	struct 	s_command
 {
 	char		*chunk_input;		// NUEVO -> trozo input perteneciente a este proceso
 
@@ -124,8 +124,6 @@ typedef	struct 	s_command
 	char		*outfile;			// Archivo de salida
 	char		*heredoc_delimiter;	// heredoc_delimiter
 	
-	/* bool		append_mode;
-	bool		heredoc_mode;	 */
 	char		redirect_mode;  	// NUEVO !! Modo append (>>),  Modo heredoc (<<), Modo infile (<), Modo outfile (>), Pipe (|)	
 	
 	bool		is_builtin;		// flag si el comando es builtin
@@ -134,102 +132,124 @@ typedef	struct 	s_command
 	t_word *words_list;	// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
 
 	struct 		s_command	*next;
-}				t_command;
+}				t_command; */
+
+typedef	struct 	s_cmd
+{
+	char		*chunk_input;		// NUEVO -> trozo input perteneciente a este proceso
+
+	char		**args;				// Array de argumentos
+
+	char		*infile;			// Archivo de entrada	
+	char		*outfile;			// Archivo de salida
+	char		*delimiter;			// heredoc_delimiter
+
+	bool		append;				// modo append
+	bool		hd;					// modo heredoc
+	bool		is_btn;				// flag si el comando es builtin
+	int			exit_status;
+
+	t_word *words_list;				// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
+
+	struct 		s_cmd	*next;
+}				t_cmd; 
 
 // SHELL
 typedef struct	s_shell
 {
-	char			*input;
-	char			**environment;
+	char		*input;
+	char		**environment;
 
-	int				exit_status;
-	int				last_exit_status;
+	int			exit_status;
+	int			last_exit_status;
 
-	t_command		*command_list;
+	t_cmd		*command_list;
 }				t_shell;
 
 // FUNCTIONS -----------------------------------------------------
 
 /// ARCHIVOS PRINCIPALES -------------------------------------------
-// 00_main.c
+// 00_main.c 				# Función main y loop principal
 void	start_minishell(char *prompt, char **environment_var);
 void	process_comands(t_shell *shell);
 void	input_parser(t_shell *shell);
 char	*input_reader(char *prompt);
 
-// 01_shell_init.c
+// 01_shell_init.c			# Inicialización del shell
 t_shell *initialize_shell(void);
 void	load_environment_variables(t_shell *shell, char **environment_var);
 
 /// ANÁLISIS SINTÁCTICO -------------------------------------------
-// 02_syntax_analyzer.c
+// 02_syntax_analyzer.c		# Análisis sintáctico inicial
 void	syntax_analyzer(t_shell *shell);
 void	create_commands_structure(t_shell *shell);
 int 	is_pipe(char character);
 
-// 02.1_command_builder.c
-void	add_command_node(t_command **commands_list, char *input);
-void	print_commands_list(t_command *commands_list);
+// 02.1_command_builder.c	# Constructor de comandos
+void	add_command_node(t_cmd **commands_list, char *input);
+void	print_commands_list(t_cmd *commands_list);
 
 /// ANÁLISIS LÉXICO -------------------------------------------
-// 03_lexical_analyzer.c
-void	lexical_analyzer(t_command *process_list);
-int		word_extractor(t_command *process_list, int index_first_char);
-int		operator_extractor(t_command *process_list, int index_first_char);
+// 03_lexical_analyzer.c	# Análisis léxico
+void	lexical_analyzer(t_cmd *process_list);
+int		word_extractor(t_cmd *process_list, int index_first_char);
+int		operator_extractor(t_cmd *process_list, int index_first_char);
 
-// 03.1_word_builder.c
+// 03.1_word_builder.c		# Constructor de palabras
 void	add_word_node(t_word **word_list, char  *input, char word_type);
 void 	print_words_list(t_word *word_list);
 
 /// TOKENIZACIÓN -------------------------------------------
-// 04_tokenizer.c
+// 04_tokenizer.c			# Tokenización
 void	tokenizer(t_word *words_list);
 int		noquotes_tokenizer(t_word *word, int index_first_char);
 int		quotes_tokenizer(t_word *word, int index_first_char);
 int		operator_tokenizer(t_word *word, int index_first_char);
 
-// 04.1_token_builder.c
+// 04.1_token_builder.c		# Constructor de tokens
 void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_tokens_list(t_token *token_list);
 
 /// EXPANSIÓN DE VARIABLES -------------------------------------------
-//  05_variable_expander.c
+//  05_variable_expander.c	# Expansión de variables
 void	activate_expand_operators(t_word *words_list, char **environment, int exit_status);
 void	generate_expand_list(t_token *token);
 void 	resolve_expansion_values(t_token *token, char **environment, int exit_status);
 void	insert_expansion_values(t_token *token);
 
-//  05.1_expand_list.c
+//  05.1_expand_list.c		# Lista de expansiones
 int		basic_expander(t_token *token, int first_index);
 int		last_exit_status_expander(t_token *token, int first_index);
 int		curly_braces_expander(t_token *token, int first_index);
 int		literal_expander(t_token *token, int first_index);
 
-//  05.2_expand_extractor.c
+//  05.2_expand_extractor.c	# Extractor de variables
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 char	*extract_substitution_segment(char *input, int index_first_char);
 
-//	05.3_expand_builder.c
+//	05.3_expand_builder.c	 # Constructor de expansiones
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);
 void 	print_expand_nodes_list(t_expand *expand_list);
 
-//  05.4_dequotizer.c
+//  05.4_dequotizer.c		# Eliminación de comillas
 void	dequotize_tokens(t_word *words_list);
 void	remove_quotes(t_token *token);
 
 /// PROCESAMIENTO FINAL -------------------------------------------
-// 06_word_processor.c
+// 06_word_processor.c		
 void	generate_processed_word(t_word **words_list);
 void	insert_token_node(t_word *word);
 
-// 06_parser_execution.c 
-void    build_execution_structure(t_command *commands_list);
-void    extract_command_arguments(t_command *command);
-void    extract_redirections(t_command *command);
+// 07_execution_builder.c 
+void    build_execution_structure(t_cmd *commands_list);
+void    extract_command_arguments(t_cmd *command);
+void    extract_redirections(t_cmd *command);
+int     count_word_arguments(t_word *words_list);
+bool 	is_builtin_command(char *command);
 
 /// UTILIDADES Y TESTING -------------------------------------------
-// 10_utils_core.c
+// 10_utils_core.c			 # Utilidades básicas
 int 	find_index_char(const char *str, char character);
 int		is_quote(char character);
 int		is_operator(char character);
@@ -238,22 +258,22 @@ int		is_space(char character);
 // 10.1_utils_strings.c
 void	print_message_and_exit(char *message, int fd, int exit_code);
 char	*ft_strjoin_free(char *str1, char *str2);
-
-// 10.2_free_manager.c
+	
+// 10.2_free_manager.c		# Gestión de memoria
 void	cleanup_minishell(t_shell *shell);
-void	free_commands_list(t_command **commands_list);
+void	free_commands_list(t_cmd **commands_list);
 void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
 void	free_expands_list(t_expand *expand_stack);
 
 void	free_matrix(char **matrix);  // TODO -> LLEVAR A NUEVO ARCHIVO
 
-// 10.3_utils_debug.c 
+// 10.3_utils_debug.c 		# Utilidades de debug
 void	print_text_file(const char *filename);
 void	print_config_shell(t_shell *shell);
 void	print_strings_array(char **array);
 
-// 11_testing.c
+// 11_testing.c				# Testing y debugging
 void	test_lexical_analyzer(t_shell *shell);
 
 #endif

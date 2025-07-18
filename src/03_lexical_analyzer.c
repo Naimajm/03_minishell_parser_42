@@ -6,18 +6,18 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:30:17 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:20:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int	word_extractor(t_command *process_list, int index_first_char);
-int	operator_extractor(t_command *process_list, int index_first_char);
+int	word_extractor(t_cmd *process_list, int index_first_char);
+int	operator_extractor(t_cmd *process_list, int index_first_char);
 
-void	lexical_analyzer(t_command *commands_list)
+void	lexical_analyzer(t_cmd *commands_list)
 {
-	t_command	*current_command;
+	t_cmd	*current_command;
 	char		*chunck_input;
 	int			index;
 	int			chunk_len;
@@ -25,7 +25,7 @@ void	lexical_analyzer(t_command *commands_list)
 	if (!commands_list || !commands_list->chunk_input)
 		return ; 
 		
-	current_command = (t_command *) commands_list;
+	current_command = (t_cmd *) commands_list;
 
 	while (current_command)
 	{
@@ -54,7 +54,7 @@ void	lexical_analyzer(t_command *commands_list)
 	}	
 }
 
-int	word_extractor(t_command *command, int index_first_char)
+int	word_extractor(t_cmd *command, int index_first_char)
 {
 	char	*chunck_input;
 	int		index;
@@ -111,7 +111,7 @@ int	word_extractor(t_command *command, int index_first_char)
 	return (len_input);
 }
 
-int	operator_extractor(t_command *commands_list, int index_first_char)
+int	operator_extractor(t_cmd *commands_list, int index_first_char)
 {
 	int		len_input;
 

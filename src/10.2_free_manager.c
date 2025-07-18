@@ -6,13 +6,13 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:45:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:21:10 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	free_commands_list(t_command **commands_list);
+void	free_commands_list(t_cmd **commands_list);
 void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
 void	free_expands_list(t_expand *expand_stack);
@@ -34,15 +34,15 @@ void	cleanup_minishell(t_shell *shell)
 	ft_printf(FREE_ALL_SHELL);
 }
 
-void	free_commands_list(t_command **commands_list)
+void	free_commands_list(t_cmd **commands_list)
 {
-	t_command	*current_node;
-	t_command	*next_node;
+	t_cmd	*current_node;
+	t_cmd	*next_node;
 
 	if (!commands_list)
 		return ;
 	
-	current_node = (t_command *) *commands_list;
+	current_node = (t_cmd *) *commands_list;
 	while (current_node)
 	{
 		next_node = current_node->next;
@@ -56,8 +56,8 @@ void	free_commands_list(t_command **commands_list)
 			free(current_node->infile);
 		if (current_node->outfile)
 			free(current_node->outfile);
-		if (current_node->heredoc_delimiter)
-			free(current_node->heredoc_delimiter);
+		if (current_node->delimiter)
+			free(current_node->delimiter);
 		
 		// Liberar lista words
 		if (current_node->words_list)
