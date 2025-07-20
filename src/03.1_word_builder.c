@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:33:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	add_word_node(t_word **word_list, char  *input, char word_type)
 	
 	new_node = create_word_node(input, word_type); 	// inicializar nuevo nodo token
 	if (!new_node)
-		return ;
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
 	last_node = find_word_last_node(*word_list); 	// encontrar ultimo nodo y enlazar
 	
@@ -45,11 +45,11 @@ static t_word *create_word_node(char  *input, char word_type)
 
 	new_node = (t_word *) malloc(sizeof(t_word));
 	if (!new_node)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
 	new_node->raw_word      = ft_strdup(input);
 	if (!new_node->raw_word)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 
 	new_node->word_type         = word_type;
 	new_node->processed_word    = NULL;

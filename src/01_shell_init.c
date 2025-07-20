@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 10:53:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_shell *initialize_shell(void)
 
 	shell = (t_shell *) malloc(sizeof(t_shell));
 	if (!shell)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
 	shell->input 			= NULL;
 	shell->environment		= NULL;
@@ -43,7 +43,7 @@ int	load_environment_variables(t_shell *shell, char **environment)
 	int	index;
 
 	if (!shell || !environment)
-		print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
 	env_count 	= 0;
 	index 		= 0;	
 	while (environment[env_count]) 		// calculo total elementos
@@ -53,7 +53,7 @@ int	load_environment_variables(t_shell *shell, char **environment)
 	shell->environment = (char **) malloc(sizeof(char *) * (env_count + 1));
 	// validacion estado carga variables
 	if (env_count <= 0 || !shell->environment)
-		print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
 
 	while (environment[index])
 	{

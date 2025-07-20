@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/19 12:12:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 18:05:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void	free_commands_list(t_cmd **commands_list)
 		free_matrix(current_node->args);
 
 		// Liberar strings
-		if (current_node->chunk_input)
-			free(current_node->chunk_input);
+		if (current_node->command)
+			free(current_node->command);
 		if (current_node->infile)
 			free(current_node->infile);
 		if (current_node->outfile)

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 10:59:53 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int	argc, char **argv, char **environment)
 	(void) argv; 
 
 	if (!validate_environment(environment))		
-		print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
 
 	printf("Shell initialization...\t\t\t OK\n\n");
 	shell = initialize_shell();	
@@ -36,7 +36,7 @@ int	main(int	argc, char **argv, char **environment)
 	if (load_environment_variables(shell, environment) == FAILURE)		
 	{
         cleanup_minishell(shell);
-        print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+        perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
     }
 	
 	printf("Run Shell...\t\t\t\t OK\n\n");
@@ -118,7 +118,7 @@ void	process_commands(t_shell *shell)
 		tokenizer(current_command->words_list);
 
 		//printf("Tokens -> Expand variables $...			OK\n\n");
-		activate_expand_operators(current_command->words_list, shell->environment, shell->exit_status);
+		variable_expander(current_command->words_list, shell->environment, shell->exit_status);
 
 		//printf("Tokens -> Dequotize tokens...			OK\n\n");
 		dequotize_tokens(current_command->words_list);	
@@ -136,7 +136,7 @@ char	*read_user_input(char *prompt)
 
 	input = readline(prompt);
 	if (!input)
-		print_message_and_exit(ERROR_INPUT_READER, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_INPUT_READER, STDERR_FILENO, FAILURE);
 	
 	if (input[0] != '\0')  // añadir a historial si input no vacio	
 		add_history(input);

@@ -6,21 +6,12 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:43:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 19:59:09 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-//int	is_space(char character);
-
-// Función auxiliar para saltar espacios
-/* int skip_spaces(char *input, int index)
-{
-	while (input[index] && is_space(input[index]))
-		index++;
-	return (index);
-} */
 
 int find_index_char(const char *str, char character)
 {

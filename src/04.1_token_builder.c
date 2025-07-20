@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/19 12:07:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	add_token_node(t_token **token_list, char  *word, int token_type)
 		return ;       
 	new_node = create_token_node(word, token_type); // inicializar nuevo nodo token
 	if (!new_node)
-		return ;
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 	//ft_printf("token -> %s\n", new_node->token);    
 	last_node = find_last_token_node(*token_list);  // encontrar ultimo nodo y enlazar
 	
@@ -44,10 +44,10 @@ static t_token *create_token_node(char  *word, int token_type)
 
 	new_node = (t_token *) malloc(sizeof(t_token));
 	if (!new_node)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 	new_node->raw_token      = ft_strdup(word);
 	if (!new_node->raw_token)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
 
 	new_node->type              = token_type;
 	new_node->expanded_token    = NULL;

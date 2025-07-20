@@ -6,13 +6,25 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:44:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	print_message_and_exit(char *message, int fd, int exit_code)
+// Función auxiliar para avanzar index segun la longitud del string
+int	advance_index_by_length(int current_index, int length)
+{
+	if (length == FAILURE)
+		perror_exit(ERROR_ADVANCE_INDEX, STDERR_FILENO, FAILURE);
+	if (length == 0)
+		current_index++;
+	else	
+		current_index += current_index + length;
+	return (current_index);
+}
+
+void	perror_exit(char *message, int fd, int exit_code)
 {
 	if (message)
 		ft_putendl_fd(message, fd);    

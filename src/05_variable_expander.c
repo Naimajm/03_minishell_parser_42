@@ -6,21 +6,22 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/19 12:07:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 20:47:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	generate_expand_list(t_token *token); 
+void	expand_single_token(t_token *token, char **environment, int exit_status);
+void	extract_expansion_nodes(t_token *token); 
 void 	resolve_expansion_values(t_token *token, char **environment, int exit_status);
 void	insert_expansion_values(t_token *token);
 int		insert_expand_node_value(t_token *token);
 
-void	activate_expand_operators(t_word *words_list, char **environment, int exit_status)
+void	variable_expander(t_word *words_list, char **environment, int exit_status)
 {
 	t_word	*current_word;
-	t_token			*current_token;
+	t_token	*current_token;
 
 	if (!words_list)
 		return ;
@@ -31,21 +32,24 @@ void	activate_expand_operators(t_word *words_list, char **environment, int exit_
 		current_token = (t_token *) current_word->tokens_list;
 		while (current_token)
 		{
-			//printf("(activate_expand_operators) token->raw_token -> %s\n", current_token->raw_token);	
-			generate_expand_list(current_token); 								// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
-			resolve_expansion_values(current_token, environment, exit_status); 	// resolver valores	
-			insert_expansion_values(current_token); 							// INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
-
-			//print_expand_list(current_token->expand_list);		
+			expand_single_token(current_token, environment, exit_status);
 			current_token = current_token->next;
 		}	
 		current_word = current_word->next;
-	}	
-	//printf("(activate_expand_operators)\n");
-	//print_token_list(shell->token_list);		
+	}		
 }
 
-void generate_expand_list(t_token *token)
+void	expand_single_token(t_token *token, char **environment, int exit_status)
+{
+	if (!token)
+		return ;
+	
+	extract_expansion_nodes(token);			// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
+	resolve_expansion_values(token, environment, exit_status);	// resolver valores	
+	insert_expansion_values(token);			// INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
+}
+
+void	extract_expansion_nodes(t_token *token)
 {
 	int		index;
 	int		subs_len;

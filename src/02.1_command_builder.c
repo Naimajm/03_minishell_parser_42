@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/19 10:28:02 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	add_command_node(t_cmd **commands_list, char *input)
 	
 	new_node = create_command_node(input); 				// inicializar nuevo nodo token
 	if (!new_node)
-		return ;		
+		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, FAILURE);
 	last_node = find_command_last_node(*commands_list); // encontrar ultimo nodo y enlazar
 	
 	if (!last_node)     								
@@ -41,15 +41,15 @@ static t_cmd *create_command_node(char *input)
 	t_cmd *new_node;
 
 	if (!input)
-		return (NULL);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 
 	new_node = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!new_node)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
-	new_node->chunk_input = ft_strdup(input);
-	if (!new_node->chunk_input)
-		print_message_and_exit(ERROR_STRUCT_INITIALIZATION, STDERR_FILENO, FAILURE);
+	new_node->command = ft_strdup(input);
+	if (!new_node->command)
+		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, FAILURE);
 
 	new_node->args			= NULL;    
 
@@ -92,7 +92,7 @@ void print_commands_list(t_cmd *commands_list)
 		printf("┌──────────────┐\n");
 		printf("| command [%i]  |\n", node_index);		
 		printf("└──────────────┘\n");
-		printf("\t chunck_input \t-> %s\n", command->chunk_input);   
+		printf("\t command \t-> %s\n", command->command);   
 		printf("\t current -> %p // ", command);
 		printf("next -> %p\n", command->next);		      
 		
