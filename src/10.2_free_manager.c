@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 13:21:10 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/19 12:12:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	cleanup_minishell(t_shell *shell)
 	if (shell->environment)						// free copia variables entorno
 		free_matrix(shell->environment);
 
-	if (shell->command_list) 					// free lista comandos
-		free_commands_list(&shell->command_list);
+	if (shell->commands_list) 					// free lista comandos
+		free_commands_list(&shell->commands_list);
 
 	free(shell);
 	shell = NULL;
@@ -100,14 +100,14 @@ void	free_words_list(t_word **words_list)
 	ft_printf(FREE_WORDS_LIST);
 }
 
-void	free_tokens_list(t_token **token_list)
+void	free_tokens_list(t_token **tokens_list)
 {
 	t_token	*current_node;
 	t_token	*next_node;
 
-	if (!token_list)
+	if (!tokens_list)
 		return ;
-	current_node = (t_token *) *token_list;
+	current_node = (t_token *) *tokens_list;
 	while (current_node)
 	{
 		next_node = current_node->next;
@@ -121,27 +121,40 @@ void	free_tokens_list(t_token **token_list)
 			free(current_node->noquotes_token);
 
 		// Liberar lista nodos expand		
-		if (current_node->expand_list)
-			free_expands_list((*token_list)->expand_list);
+		if (current_node->expands_list)
+			free_expands_list((*tokens_list)->expands_list);
 
 		free(current_node);		// Liberar nodo actual		
 		current_node = next_node; 
 	}
-	*token_list = NULL;
-	ft_printf(FREE_TOKENS);
+	*tokens_list = NULL;
+	ft_printf(FREE_TOKENS_LIST);
 }
 
-void	free_expands_list(t_expand *expand_list)
+void	free_expands_list(t_expand *expands_list)
 {
-	if (!expand_list)
-		return ;
+	t_expand	*current_node;
+	t_expand	*next_node;
 
-	if (expand_list->key)
-		free(expand_list->key);
-	if (expand_list->value)
-		free(expand_list->value);
-	free(expand_list);		// Liberar nodo actual
-	expand_list = NULL;
+	if (!expands_list)
+		return ;
+	current_node = (t_expand *) expands_list;
+	while (current_node)
+	{
+		next_node = current_node->next;
+
+		// Liberar strings
+		if (expands_list->substitution_str)
+			free(expands_list->substitution_str);
+		if (expands_list->key)
+			free(expands_list->key);
+		if (expands_list->value)
+			free(expands_list->value);
+
+		free(current_node);		// Liberar nodo actual		
+		current_node = next_node;
+	}
+	ft_printf(FREE_EXPANDS_LIST);
 }
 
 void	free_matrix(char **matrix)

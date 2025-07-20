@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:33:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/19 12:07:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static t_token *create_token_node(char  *word, int token_type)
 	new_node->expanded_token    = NULL;
 	new_node->noquotes_token    = NULL;
 
-	new_node->expand_list   = NULL;
+	new_node->expands_list   = NULL;
 	new_node->next	        = NULL;
 
 	//ft_printf("new_node -> %s\n", new_node->token);
@@ -91,7 +91,7 @@ void print_tokens_list(t_token *token_list)
 
 		printf("\t\t\t raw_token \t\t-> %s\n", token->raw_token);         
 		
-		print_expand_nodes_list(token->expand_list);                            // IMPRESION LISTA NODOS EXPAND 
+		print_expand_nodes_list(token->expands_list);                            // IMPRESION LISTA NODOS EXPAND 
 		
 		printf("\t\t\t expanded_token \t-> %s\n", token->expanded_token);   // TOKEN YA EXPANDIDO         
 		printf("\t\t\t └──> noquotes_token \t-> %s\n", token->noquotes_token); // TOKEN sin comillas

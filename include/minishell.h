@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 13:35:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 10:54:10 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@
 # define PROMPT				"minishell$ "
 
 # define FREE_ALL_SHELL		"Free\n Total cleaning minishell... OK\n"
-# define FREE_COMMANDS_LIST	"Free\n Commands list... OK\n"
+# define FREE_COMMANDS_LIST	"Free\n Commands list...\t\t\t OK\n"
 # define FREE_WORDS_LIST	"Free\n Words list... OK\n"
-# define FREE_TOKENS		"Free\n Token List... OK\n"
-# define FREE_MATRIX		"Free\n cleaning matrix... OK\n"
+# define FREE_TOKENS_LIST	"Free\n Tokens List... OK\n"
+# define FREE_EXPANDS_LIST	"Free\n Expands List... OK\n"
+# define FREE_MATRIX		"Free\n Cleaning matrix... OK\n"
 
 // categorizacion TIPOS WORD_TOKEN
 # define WORD					'W'		// W -> palabra generica no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
@@ -61,12 +62,6 @@
 # define SINGLE_QUOTES			3		// 3 -> palabras con comillas simples -> literal
 # define DOUBLE_QUOTES			4		// 4 -> palabras con comillas dobles -> expansion variables
 # define OPERATOR				5		// 5 -> operador (< << > >> |)
-
-/* # define OUTFILE				5		// 5 -> operador > OUTFILE
-# define APPEND_OPERATOR		6		// 6 -> operador >> APPEND
-# define INFILE					7		// 7 -> operador < INFILE
-# define HERE_DOC				8		// 8 -> operador <> HERE_DOC
-# define PIPE					9		// 9 -> operador | PIPE */
 
 // categorizacion VARIABLES EXPANDIDAS
 # define BASIC_EXPANSION		1		// 1 -> expansion basica
@@ -96,7 +91,7 @@ typedef struct s_token
 	char		*expanded_token;	
 	char		*noquotes_token;
 	
-	t_expand	*expand_list; 			// lista nodos expansion variables
+	t_expand	*expands_list; 			// lista nodos expansion variables
 	
 	struct		s_token	*next;	
 }				t_token;
@@ -163,21 +158,23 @@ typedef struct	s_shell
 	int			exit_status;
 	int			last_exit_status;
 
-	t_cmd		*command_list;
+	t_cmd		*commands_list;
 }				t_shell;
 
 // FUNCTIONS -----------------------------------------------------
 
 /// ARCHIVOS PRINCIPALES -------------------------------------------
 // 00_main.c 				# Función main y loop principal
-void	start_minishell(char *prompt, char **environment_var);
-void	process_comands(t_shell *shell);
-void	input_parser(t_shell *shell);
-char	*input_reader(char *prompt);
+int		main(int	argc, char **argv, char **environment);
+void	run_shell(t_shell *shell);
+void	process_input(t_shell *shell);
+void	process_commands(t_shell *shell);
+char	*read_user_input(char *prompt);
 
 // 01_shell_init.c			# Inicialización del shell
+int		validate_environment(char **environment);
 t_shell *initialize_shell(void);
-void	load_environment_variables(t_shell *shell, char **environment_var);
+int		load_environment_variables(t_shell *shell, char **environment);
 
 /// ANÁLISIS SINTÁCTICO -------------------------------------------
 // 02_syntax_analyzer.c		# Análisis sintáctico inicial

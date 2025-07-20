@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:38:16 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/19 12:07:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	basic_expander(t_token *token, int first_index)
 	if (!substitution_str)
 		return (FAILURE);	
 	len_input = ft_strlen(substitution_str);
-	expand_node = add_expand_node(&token->expand_list, substitution_str, first_index, BASIC_EXPANSION);
+	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, BASIC_EXPANSION);
 
 	key = extract_key(substitution_str, 1); // index 0 -> $	
 	expand_node->key = key;
@@ -55,7 +55,7 @@ int	last_exit_status_expander(t_token *token, int first_index)
 	if (!substitution_str)
 		return (FAILURE);
 	len_input = ft_strlen(substitution_str);
-	expand_node = add_expand_node(&token->expand_list, substitution_str, first_index, LAST_EXIT_STATUS);	
+	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LAST_EXIT_STATUS);	
 
 	key = ft_strdup("$?");
 	expand_node->key = key;
@@ -90,7 +90,7 @@ int	curly_braces_expander(t_token *token, int first_index)
 	len_input = ft_strlen(substitution_str);
 	//printf("len_input _> %i\n", len_input);
 	
-	expand_node = add_expand_node(&token->expand_list, substitution_str, first_index, CURLY_BRACES);
+	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, CURLY_BRACES);
 	
 	key = extract_key(substitution_str, 1); 	// index 0 -> $
 	key = ft_strtrim(key, "{}");  				// cortar {}
@@ -117,7 +117,7 @@ int	literal_expander(t_token *token, int first_index)
 		return (FAILURE);
 	//ft_printf("substitution_str -> %s\n", substitution_str);
 	len_input = ft_strlen(substitution_str);
-	expand_node = add_expand_node(&token->expand_list, substitution_str, first_index, LITERAL);		
+	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LITERAL);		
 
 	key = ft_strdup(substitution_str);
 	expand_node->key = key;

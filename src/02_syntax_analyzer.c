@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:29:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 11:14:42 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,11 @@ void	syntax_analyzer(t_shell *shell)
 		
 	// VALIDACION SINTACTICA
 	/* if (validate_syntax(words_list) == FAILURE)
-	{
 		print_message_and_exit(ERROR_SYNTAX, STDERR_FILENO, FAILURE);
-		return;
-	} */
+	*/
 
 	// CREAR ESTRUCTURA COMANDOS
+	printf("Generated command: '\n");
 	create_commands_structure(shell);	
 	
 }
@@ -50,6 +49,7 @@ void	create_commands_structure(t_shell *shell)
 {
 	int		index;
 	int		input_len;
+	//int		chunk_len;
 
 	if (!shell || !shell->input)
 		return ; 	
@@ -78,8 +78,8 @@ void	create_commands_structure(t_shell *shell)
 		// Si encontramos un pipe, saltarlo para el siguiente comando
 		if (is_pipe(shell->input[index]))
 		{
-			index++; // Saltar el pipe
 			printf("Found pipe, creating new command structure\n");
+			index++; // Saltar el pipe			
 		}	
 	}	
 }
@@ -146,7 +146,7 @@ int generate_command(t_shell *shell, int index_first_char)
 	if (len_input > 0)
 	{
 		printf("Generated command: '%s'\n", chunk_input);
-		add_command_node(&shell->command_list, chunk_input);
+		add_command_node(&shell->commands_list, chunk_input);
 	}
 	
 	free(chunk_input);

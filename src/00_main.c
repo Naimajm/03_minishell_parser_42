@@ -6,85 +6,112 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 13:20:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/20 10:59:53 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	process_comands(t_shell *shell);
-void	input_parser(t_shell *shell);
-char	*input_reader(char *prompt);
+void	run_shell(t_shell *shell);
+void	process_commands(t_shell *shell);
+void	process_input(t_shell *shell);
+char	*read_user_input(char *prompt);
 
-void	start_minishell(char *prompt, char **environment_var)
+// MAIN -----------------------------------------------------------------------
+
+int	main(int	argc, char **argv, char **environment)
+{
+	t_shell	*shell;
+
+	(void) argc;
+	(void) argv; 
+
+	if (!validate_environment(environment))		
+		print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+
+	printf("Shell initialization...\t\t\t OK\n\n");
+	shell = initialize_shell();	
+	
+	printf("Loading environment variables...\t\t\t OK\n\n");
+	if (load_environment_variables(shell, environment) == FAILURE)		
+	{
+        cleanup_minishell(shell);
+        print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+    }
+	
+	printf("Run Shell...\t\t\t\t OK\n\n");
+	run_shell(shell);
+
+    cleanup_minishell(shell);		
+	return (SUCCESS);
+}
+
+void	run_shell(t_shell *shell)
 {
 	char	*input;
-	t_shell	*shell;	
 	
-	if (!prompt || !environment_var)						// validacion inputs
+	if (!shell)											// validacion inputs
 		return ;
-	input = NULL;
-	
-	shell = initialize_shell();								// inicializar shell	
-	load_environment_variables(shell, environment_var);		// cargar variables entorno
-	
-	// loop ppal
-	while (1)
+	while (1)											// loop ppal
 	{
-		// LEER INPUT
-		input = input_reader(prompt);
+		printf("Input Reading...\t\t\t OK\n\n");
+		input = read_user_input(PROMPT);
 		if (!input)
 			break ;
-		shell->input = input;
-		ft_printf("Processing: %s\n", shell->input);
+		shell->input = ft_strdup(input);				// Copia segura input
+		if (!shell->input)
+			free(input);
+			
+		printf("Input Processing... %s\n", shell->input);	
+		process_input(shell);
 
-		// PARSEAR INPUT
-		input_parser(shell);
-
-		// validacion estructura shell
-		//print_config_shell(shell);	
 		
-		// EJECUTAR COMAND
+		//print_config_shell(shell);					// Debug
 
 		// LIBERAR INPUT
 		free(input);
-		input = NULL;
+		free(shell->input);
+		shell->input = NULL;
 	}	
-	// free final
-	if (shell)
-		cleanup_minishell(shell);
 }
 
-void	input_parser(t_shell *shell)
+void	process_input(t_shell *shell)
 {
-	printf("Syntax_analyzer...				OK\n\n");
+	if (!shell || !shell->input)
+		return ;
+
+	printf("Syntax analyzer...\t\t\t OK\n");
 	syntax_analyzer(shell);
 
 	// check error sintaxis tokens? o commands?
 
-	printf("Lexical_analyzer...				OK\n\n");
-	lexical_analyzer(shell->command_list);	
+	printf("Lexical analyzer...\t\t\t OK\n");
+	lexical_analyzer(shell->commands_list);	
 
-	printf("Process Comands...				OK\n\n");
-	process_comands(shell);
+	printf("Process Comands...\t\t\t OK\n");
+	process_commands(shell);
 
-	printf("Generating execution structure...	OK\n\n");
-	build_execution_structure(shell->command_list);
-
-	
+	printf("Generating execution structure...\t OK\n");
+	build_execution_structure(shell->commands_list);	
 	
 	//printf("Test ->...					OK\n\n");
-	//test_lexical_analyzer(shell);
+	//test_lexical_analyzer(shell);	
+
+	// EJECUTAR COMANDOS
+    // execute_commands(shell->command_list);
 	
-	print_commands_list(shell->command_list);
-	//print_words_list(shell->words_list);	
+	print_commands_list(shell->commands_list);		// Debug
+
+	// LIBERAR ESTRUCTURAS COMMANDS
+	free_commands_list(&shell->commands_list);
+	shell->commands_list = NULL;
 }
 
-void	process_comands(t_shell *shell)
+void	process_commands(t_shell *shell)
 {
 	t_cmd	*current_command;
 
-	current_command = (t_cmd *) shell->command_list;
+	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{
 		//printf("Word -> Tokenizer...				OK\n\n");
@@ -103,7 +130,7 @@ void	process_comands(t_shell *shell)
 	}	
 }
 
-char	*input_reader(char *prompt)
+char	*read_user_input(char *prompt)
 {
 	char	*input;
 
@@ -116,21 +143,4 @@ char	*input_reader(char *prompt)
 	return (input);
 }
 
-// MAIN -----------------------------------------------------------------------
 
-int	main(int	argc, char **argv, char **env)
-{
-	(void) argc;
-	(void) argv;
-
-	// DASHBOARD PROYECTO
-	//print_text_file("_work_process.txt");	
-
-	if (!*env)
-		print_message_and_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
-
-	// INICIO
-	start_minishell(PROMPT, env);
-		
-	return (SUCCESS);
-}

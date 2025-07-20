@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:36:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/19 12:07:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 
 	if (!token || !environment)
 		return ;
-	expand_node = (t_expand *) token->expand_list;
+	expand_node = (t_expand *) token->expands_list;
 	while (expand_node)
 	{
 		//value = NULL;
@@ -108,7 +108,7 @@ void	insert_expansion_values(t_token *token)
 	int			 last_position;
 
 	//printf("(insert_expansion_values) token->raw_token -> %s\n", token->raw_token);	
-	if (!token || !token->expand_list || token->type == SINGLE_QUOTES)   // tokens literales o NO HAY EXPANSION VARIABLE
+	if (!token || !token->expands_list || token->type == SINGLE_QUOTES)   // tokens literales o NO HAY EXPANSION VARIABLE
 	{	
 		token->expanded_token = ft_strdup(token->raw_token);
 		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
@@ -131,7 +131,7 @@ int	insert_expand_node_value(t_token *token)
 
 	if (!token)
 		return (0);
-	current_node = (t_expand *) token->expand_list;
+	current_node = (t_expand *) token->expands_list;
 	result = ft_strdup("");
 	last_position 	= 0;
 	while (current_node)

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 13:40:18 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/19 10:28:02 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void print_commands_list(t_cmd *commands_list)
 		printf("| command [%i]  |\n", node_index);		
 		printf("└──────────────┘\n");
 		printf("\t chunck_input \t-> %s\n", command->chunk_input);   
-		printf("current -> %p // ", command);
+		printf("\t current -> %p // ", command);
 		printf("next -> %p\n", command->next);		      
 		
 		printf("\t infile \t-> %s\n", command->infile);    

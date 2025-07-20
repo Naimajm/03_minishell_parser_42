@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 14:06:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/18 12:46:55 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/19 11:14:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,13 +130,13 @@ void test_lexical_analyzer(t_shell *shell)
 		// Copiar test case a input
 		shell->input = ft_strdup(test_cases[index]);
 		syntax_analyzer(shell); 
-		lexical_analyzer(shell->command_list);
+		lexical_analyzer(shell->commands_list);
 
 		printf("Current output:\n");
-		print_words_list(shell->command_list->words_list);
+		print_words_list(shell->commands_list->words_list);
 
 		// Comparar estructuras usando la función de comparación
-		int test_passed = compare_word_token_structures(shell->command_list->words_list, expected_results[index]);
+		int test_passed = compare_word_token_structures(shell->commands_list->words_list, expected_results[index]);
 		
 		if (test_passed)
 		{
@@ -151,8 +151,8 @@ void test_lexical_analyzer(t_shell *shell)
 
 		// Limpiar memoria
 		free(shell->input);
-		free_commands_list(&shell->command_list);
-		shell->command_list = NULL;
+		free_commands_list(&shell->commands_list);
+		shell->commands_list = NULL;
 
 		index++;
 	}
