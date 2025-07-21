@@ -6,13 +6,13 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 11:55:59 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:31:45 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_token	*find_last_token_node(t_token *token_list);
+static t_token	*find_token_last_node(t_token *token_list);
 static t_token *create_token_node(char  *input, int type_token);
 void print_tokens_list(t_token *token_list);
 
@@ -27,7 +27,7 @@ void	add_token_node(t_token **token_list, char  *word, int token_type)
 	if (!new_node)
 		perror_exit(ERROR_TOKEN_INITIALIZATION, STDERR_FILENO, FAILURE);
 	//ft_printf("token -> %s\n", new_node->token);    
-	last_node = find_last_token_node(*token_list);  // encontrar ultimo nodo y enlazar
+	last_node = find_token_last_node(*token_list);  // encontrar ultimo nodo y enlazar
 	
 	if (!last_node)                                 // caso lista vacio -> añadir en 1º nodo
 		*token_list = new_node;   
@@ -60,7 +60,7 @@ static t_token *create_token_node(char  *word, int token_type)
 	return  (new_node);
 }
 
-static t_token	*find_last_token_node(t_token *token_list)
+static t_token	*find_token_last_node(t_token *token_list)
 {
 	// validation 
 	if (!token_list)

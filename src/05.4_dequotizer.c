@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:25:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 15:49:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,11 @@ void	remove_quotes(t_token *tokens_list)
 				perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 		}
 		else
+		{
 			current_token->noquotes_token = ft_strdup(current_token->expanded_token);	
 			if (!current_token->noquotes_token)
 				perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		}			
 		//printf("(dequotize) token->final_token-> %s\n", current_token->final_token);		
 		current_token = current_token->next;
 	}	

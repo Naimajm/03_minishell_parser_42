@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:38:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:34:18 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,27 @@ void	add_command_node(t_cmd **commands_list, char *input)
 	if (!commands_list || !input) 						// validation inputs
 		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  
 	
+	//printf("add_command_node: '%s'\n", input);
 	new_node = create_command_node(input); 				// inicializar nuevo nodo token
+	
 	if (!new_node)
 		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, FAILURE);
 	last_node = find_command_last_node(*commands_list); // encontrar ultimo nodo y enlazar
-	
+	printf("add_command_node: last_node '%p'\n", last_node);
 	if (!last_node)     								
 		*commands_list = new_node;   					// caso lista vacio -> añadir en 1º nodo
 	else            								    
 		last_node->next = new_node;						// lista no vacia  
+
 }
 
 static t_cmd *create_command_node(char *input)
 {
 	t_cmd *new_node;
-
+	//printf("add_command_node: '%s'\n", input);
 	if (!input)
 		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
-
+	
 	new_node = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!new_node)
 		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
@@ -57,7 +60,6 @@ static t_cmd *create_command_node(char *input)
 	new_node->outfile    	= NULL;
 	new_node->delimiter		= NULL;
 
-	//new_node->redirect_mode = 0;
 	new_node->append		= false;
 	new_node->hd			= false;	
 	new_node->is_btn		= false;
@@ -65,16 +67,17 @@ static t_cmd *create_command_node(char *input)
 
 	new_node->words_list	= NULL;
 	new_node->next	        = NULL;
-	//ft_printf("new_word_node -> %s\n", new_node->token);
+	//ft_printf("new_word_node -> %s\n", new_node->token);	
 	return  (new_node);
 }
 
 static t_cmd	*find_command_last_node(t_cmd *commands_list)
 {    
 	if (!commands_list) 						
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
+		return (NULL);
 	while (commands_list->next)
 		commands_list = commands_list-> next; 	// retorna puntero a ultimo nodo    
+	//printf("find_command_last_node: '%p'\n", commands_list);
 	return (commands_list);
 }
 

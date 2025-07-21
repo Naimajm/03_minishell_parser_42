@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:23:21 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 17:52:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,17 +62,16 @@ char	*get_environment_var(char **env, char *variable)
 	{		
 		match = ft_strncmp(env[index], variable, ft_strlen(variable));
 		//ft_printf("match ? %d\n", match);
-		if (!match)
-			value = ft_strdup(&env[index][ft_strlen(variable) + 1]);  // copiar valor pasado signo '='
-			if (!value)
-				perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		if (!match && env[index][ft_strlen(variable)] == '=')			// coincidencia exacta
+		{
+			value = ft_strdup(&env[index][ft_strlen(variable) + 1]);  	// copiar valor pasado signo '='
+			return (value);
+		}			
 		index++;
 	}
 	// CASO NO COINCIDENCIA
-	if (!value)
-		value = ft_strdup("");     // cambiar NULL a vacio si no hay coincidencia
-	//ft_printf("get_env / value -> %s\n", value);
-	return (value);	
+	//ft_printf("get_environment_var / value -> %s\n", value);
+	return (NULL);	
 }
 
 char	*extract_substitution_segment(char *raw_token, int first_index)

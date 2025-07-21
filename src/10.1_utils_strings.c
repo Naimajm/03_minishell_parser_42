@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:30:58 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 18:08:02 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	advance_index_by_length(int current_index, int length)
 	if (length == 0)
 		current_index++;
 	else	
-		current_index += current_index + length;
+		current_index += length;
 	return (current_index);
 }
 
@@ -36,9 +36,16 @@ char *ft_strjoin_free(char *str1, char *str2)
 {
 	char *result;
 	
-	if (!str1 || !str2)
+	if (!str1 && !str2)
 		return (NULL);
-	result = ft_strjoin(str1, str2);
+
+	// casos NULL 
+	if (!str1)
+        result = ft_strdup(str2);
+    if (!str2)
+        result = ft_strdup(str1);
+	else
+		result = ft_strjoin(str1, str2);
 	if (!result)
 		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	free(str1);

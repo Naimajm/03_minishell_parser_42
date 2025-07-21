@@ -53,6 +53,12 @@ echo "aa $HOME $? bb \$literal ${HOME}xxx zz" | valgrind --leak-check=full ./min
 #Test Patrick
 echo "cat ho"la' a'$e" tal'l   ,qu'e" hac"e"s | valgrind --leak-check=full ./minishell
 
-input  ->  "cat ho"la' a'$e" tal'l   ,qu'e" hac"e"s
+input  ->  "cat ho"la' a'$USER" tal'l   ,qu'e" hac"e"s
 output ->  [cat hola a tal'l   ,qu'e] [haces]
 
+# Test busqueda expansion variable con environment -> 2 variables casi coincidentes -> $USER vs USER_ZDOTDIR
+$USER 
+
+# Test no encuentra variable en environment
+input  ->  xx"aaa$ezzz"xx
+output ->  xxaaaxx

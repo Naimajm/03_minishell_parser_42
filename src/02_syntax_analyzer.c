@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:37:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 17:13:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ void	syntax_analyzer(t_shell *shell)
 	*/
 
 	// CREAR ESTRUCTURA COMANDOS
-	printf("Generated command: '\n");
-	create_commands_structure(shell);	
-	
+	create_commands_structure(shell);		
 }
 
 /* int validate_syntax(t_command *commands)
@@ -54,8 +52,6 @@ void	create_commands_structure(t_shell *shell)
 	if (!shell || !shell->input)
 		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);		
 	index = 0;	
-	//input_len = ft_strlen(shell->input);
-
 	while (shell->input[index])
 	{
 		while (is_space(shell->input[index])) 	// ignorar espacios iniciales 
@@ -65,6 +61,7 @@ void	create_commands_structure(t_shell *shell)
 		
 		// CLASIFICACION LISTA PROCESOS
 		input_len = generate_command(shell, index);
+
 
 		// GESTION CASOS ESPECIALES AVANCE INDEX
 		index = advance_index_by_length(index, input_len);
@@ -92,8 +89,8 @@ int generate_command(t_shell *shell, int start_index)
 	char	active_quote_char;
 	char 	character;
 
-	if (!shell->input)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
+	/* if (!shell)
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	 */
 
 	index = start_index;
 	inside_quotes = false;
@@ -131,14 +128,15 @@ int generate_command(t_shell *shell, int start_index)
 		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, FAILURE);	
 	
 	command_len = ft_strlen(command_input);
-
 	// AÑADIR NODO COMMAND
 	if (command_len > 0)
 	{
-		printf("Generated command: '%s'\n", command_input);
+		printf("Generated command: '%s'\n", command_input);		
 		add_command_node(&shell->commands_list, command_input);
+		printf("DEBUG: add_command_node completed successfully\n");
 	}	
 	free(command_input);
+	//printf("DEBUG: returning command_len=%d\n", command_len);
 	return (command_len);
 }
 
@@ -163,9 +161,13 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 		raw_command[len - 1] = '\0';
 		len--;
 	}
-
 	// Crear copia limpia
 	clean_command = ft_strtrim(raw_command, " \t\n\r");
+	if (!clean_command)
+	{
+    	free(raw_command);
+    	perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+	}
 	free(raw_command);
 
 	return (clean_command);
