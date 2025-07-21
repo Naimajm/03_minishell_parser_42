@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 12:59:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	tokenizer(t_word *words_list)
 	t_word	*current_word;
 
 	if (!words_list)
-		return ; 	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{
@@ -38,7 +38,7 @@ void	word_tokenizer(t_word *word)
 	int		token_len;
 
 	if (!word)
-		return ; 	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	 	
 	raw_word = word->raw_word;		
 	index = 0;	
 	while (raw_word[index])
@@ -69,7 +69,7 @@ int	noquotes_tokenizer(t_word *word, int start_index)
 	int		len_input;
 
 	if (!word || !word->raw_word)
-		return (FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
 	raw_word 	= (char *) word->raw_word;
 	index 		= start_index;
 	len_input 	= 0;	
@@ -82,7 +82,7 @@ int	noquotes_tokenizer(t_word *word, int start_index)
 		
 	token_input = ft_substr(raw_word, start_index, (index - start_index)); // copiar sub substr
 	if (!token_input)
-		return (FAILURE);
+		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, FAILURE);
 		
 	len_input = ft_strlen(token_input);
 	add_token_node(&word->tokens_list, token_input, NO_QUOTES);			
@@ -118,7 +118,7 @@ int	quotes_tokenizer(t_word *word, int start_index)
 
 	token_input = ft_substr(raw_word, start_index, (index - start_index)); // copia expresion con comillas incluidas
 	if (!token_input)
-		return (FAILURE);	
+		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, FAILURE);	
 
 	// Determinar tipo de token
 	if (delimiter == '\"')
@@ -165,5 +165,3 @@ int	operator_tokenizer(t_word *word, int start_index)
 		add_token_node(&word->tokens_list, "|", OPERATOR);	
 	return (len_input = 1);
 }
-
-

@@ -6,22 +6,22 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 20:18:22 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 12:16:50 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 void	command_extractor(t_cmd *command);
-int	word_extractor(t_cmd *process_list, int start_index);
-int	operator_extractor(t_cmd *process_list, int start_index);
+int		word_extractor(t_cmd *process_list, int start_index);
+int		operator_extractor(t_cmd *process_list, int start_index);
 
 void	lexical_analyzer(t_cmd *commands_list)
 {
 	t_cmd	*current_command;
 	
 	if (!commands_list)
-		return ; 
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE); 
 		
 	current_command = (t_cmd *) commands_list;
 	while (current_command)
@@ -38,7 +38,7 @@ void	command_extractor(t_cmd *command)
 	int		command_len;
 
 	if (!command)
-		return ; 
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE); 
 		
 	command_input = command->command;
 	index = 0;	
@@ -71,7 +71,7 @@ int	word_extractor(t_cmd *command, int start_index)
 	char	character;
 
 	if (!command->command)
-		return (FAILURE);    
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);   
 	index = start_index;    
 	current_quote = 0;
 	quote_state = false;
@@ -109,7 +109,7 @@ int	word_extractor(t_cmd *command, int start_index)
 	
 	command_input = ft_substr(command->command, start_index, (index - start_index));
 	if (!command_input)
-		return (FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	
 	len_input = ft_strlen(command_input);
 	add_word_node(&command->words_list, command_input, WORD);

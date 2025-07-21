@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 22:35:32 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:41:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 # define SUCCESS	0
 # define FAILURE	-1
 
-
-
 // ERRORES GENERALES
 # define ERROR_ENVIRONMENT				"Error\n Environment unavailable or empty\n"
 # define ERROR_OPEN_FILE				"Error\n Opening file\n"
@@ -39,109 +37,27 @@
 # define ERROR_ADVANCE_INDEX			"Error\n Index advance error\n"
 
 // ERRORES CONSTRUCCION
-# define ERROR_STRUCT_INITIALIZATION	"Error\n Structure initialization error\n" 
+# define ERROR_INITIALIZATION			"Error\n Initialization error\n" 
 # define ERROR_COMMAND_INITIALIZATION	"Error\n Command structure initialization failed\n" 
 # define ERROR_WORD_INITIALIZATION		"Error\n Word structure initialization failed\n" 
 # define ERROR_TOKEN_INITIALIZATION		"Error\n Token structure initialization failed\n" 
 # define ERROR_EXPAND_INITIALIZATION	"Error\n Expand structure initialization failed\n" 
 
-// ERRORES DE SINTAXIS Y PARSING
-# define ERROR_QUOTE_SYNTAX	"Error\n Simple/double quote syntax. Not closed\n"
-
 // ERRORES DE VALIDACIÓN
 # define ERROR_INVALID_INPUT			"Error\n Invalid input parameter\n"
+# define ERROR_MEMORY_ALLOCATION		"Error\n Memory allocation failed\n"
 
-// ERROR CONSTRUCCION ESTRUCTURAS
+// ERRORES DE SINTAXIS Y PARSING
+# define ERROR_QUOTE_SYNTAX				"Error\n Simple/double quote syntax. Not closed\n"
 
-/* // ERRORES GENERALES
-# define ERROR_ENVIRONMENT				"Error: Environment unavailable or empty\n"
-# define ERROR_OPEN_FILE				"Error: Opening file\n"
-# define ERROR_INPUT_READER				"Error: Failed to read user input\n"
-# define ERROR_MEMORY_ALLOCATION		"Error: Memory allocation failed\n"
-# define ERROR_NULL_POINTER				"Error: Null pointer detected\n"
-
+/* 
 // ERRORES DE SINTAXIS Y PARSING
 # define ERROR_QUOTE_SYNTAX				"Error: Unmatched quotes detected\n"
 # define ERROR_PIPE_SYNTAX				"Error: Invalid pipe syntax\n"
 # define ERROR_REDIRECT_SYNTAX			"Error: Invalid redirection syntax\n"
 # define ERROR_COMMAND_EMPTY			"Error: Empty command detected\n"
 # define ERROR_INVALID_OPERATOR			"Error: Invalid operator sequence\n"
-
-// ERRORES DE CONSTRUCCIÓN - COMMAND BUILDER
-# define ERROR_COMMAND_CREATION			"Error: Failed to create command node\n"
-# define ERROR_COMMAND_INITIALIZATION	"Error: Command structure initialization failed\n"
-# define ERROR_COMMAND_DUPLICATION		"Error: Failed to duplicate command string\n"
-# define ERROR_COMMAND_LIST_CORRUPTED	"Error: Command list structure corrupted\n"
-
-// ERRORES DE CONSTRUCCIÓN - WORD BUILDER  
-# define ERROR_WORD_CREATION			"Error: Failed to create word node\n"
-# define ERROR_WORD_INITIALIZATION		"Error: Word structure initialization failed\n"
-# define ERROR_WORD_DUPLICATION			"Error: Failed to duplicate word string\n"
-# define ERROR_WORD_EXTRACTION			"Error: Word extraction failed\n"
-# define ERROR_WORD_LIST_CORRUPTED		"Error: Word list structure corrupted\n"
-
-// ERRORES DE CONSTRUCCIÓN - TOKEN BUILDER
-# define ERROR_TOKEN_CREATION			"Error: Failed to create token node\n"
-# define ERROR_TOKEN_INITIALIZATION		"Error: Token structure initialization failed\n"
-# define ERROR_TOKEN_DUPLICATION		"Error: Failed to duplicate token string\n"
-# define ERROR_TOKEN_CLASSIFICATION		"Error: Token classification failed\n"
-# define ERROR_TOKEN_LIST_CORRUPTED		"Error: Token list structure corrupted\n"
-
-// ERRORES DE CONSTRUCCIÓN - EXPAND BUILDER
-# define ERROR_EXPAND_CREATION			"Error: Failed to create expansion node\n"
-# define ERROR_EXPAND_INITIALIZATION	"Error: Expansion structure initialization failed\n"
-# define ERROR_EXPAND_DUPLICATION		"Error: Failed to duplicate expansion string\n"
-# define ERROR_EXPAND_KEY_EXTRACTION	"Error: Failed to extract variable key\n"
-# define ERROR_EXPAND_VALUE_RESOLUTION	"Error: Failed to resolve variable value\n"
-# define ERROR_EXPAND_LIST_CORRUPTED	"Error: Expansion list structure corrupted\n"
-
-// ERRORES DE PROCESAMIENTO - LEXICAL ANALYZER
-# define ERROR_LEXICAL_ANALYSIS			"Error: Lexical analysis failed\n"
-# define ERROR_QUOTE_PROCESSING			"Error: Quote processing failed\n"
-# define ERROR_OPERATOR_PROCESSING		"Error: Operator processing failed\n"
-# define ERROR_WORD_SEGMENTATION		"Error: Word segmentation failed\n"
-
-// ERRORES DE PROCESAMIENTO - TOKENIZER
-# define ERROR_TOKENIZATION				"Error: Tokenization process failed\n"
-# define ERROR_QUOTE_TOKENIZATION		"Error: Quote tokenization failed\n"
-# define ERROR_OPERATOR_TOKENIZATION	"Error: Operator tokenization failed\n"
-# define ERROR_NOQUOTES_TOKENIZATION	"Error: No-quotes tokenization failed\n"
-
-// ERRORES DE PROCESAMIENTO - VARIABLE EXPANDER
-# define ERROR_VARIABLE_EXPANSION		"Error: Variable expansion failed\n"
-# define ERROR_EXPANSION_DETECTION		"Error: Expansion detection failed\n"
-# define ERROR_VARIABLE_RESOLUTION		"Error: Variable resolution failed\n"
-# define ERROR_VALUE_INSERTION			"Error: Value insertion failed\n"
-# define ERROR_EXIT_STATUS_EXPANSION	"Error: Exit status expansion failed\n"
-# define ERROR_CURLY_BRACES_EXPANSION	"Error: Curly braces expansion failed\n"
-# define ERROR_LITERAL_EXPANSION		"Error: Literal expansion failed\n"
-
-// ERRORES DE PROCESAMIENTO - DEQUOTIZER
-# define ERROR_DEQUOTIZATION			"Error: Quote removal failed\n"
-# define ERROR_QUOTE_REMOVAL			"Error: Quote character removal failed\n"
-
-// ERRORES DE PROCESAMIENTO - WORD PROCESSOR
-# define ERROR_WORD_PROCESSING			"Error: Word processing failed\n"
-# define ERROR_TOKEN_JOINING			"Error: Token joining failed\n"
-# define ERROR_PROCESSED_WORD_CREATION	"Error: Processed word creation failed\n"
-
-// ERRORES DE CONSTRUCCIÓN - EXECUTION BUILDER
-# define ERROR_EXECUTION_BUILD			"Error: Execution structure build failed\n"
-# define ERROR_ARGS_EXTRACTION			"Error: Arguments extraction failed\n"
-# define ERROR_REDIRECTIONS_EXTRACTION	"Error: Redirections extraction failed\n"
-# define ERROR_BUILTIN_DETECTION		"Error: Builtin command detection failed\n"
-
-// ERRORES DE AVANCE DE ÍNDICE
-# define ERROR_ADVANCE_INDEX			"Error: Index advance calculation failed\n"
-# define ERROR_INDEX_OUT_OF_BOUNDS		"Error: Index out of bounds\n"
-# define ERROR_INVALID_LENGTH			"Error: Invalid length parameter\n"
-
-// ERRORES DE VALIDACIÓN
-# define ERROR_INVALID_INPUT			"Error: Invalid input parameter\n"
-# define ERROR_EMPTY_INPUT				"Error: Empty input detected\n"
-# define ERROR_CORRUPTED_STRUCTURE		"Error: Data structure corrupted\n"
-# define ERROR_INCONSISTENT_STATE		"Error: Inconsistent program state\n" */
-
+*/
 
 # define PROMPT				"minishell$ "
 

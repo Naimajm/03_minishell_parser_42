@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 20:47:42 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:20:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	variable_expander(t_word *words_list, char **environment, int exit_status)
 	t_token	*current_token;
 
 	if (!words_list)
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	current_word = (t_word *) words_list;
 
 	while (current_word)
@@ -42,7 +42,7 @@ void	variable_expander(t_word *words_list, char **environment, int exit_status)
 void	expand_single_token(t_token *token, char **environment, int exit_status)
 {
 	if (!token)
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  
 	
 	extract_expansion_nodes(token);			// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 	resolve_expansion_values(token, environment, exit_status);	// resolver valores	
@@ -55,11 +55,11 @@ void	extract_expansion_nodes(t_token *token)
 	int		subs_len;
 
 	if (!token)
-		return ; 	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  	
 	index 		= 0;	
 	
 	if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones        
-		return;
+		return ;
 	
 	while (token->raw_token[index]) // CATEGORIZACION EXPAND NODOS
 	{
@@ -88,17 +88,24 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 	char		*value;
 
 	if (!token || !environment)
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  
 	expand_node = (t_expand *) token->expands_list;
 	while (expand_node)
 	{
-		//value = NULL;
 		if (expand_node->type == LAST_EXIT_STATUS)
-			value = ft_itoa(exit_status);		
+		{
+			value = ft_itoa(exit_status);	
+			if (!value)
+				perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		}				
 		else if (expand_node->type == CURLY_BRACES)
 			value = get_environment_var(environment, expand_node->key);			
 		else if (expand_node->type == LITERAL)
+		{
 			value = ft_strdup(expand_node->key);
+			if (!value)
+				perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		}			
 		else
 			value = get_environment_var(environment, expand_node->key);
 		expand_node->value = value;
@@ -115,6 +122,8 @@ void	insert_expansion_values(t_token *token)
 	if (!token || !token->expands_list || token->type == SINGLE_QUOTES)   // tokens literales o NO HAY EXPANSION VARIABLE
 	{	
 		token->expanded_token = ft_strdup(token->raw_token);
+		if (!token->expanded_token)
+			perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
 		return ;
 	}			
@@ -134,9 +143,11 @@ int	insert_expand_node_value(t_token *token)
 	int			 last_position;
 
 	if (!token)
-		return (0);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  
 	current_node = (t_expand *) token->expands_list;
 	result = ft_strdup("");
+	if (!result)
+    	perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	last_position 	= 0;
 	while (current_node)
 	{

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:34:46 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	run_shell(t_shell *shell)
 	char	*input;
 	
 	if (!shell)											// validacion inputs
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	while (1)											// loop ppal
 	{
 		printf("Input Reading...\t\t\t OK\n\n");
@@ -60,14 +60,15 @@ void	run_shell(t_shell *shell)
 			break ;
 		shell->input = ft_strdup(input);				// Copia segura input
 		if (!shell->input)
+		{
 			free(input);
+			perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		}			
 			
 		printf("Input Processing... %s\n", shell->input);	
 		process_input(shell);
-
 		
 		//print_config_shell(shell);					// Debug
-
 		// LIBERAR INPUT
 		free(input);
 		free(shell->input);
@@ -78,7 +79,7 @@ void	run_shell(t_shell *shell)
 void	process_input(t_shell *shell)
 {
 	if (!shell || !shell->input)
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 
 	printf("Syntax analyzer...\t\t\t OK\n");
 	syntax_analyzer(shell);
@@ -111,6 +112,8 @@ void	process_commands(t_shell *shell)
 {
 	t_cmd	*current_command;
 
+	if (!shell)
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 18:05:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:32:45 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	free_matrix(char **matrix);
 void	cleanup_minishell(t_shell *shell)
 {
 	if (!shell)
-		return ;
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	
 	if (shell->environment)						// free copia variables entorno
 		free_matrix(shell->environment);
@@ -40,7 +40,7 @@ void	free_commands_list(t_cmd **commands_list)
 	t_cmd	*next_node;
 
 	if (!commands_list)
-		return ;
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	
 	current_node = (t_cmd *) *commands_list;
 	while (current_node)
@@ -76,7 +76,7 @@ void	free_words_list(t_word **words_list)
 	t_word	*next_node;
 
 	if (!words_list)
-		return ;
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 
 	current_node = (t_word *) *words_list;
 	while (current_node)
@@ -106,7 +106,7 @@ void	free_tokens_list(t_token **tokens_list)
 	t_token	*next_node;
 
 	if (!tokens_list)
-		return ;
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	current_node = (t_token *) *tokens_list;
 	while (current_node)
 	{
@@ -137,7 +137,7 @@ void	free_expands_list(t_expand *expands_list)
 	t_expand	*next_node;
 
 	if (!expands_list)
-		return ;
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	current_node = (t_expand *) expands_list;
 	while (current_node)
 	{
@@ -162,7 +162,7 @@ void	free_matrix(char **matrix)
 	int row;
 
 	if (!matrix)
-		return ;	
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);	
 	row 	= 0;
 	// limpieza por filas
 	while (matrix[row])

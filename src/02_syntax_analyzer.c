@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 20:14:48 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:37:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int 	is_pipe_operator(char character);
 void	syntax_analyzer(t_shell *shell)
 {
 	if (!shell)
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 		
 	// VALIDACION SINTACTICA
 	/* if (validate_syntax(words_list) == FAILURE)
@@ -52,7 +52,7 @@ void	create_commands_structure(t_shell *shell)
 	int		input_len;
 
 	if (!shell || !shell->input)
-		return ; 	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);		
 	index = 0;	
 	//input_len = ft_strlen(shell->input);
 
@@ -93,7 +93,7 @@ int generate_command(t_shell *shell, int start_index)
 	char 	character;
 
 	if (!shell->input)
-		return (0);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
 
 	index = start_index;
 	inside_quotes = false;
@@ -128,7 +128,7 @@ int generate_command(t_shell *shell, int start_index)
 	// Extraer el comando (sin incluir el pipe)
 	command_input = create_clean_command(shell->input, start_index, index);
 	if (!command_input)
-		return (0);	
+		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, FAILURE);	
 	
 	command_len = ft_strlen(command_input);
 
@@ -149,12 +149,12 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 	int		len;
 
 	if (!input || start_index >= final_index)
-		return (NULL);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
 
 	// Extraer el comando (sin incluir el pipe)
 	raw_command = ft_substr(input, start_index, (final_index - start_index));
 	if (!raw_command)
-		return (NULL);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 
 	// eliminar espacios al final
 	len = ft_strlen(raw_command);

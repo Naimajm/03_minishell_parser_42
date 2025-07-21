@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 22:37:53 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:38:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static t_cmd	*create_command_node(char *input);
 static t_cmd	*find_command_last_node(t_cmd *commands_list);
-void 				print_commands_list(t_cmd *commands_list);
-void	            print_command_arguments(char **args);
+void 			print_commands_list(t_cmd *commands_list);
+void	        print_command_arguments(char **args);
 
 void	add_command_node(t_cmd **commands_list, char *input)
 {
@@ -23,7 +23,7 @@ void	add_command_node(t_cmd **commands_list, char *input)
 	t_cmd *last_node;
 
 	if (!commands_list || !input) 						// validation inputs
-		return ;   
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  
 	
 	new_node = create_command_node(input); 				// inicializar nuevo nodo token
 	if (!new_node)
@@ -45,7 +45,7 @@ static t_cmd *create_command_node(char *input)
 
 	new_node = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!new_node)
-		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 		
 	new_node->command = ft_strdup(input);
 	if (!new_node->command)
@@ -71,8 +71,8 @@ static t_cmd *create_command_node(char *input)
 
 static t_cmd	*find_command_last_node(t_cmd *commands_list)
 {    
-	if (!commands_list) 						// validation 
-		return (NULL);
+	if (!commands_list) 						
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	while (commands_list->next)
 		commands_list = commands_list-> next; 	// retorna puntero a ultimo nodo    
 	return (commands_list);
@@ -84,7 +84,7 @@ void print_commands_list(t_cmd *commands_list)
 	int node_index;
 
 	if (!commands_list)
-		return ;  
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE); 
 	command = (t_cmd *)(commands_list);
 	node_index = 1;
 	while (command)
@@ -121,7 +121,7 @@ void	print_command_arguments(char **args)
 	int	index;
 
 	if (!args)
-		return ;
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	index = 0;
 	printf("\t └──> args -> [ "); 
 	while (args[index])

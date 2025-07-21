@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 22:34:42 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:30:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ char *ft_strjoin_free(char *str1, char *str2)
 	if (!str1 || !str2)
 		return (NULL);
 	result = ft_strjoin(str1, str2);
+	if (!result)
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	free(str1);
 	return (result);
 }

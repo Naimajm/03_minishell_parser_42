@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/19 12:07:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:18:36 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ int	basic_expander(t_token *token, int first_index)
 	char		*key;
 
 	if (!token)
-		return (FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	len_input = 0;		
 	substitution_str = extract_substitution_segment(token->raw_token, first_index);
 	if (!substitution_str)
-		return (FAILURE);	
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);	
 	len_input = ft_strlen(substitution_str);
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, BASIC_EXPANSION);
 
@@ -50,14 +50,16 @@ int	last_exit_status_expander(t_token *token, int first_index)
 	char	*key;
 
 	if (!token)
-		return (FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
 	substitution_str = ft_strdup("$?"); // copiar sub substr
 	if (!substitution_str)
-		return (FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	len_input = ft_strlen(substitution_str);
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LAST_EXIT_STATUS);	
 
 	key = ft_strdup("$?");
+	if (!key)
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	expand_node->key = key;
 
 	//value = ft_itoa(shell->exit_status);
@@ -76,7 +78,7 @@ int	curly_braces_expander(t_token *token, int first_index)
 	char		*key;
 
 	if (!token)
-		return (FAILURE);	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
 	final_index = first_index + 2; 		// Saltar "${"
 	while (token->raw_token[final_index] && token->raw_token[final_index] != '}')
 		final_index++;
@@ -85,7 +87,7 @@ int	curly_braces_expander(t_token *token, int first_index)
 
 	substitution_str = ft_substr(token->raw_token, first_index, (final_index - first_index + 1));
 	if (!substitution_str)
-		return (FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 
 	len_input = ft_strlen(substitution_str);
 	//printf("len_input _> %i\n", len_input);
@@ -111,15 +113,17 @@ int	literal_expander(t_token *token, int first_index)
 	char		*key;
 
 	if (!token)
-		return (FAILURE);	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
 	substitution_str = extract_substitution_segment(token->raw_token, first_index);
 	if (!substitution_str)
-		return (FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	//ft_printf("substitution_str -> %s\n", substitution_str);
 	len_input = ft_strlen(substitution_str);
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LITERAL);		
 
 	key = ft_strdup(substitution_str);
+	if (!key)
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
 	expand_node->key = key;
 	
 	free(substitution_str);	
