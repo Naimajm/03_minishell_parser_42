@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 17:13:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 23:35:22 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,11 @@ int 	is_pipe_operator(char character);
 void	syntax_analyzer(t_shell *shell)
 {
 	if (!shell)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
-		
-	// VALIDACION SINTACTICA
-	/* if (validate_syntax(words_list) == FAILURE)
-		print_message_and_exit(ERROR_SYNTAX, STDERR_FILENO, FAILURE);
-	*/
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 
 	// CREAR ESTRUCTURA COMANDOS
 	create_commands_structure(shell);		
 }
-
-/* int validate_syntax(t_command *commands)
-{
-	// Verificar:
-	// - No pipes al inicio/final
-	// - No operadores consecutivos
-	// - Argumentos después de redirects
-	// - Comillas balanceadas (ya hecho)
-	return (SUCCESS);
-} */
 
 // AGRUPAR INPUT NO PROCESADOS PARA DIFERENTES JOBS EN EL CASO DE PIPES
 void	create_commands_structure(t_shell *shell)
@@ -50,7 +35,7 @@ void	create_commands_structure(t_shell *shell)
 	int		input_len;
 
 	if (!shell || !shell->input)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);		
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);		
 	index = 0;	
 	while (shell->input[index])
 	{
@@ -125,7 +110,7 @@ int generate_command(t_shell *shell, int start_index)
 	// Extraer el comando (sin incluir el pipe)
 	command_input = create_clean_command(shell->input, start_index, index);
 	if (!command_input)
-		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, FAILURE);	
+		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);	
 	
 	command_len = ft_strlen(command_input);
 	// AÑADIR NODO COMMAND
@@ -147,12 +132,12 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 	int		len;
 
 	if (!input || start_index >= final_index)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 
 	// Extraer el comando (sin incluir el pipe)
 	raw_command = ft_substr(input, start_index, (final_index - start_index));
 	if (!raw_command)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 
 	// eliminar espacios al final
 	len = ft_strlen(raw_command);
@@ -166,7 +151,7 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 	if (!clean_command)
 	{
     	free(raw_command);
-    	perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+    	perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 	}
 	free(raw_command);
 

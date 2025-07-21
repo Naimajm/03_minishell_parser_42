@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 17:52:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 23:03:20 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*extract_key(char *token, int first_index)
 	int		index;
 
 	if (!token)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 	//variable = NULL;
 	index  = first_index;
 
@@ -41,7 +41,7 @@ char	*extract_key(char *token, int first_index)
 	// copiar sub substr
 	key = ft_substr(token, first_index, (index - first_index));
 	if (!key)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 	//ft_printf("extract_key -> key -> %s\n", key);
 	return (key);
 }
@@ -54,7 +54,7 @@ char	*get_environment_var(char **env, char *variable)
 	int 	match;
 
 	if (!env || !variable)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);	
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 	value = NULL;
 	index = 0;
 	match = 0;
@@ -80,7 +80,7 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
 	int		index;
 
 	if (!raw_token)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 	index = first_index;		
 	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
 	while (!is_space(raw_token[index])
@@ -92,7 +92,7 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
 	// copiar sub substr
 	substitution_str = ft_substr(raw_token, first_index, (index - first_index));
 	if (!substitution_str)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 	//ft_printf("variable -> %s\n", variable);
 	return (substitution_str);
 }

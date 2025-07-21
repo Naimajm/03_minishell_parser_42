@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:41:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 23:46:57 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,27 @@
 #include	"../libft/libft.h"
 #include	"../ft_printf/ft_printf.h"
 
-// MACROS
-# define SUCCESS	0
-# define FAILURE	-1
+// MACROS -----------------------------------------------
+
+// VALORES EXIT_STATUS
+# define SUCCESS			0
+# define GENERAL_ERROR		1
+# define SYNTAX_ERROR		2
+# define COMMAND_NOT_FOUND	127
+# define EXIT_SIGINT		130		// Ctrl+'C'
+# define EXIT_SIGQUIT       131    	// Ctrl+'\'
 
 // ERRORES GENERALES
 # define ERROR_ENVIRONMENT				"Error\n Environment unavailable or empty\n"
 # define ERROR_OPEN_FILE				"Error\n Opening file\n"
 # define ERROR_INPUT_READER				"Error\n Error read input\n"
+# define ERROR_CHECK_SYNTAX				"Error\n Check syntax input Error\n"
 # define ERROR_ADVANCE_INDEX			"Error\n Index advance error\n"
+
+// ERRORES DE SINTAXIS Y PARSING
+# define ERROR_QUOTE_SYNTAX				"Error\n Syntax error: Unmatched quotes detected\n"
+# define ERROR_REDIRECTION_SYNTAX		"Error\n Syntax error: Invalid redirection syntax\n"
+# define ERROR_PIPE_SYNTAX				"Error\n Syntax error: Invalid pipe syntax\n"
 
 // ERRORES CONSTRUCCION
 # define ERROR_INITIALIZATION			"Error\n Initialization error\n" 
@@ -47,14 +59,9 @@
 # define ERROR_INVALID_INPUT			"Error\n Invalid input parameter\n"
 # define ERROR_MEMORY_ALLOCATION		"Error\n Memory allocation failed\n"
 
-// ERRORES DE SINTAXIS Y PARSING
-# define ERROR_QUOTE_SYNTAX				"Error\n Simple/double quote syntax. Not closed\n"
 
 /* 
 // ERRORES DE SINTAXIS Y PARSING
-# define ERROR_QUOTE_SYNTAX				"Error: Unmatched quotes detected\n"
-# define ERROR_PIPE_SYNTAX				"Error: Invalid pipe syntax\n"
-# define ERROR_REDIRECT_SYNTAX			"Error: Invalid redirection syntax\n"
 # define ERROR_COMMAND_EMPTY			"Error: Empty command detected\n"
 # define ERROR_INVALID_OPERATOR			"Error: Invalid operator sequence\n"
 */
@@ -77,12 +84,10 @@
 # define PIPE					'P'		// 5 -> operador | PIPE
 
 // categorizacion TOKENS
-//# define WORD					1		// 1 -> generico no operador		
-
-# define NO_QUOTES				2		// 2 -> palabras sin comillas
-# define SINGLE_QUOTES			3		// 3 -> palabras con comillas simples -> literal
-# define DOUBLE_QUOTES			4		// 4 -> palabras con comillas dobles -> expansion variables
-# define OPERATOR				5		// 5 -> operador (< << > >> |)
+# define NO_QUOTES				1		// 1 -> palabras sin comillas
+# define SINGLE_QUOTES			2		// 2 -> palabras con comillas simples -> literal
+# define DOUBLE_QUOTES			3		// 3 -> palabras con comillas dobles -> expansion variables
+# define OPERATOR				4		// 4 -> operador (< << > >> |)
 
 // categorizacion VARIABLES EXPANDIDAS
 # define BASIC_EXPANSION		1		// 1 -> expansion basica
@@ -191,6 +196,12 @@ void	run_shell(t_shell *shell);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
 char	*read_user_input(char *prompt);
+
+// 01.1_check_syntax.c		# Validacion sintaxis input
+char	*validate_syntax(t_shell *shell);
+int		check_pipe_syntax(char *input);
+int		check_balanced_quotes(char *input);
+int		check_redirection_syntax(char *input);
 
 // 01_shell_init.c			# Inicialización del shell
 int		validate_environment(char **environment);

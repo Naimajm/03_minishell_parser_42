@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 18:08:02 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 23:03:20 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 // Función auxiliar para avanzar index segun la longitud del string
 int	advance_index_by_length(int current_index, int length)
 {
-	if (length == FAILURE)
-		perror_exit(ERROR_ADVANCE_INDEX, STDERR_FILENO, FAILURE);
+	if (length == GENERAL_ERROR)
+		perror_exit(ERROR_ADVANCE_INDEX, STDERR_FILENO, GENERAL_ERROR);
 	if (length == 0)
 		current_index++;
 	else	
@@ -47,7 +47,7 @@ char *ft_strjoin_free(char *str1, char *str2)
 	else
 		result = ft_strjoin(str1, str2);
 	if (!result)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 	free(str1);
 	return (result);
 }

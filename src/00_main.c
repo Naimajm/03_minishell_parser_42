@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 13:34:46 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/22 00:19:39 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,17 @@ int	main(int	argc, char **argv, char **environment)
 
 	(void) argc;
 	(void) argv; 
-
 	if (!validate_environment(environment))		
-		perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, GENERAL_ERROR);
 
 	printf("Shell initialization...\t\t\t OK\n\n");
 	shell = initialize_shell();	
 	
 	printf("Loading environment variables...\t\t\t OK\n\n");
-	if (load_environment_variables(shell, environment) == FAILURE)		
+	if (load_environment_variables(shell, environment) == GENERAL_ERROR)		
 	{
         cleanup_minishell(shell);
-        perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, FAILURE);
+        perror_exit(ERROR_ENVIRONMENT, STDERR_FILENO, GENERAL_ERROR);
     }
 	
 	printf("Run Shell...\t\t\t\t OK\n\n");
@@ -50,8 +49,8 @@ void	run_shell(t_shell *shell)
 {
 	char	*input;
 	
-	if (!shell)											// validacion inputs
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
+	if (!shell)											
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 	while (1)											// loop ppal
 	{
 		printf("Input Reading...\t\t\t OK\n\n");
@@ -62,13 +61,13 @@ void	run_shell(t_shell *shell)
 		if (!shell->input)
 		{
 			free(input);
-			perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
-		}			
+			perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+		}		
 			
 		printf("Input Processing... %s\n", shell->input);	
 		process_input(shell);
 		
-		//print_config_shell(shell);					// Debug
+		//print_config_shell(shell);					
 		// LIBERAR INPUT
 		free(input);
 		free(shell->input);
@@ -78,13 +77,28 @@ void	run_shell(t_shell *shell)
 
 void	process_input(t_shell *shell)
 {
+	char *syntax_error;
+
 	if (!shell || !shell->input)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+
+	/* printf("Syntax Check...\t\t\t OK\n");
+	if (!validate_syntax(shell))		
+		perror_exit(validate_syntax(shell), STDERR_FILENO, SYNTAX_ERROR); */		
 
 	printf("Syntax analyzer...\t\t\t OK\n");
 	syntax_analyzer(shell);
 
-	// check error sintaxis tokens? o commands?
+	/* printf("Syntax validation...\t\t\t ");
+    syntax_error = validate_command_structure(shell->commands_list);
+    if (syntax_error)
+    {
+        printf("ERROR\n");
+        ft_putendl_fd(syntax_error, STDERR_FILENO);
+        shell->exit_status = SYNTAX_ERROR;
+        return ;
+    }
+    printf("OK\n"); */
 
 	printf("Lexical analyzer...\t\t\t OK\n");
 	lexical_analyzer(shell->commands_list);	
@@ -113,7 +127,7 @@ void	process_commands(t_shell *shell)
 	t_cmd	*current_command;
 
 	if (!shell)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{
@@ -139,7 +153,7 @@ char	*read_user_input(char *prompt)
 
 	input = readline(prompt);
 	if (!input)
-		perror_exit(ERROR_INPUT_READER, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_INPUT_READER, STDERR_FILENO, GENERAL_ERROR);
 	
 	if (input[0] != '\0')  // añadir a historial si input no vacio	
 		add_history(input);

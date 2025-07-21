@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 11:54:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/21 23:03:20 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ void	add_word_node(t_word **word_list, char  *input, char word_type)
 	t_word *last_node;
 
 	if (!word_list || !input) 						// validation inputs
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);  
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
 	
 	new_node = create_word_node(input, word_type); 	// inicializar nuevo nodo token
 	if (!new_node)
-		perror_exit(ERROR_WORD_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_WORD_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
 		
 	last_node = find_word_last_node(*word_list); 	// encontrar ultimo nodo y enlazar
 	
@@ -41,15 +41,15 @@ static t_word *create_word_node(char  *input, char word_type)
 	t_word *new_node;
 
 	if (!input)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 
 	new_node = (t_word *) malloc(sizeof(t_word));
 	if (!new_node)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 		
 	new_node->raw_word      = ft_strdup(input);
 	if (!new_node->raw_word)
-		perror_exit(ERROR_WORD_INITIALIZATION, STDERR_FILENO, FAILURE);
+		perror_exit(ERROR_WORD_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
 
 	new_node->word_type         = word_type;
 	new_node->processed_word    = NULL;
