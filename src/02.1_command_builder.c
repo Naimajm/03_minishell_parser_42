@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 23:03:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/22 12:02:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static t_cmd	*create_command_node(char *input);
 static t_cmd	*find_command_last_node(t_cmd *commands_list);
 void 			print_commands_list(t_cmd *commands_list);
 void	        print_command_arguments(char **args);
+void			print_output(char **args);
 
 void	add_command_node(t_cmd **commands_list, char *input)
 {
@@ -23,15 +24,15 @@ void	add_command_node(t_cmd **commands_list, char *input)
 	t_cmd *last_node;
 
 	if (!commands_list || !input) 						// validation inputs
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
 	
 	//printf("add_command_node: '%s'\n", input);
 	new_node = create_command_node(input); 				// inicializar nuevo nodo token
 	
 	if (!new_node)
-		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
 	last_node = find_command_last_node(*commands_list); // encontrar ultimo nodo y enlazar
-	printf("add_command_node: last_node '%p'\n", last_node);
+	//printf("add_command_node: last_node '%p'\n", last_node);
 	if (!last_node)     								
 		*commands_list = new_node;   					// caso lista vacio -> añadir en 1º nodo
 	else            								    
@@ -44,15 +45,15 @@ static t_cmd *create_command_node(char *input)
 	t_cmd *new_node;
 	//printf("add_command_node: '%s'\n", input);
 	if (!input)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 	
 	new_node = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!new_node)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 		
 	new_node->command = ft_strdup(input);
 	if (!new_node->command)
-		perror_exit(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
 
 	new_node->args			= NULL;    
 
@@ -87,7 +88,7 @@ void print_commands_list(t_cmd *commands_list)
 	int node_index;
 
 	if (!commands_list)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR); 
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR); 
 	command = (t_cmd *)(commands_list);
 	node_index = 1;
 	while (command)
@@ -113,6 +114,8 @@ void print_commands_list(t_cmd *commands_list)
 
 		print_command_arguments(command->args);
 		printf("\t ───────── \n\n");
+
+		print_output(command->args);			// IMPRESION OUTPUT
 		node_index++;
 		command = command->next;
 	}
@@ -124,7 +127,7 @@ void	print_command_arguments(char **args)
 	int	index;
 
 	if (!args)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 	index = 0;
 	printf("\t └──> args -> [ "); 
 	while (args[index])
@@ -136,4 +139,23 @@ void	print_command_arguments(char **args)
 	}
 	printf("]\n");
 }
+
+void	print_output(char **args)
+{
+	int	index;
+
+	if (!args)
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+	index = 0;
+	printf("└──> OUTPUT -> ("); 
+	while (args[index])
+	{        
+		printf("%s", args[index]);
+		if (args[index + 1])    
+			printf(" ");   
+		index++;
+	}
+	printf(")\n"); 
+}
+
 

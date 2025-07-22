@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:13 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 23:03:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/22 11:30:27 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	generate_processed_word(t_word **words_list)
 	t_word	*current_word;
 	
 	if (!words_list)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 	current_word = (t_word *) *words_list;	
 	while (current_word)
 	{
@@ -42,7 +42,7 @@ void	insert_token_node(t_word *word)
 	char	*temp;
 
 	if (!word || !word->tokens_list)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
 	
 	if (word->processed_word) // Liberar processed_word anterior si existe
 	{
@@ -51,7 +51,7 @@ void	insert_token_node(t_word *word)
 	}
 	result = ft_strdup(""); // Inicializar resultado con string vacío
 	if (!result)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);	
+		print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);	
 	current_token = (t_token *) word->tokens_list;
 
 	while (current_token) // Recorrer todos los tokens de la palabra
@@ -60,7 +60,7 @@ void	insert_token_node(t_word *word)
 		{
 			temp = ft_strjoin_free( result, current_token->noquotes_token );
 			if (!temp)
-				perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);	
+				print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);	
 			result = temp;			
 		}
 		current_token = current_token->next;

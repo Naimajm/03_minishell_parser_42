@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 23:35:22 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/22 11:56:09 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int 	is_pipe_operator(char character);
 void	syntax_analyzer(t_shell *shell)
 {
 	if (!shell)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 
 	// CREAR ESTRUCTURA COMANDOS
 	create_commands_structure(shell);		
@@ -35,7 +35,7 @@ void	create_commands_structure(t_shell *shell)
 	int		input_len;
 
 	if (!shell || !shell->input)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);		
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);		
 	index = 0;	
 	while (shell->input[index])
 	{
@@ -110,7 +110,7 @@ int generate_command(t_shell *shell, int start_index)
 	// Extraer el comando (sin incluir el pipe)
 	command_input = create_clean_command(shell->input, start_index, index);
 	if (!command_input)
-		perror_exit(ERROR_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);	
+		print_error(ERROR_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);	
 	
 	command_len = ft_strlen(command_input);
 	// AÑADIR NODO COMMAND
@@ -118,7 +118,7 @@ int generate_command(t_shell *shell, int start_index)
 	{
 		printf("Generated command: '%s'\n", command_input);		
 		add_command_node(&shell->commands_list, command_input);
-		printf("DEBUG: add_command_node completed successfully\n");
+		//printf("DEBUG: add_command_node completed successfully\n");
 	}	
 	free(command_input);
 	//printf("DEBUG: returning command_len=%d\n", command_len);
@@ -132,12 +132,12 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 	int		len;
 
 	if (!input || start_index >= final_index)
-		perror_exit(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
+		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
 
 	// Extraer el comando (sin incluir el pipe)
 	raw_command = ft_substr(input, start_index, (final_index - start_index));
 	if (!raw_command)
-		perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+		print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 
 	// eliminar espacios al final
 	len = ft_strlen(raw_command);
@@ -151,7 +151,7 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 	if (!clean_command)
 	{
     	free(raw_command);
-    	perror_exit(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+    	print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
 	}
 	free(raw_command);
 

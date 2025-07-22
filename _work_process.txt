@@ -31,18 +31,18 @@
 		- [ ] Validar que cada redirección tenga un archivo objetivo (error si no).
 
 	🔹 HITO 5: Reconocimiento de pipes
-		- [ ] Dividir la línea en comandos conectados por |.
+		- [✓] Dividir la línea en comandos conectados por |.
 		- [ ] Validar sintaxis: error si hay pipe sin comando antes o después.
-		- [ ] Crear estructuras tipo lista o árbol para representar la secuencia.
+		- [✓] Crear estructuras tipo lista o árbol para representar la secuencia.
 
 	🔹 HITO 6: Construcción de estructuras de comandos
-		- [ ] Crear una estructura t_command o similar que incluya:
+		- [✓] Crear una estructura t_command o similar que incluya:
 			- Nombre del comando.
 			- Lista de argumentos.
 			- Redirecciones de entrada/salida.
 			- Indicadores de heredoc, append, etc.
-		- [ ] Crear una lista enlazada o array de estas estructuras si hay pipes.
-		- [ ] Asignar correctamente las redirecciones a cada nodo.
+		- [✓] Crear una lista enlazada o array de estas estructuras si hay pipes.
+		- [✓] Asignar correctamente las redirecciones a cada nodo.
 
 	🔹 HITO 7: Manejo de errores de sintaxis
 		- [ ] Detectar errores como:

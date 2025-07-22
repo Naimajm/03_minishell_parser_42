@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/21 23:46:57 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:45:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,22 +58,16 @@
 // ERRORES DE VALIDACIÓN
 # define ERROR_INVALID_INPUT			"Error\n Invalid input parameter\n"
 # define ERROR_MEMORY_ALLOCATION		"Error\n Memory allocation failed\n"
-
-
-/* 
-// ERRORES DE SINTAXIS Y PARSING
-# define ERROR_COMMAND_EMPTY			"Error: Empty command detected\n"
-# define ERROR_INVALID_OPERATOR			"Error: Invalid operator sequence\n"
-*/
+# define ERROR_COMMAND_EMPTY			"Error\n Empty command detected\n"
 
 # define PROMPT				"minishell$ "
 
 # define FREE_ALL_SHELL		"Free\n Total cleaning minishell... OK\n"
 # define FREE_COMMANDS_LIST	"Free\n Commands list...\t\t\t OK\n"
-# define FREE_WORDS_LIST	"Free\n Words list... OK\n"
-# define FREE_TOKENS_LIST	"Free\n Tokens List... OK\n"
-# define FREE_EXPANDS_LIST	"Free\n Expands List... OK\n"
-# define FREE_MATRIX		"Free\n Cleaning matrix... OK\n"
+# define FREE_WORDS_LIST	"Free\n Words list...\t\t\t\t OK\n"
+# define FREE_TOKENS_LIST	"Free\n Tokens List...\t\t\t\t OK\n"
+# define FREE_EXPANDS_LIST	"Free\n Expands List...\t\t\t OK\n"
+# define FREE_MATRIX		"Free\n Cleaning matrix...\t\t\t OK\n"
 
 // categorizacion TIPOS WORD_TOKEN
 # define WORD					'W'		// W -> palabra generica no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
@@ -219,6 +213,8 @@ int 	is_pipe_operator(char character);
 // 02.1_command_builder.c	# Constructor de comandos
 void	add_command_node(t_cmd **commands_list, char *input);
 void	print_commands_list(t_cmd *commands_list);
+void	print_command_arguments(char **args);
+void	print_output(char **args);
 
 /// ANÁLISIS LÉXICO -------------------------------------------
 // 03_lexical_analyzer.c	# Análisis léxico
@@ -291,7 +287,7 @@ int		is_space(char character);
 
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);
-void	perror_exit(char *message, int fd, int exit_code);
+void	print_error(char *message, int fd, int exit_code);
 char	*ft_strjoin_free(char *str1, char *str2);
 	
 // 10.2_free_manager.c		# Gestión de memoria
@@ -310,5 +306,9 @@ void	print_strings_array(char **array);
 
 // 11_testing.c				# Testing y debugging
 void	test_lexical_analyzer(t_shell *shell);
+
+// 12_test_parser.c			# Testing y debugging
+void test_mode(t_shell *shell);
+void test_parser(t_shell *shell);
 
 #endif
