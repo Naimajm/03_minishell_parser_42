@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 12:02:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:20:18 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ void	add_command_node(t_cmd **commands_list, char *input)
 	t_cmd *new_node;
 	t_cmd *last_node;
 
-	if (!commands_list || !input) 						// validation inputs
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+	if (!commands_list || !input) 		
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	
 	//printf("add_command_node: '%s'\n", input);
-	new_node = create_command_node(input); 				// inicializar nuevo nodo token
-	
+	new_node = create_command_node(input); 				// inicializar nuevo nodo command	
 	if (!new_node)
-		print_error(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_COMMAND_INIT, STDERR_FILENO));
+		
 	last_node = find_command_last_node(*commands_list); // encontrar ultimo nodo y enlazar
 	//printf("add_command_node: last_node '%p'\n", last_node);
 	if (!last_node)     								
@@ -45,15 +45,15 @@ static t_cmd *create_command_node(char *input)
 	t_cmd *new_node;
 	//printf("add_command_node: '%s'\n", input);
 	if (!input)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
 	
 	new_node = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!new_node)
-		print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
 		
 	new_node->command = ft_strdup(input);
 	if (!new_node->command)
-		print_error(ERROR_COMMAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_COMMAND_INIT, STDERR_FILENO), NULL);
 
 	new_node->args			= NULL;    
 
@@ -75,7 +75,7 @@ static t_cmd *create_command_node(char *input)
 static t_cmd	*find_command_last_node(t_cmd *commands_list)
 {    
 	if (!commands_list) 						
-		return (NULL);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
 	while (commands_list->next)
 		commands_list = commands_list-> next; 	// retorna puntero a ultimo nodo    
 	//printf("find_command_last_node: '%p'\n", commands_list);
@@ -88,7 +88,7 @@ void print_commands_list(t_cmd *commands_list)
 	int node_index;
 
 	if (!commands_list)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR); 
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO)); 
 	command = (t_cmd *)(commands_list);
 	node_index = 1;
 	while (command)
@@ -127,7 +127,7 @@ void	print_command_arguments(char **args)
 	int	index;
 
 	if (!args)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	index = 0;
 	printf("\t └──> args -> [ "); 
 	while (args[index])
@@ -145,7 +145,7 @@ void	print_output(char **args)
 	int	index;
 
 	if (!args)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	index = 0;
 	printf("└──> OUTPUT -> ("); 
 	while (args[index])

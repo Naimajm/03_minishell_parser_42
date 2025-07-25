@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 11:30:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:25:05 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void    build_execution_structure(t_cmd *commands_list)
 	t_cmd * current_command;
 
 	if (!commands_list)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_command = (t_cmd *) commands_list;
 	while (current_command)
 	{
@@ -40,7 +40,7 @@ void    extract_command_arguments(t_cmd *command)
 	t_word *current_word;
 
 	if (!command)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	index       = 0;
 	current_word = (t_word *) command->words_list;
 	
@@ -49,7 +49,7 @@ void    extract_command_arguments(t_cmd *command)
 	// reserva memoria total argumentos
 	command->args = (char **) malloc(sizeof(char *) * (args_count + 1));
 	if (!command->args)
-		print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 	
 	current_word = (t_word *) command->words_list; 	// Llenar argv con processed_word
 	while (current_word)
@@ -58,7 +58,7 @@ void    extract_command_arguments(t_cmd *command)
 		{
 			command->args[index] = ft_strdup(current_word->processed_word);
 			if (!command->args[index])
-				print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 			index++;
 		}
 		current_word = current_word->next;
@@ -75,7 +75,7 @@ void    extract_redirections(t_cmd *command)
     t_word *current_word;
 
     if (!command)
-        print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);	
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
         
     current_word = command->words_list;
     while (current_word)
@@ -120,7 +120,7 @@ bool is_builtin_command(char *command)
 	bool	is_builtin;
 	
 	if (!command)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), false);
 	index 		= 0;
 	is_builtin 	= false;        
     while (builtins[index])
@@ -139,7 +139,7 @@ int count_word_arguments(t_word *words_list)
 	int args_count;
 
 	if(!words_list)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);
 
 	current_word    = (t_word *) words_list;
 	args_count      = 0;

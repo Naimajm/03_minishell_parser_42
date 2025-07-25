@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 11:30:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:23:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 
 	// validation inputs
 	if (!expand_list || !substitution_variable)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);   
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);   
 
 	// inicializar nuevo nodo token
 	new_node = create_expand_node(substitution_variable, first_index, expand_type);
 	if (!new_node)
-		print_error(ERROR_EXPAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_EXPAND_INIT, STDERR_FILENO), NULL);
 	//ft_printf("addback -> %s\n", new_node->token);
 
 	// encontrar ultimo nodo y enlazar
@@ -46,16 +46,16 @@ static t_expand *create_expand_node(char  *substitution_variable, int first_inde
 	t_expand *new_node;
 	
 	if (!substitution_variable)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);  
 	
 	new_node = (t_expand *) malloc(sizeof(t_expand));
 	if(!new_node)
-		print_error(ERROR_EXPAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);	
+		return (ft_putendl_fd(ERROR_EXPAND_INIT, STDERR_FILENO), NULL);	
 	new_node->type				= expand_type;		
 	new_node->first_index		= first_index;  	
 	new_node->substitution_str 	= ft_strdup(substitution_variable); 
 	if (!new_node->substitution_str)
-		print_error(ERROR_EXPAND_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_EXPAND_INIT, STDERR_FILENO), NULL);
 	new_node->last_index 		= first_index + ft_strlen(substitution_variable) - 1;	
 	new_node->key 				= NULL;	 // nombre variable extraida
 	new_node->value				= NULL;	

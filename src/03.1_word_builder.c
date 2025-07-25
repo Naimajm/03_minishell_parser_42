@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 11:30:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:21:02 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void	add_word_node(t_word **word_list, char  *input, char word_type)
 	t_word *new_node;
 	t_word *last_node;
 
-	if (!word_list || !input) 						// validation inputs
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+	if (!word_list || !input) 						
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	
 	new_node = create_word_node(input, word_type); 	// inicializar nuevo nodo token
 	if (!new_node)
-		print_error(ERROR_WORD_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_WORD_INIT, STDERR_FILENO));
 		
 	last_node = find_word_last_node(*word_list); 	// encontrar ultimo nodo y enlazar
 	
@@ -41,15 +41,15 @@ static t_word *create_word_node(char  *input, char word_type)
 	t_word *new_node;
 
 	if (!input)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
 
 	new_node = (t_word *) malloc(sizeof(t_word));
 	if (!new_node)
-		print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
 		
 	new_node->raw_word      = ft_strdup(input);
 	if (!new_node->raw_word)
-		print_error(ERROR_WORD_INITIALIZATION, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_WORD_INIT, STDERR_FILENO), NULL);
 
 	new_node->word_type         = word_type;
 	new_node->processed_word    = NULL;

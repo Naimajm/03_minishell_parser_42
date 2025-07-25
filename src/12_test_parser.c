@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/23 01:12:18 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:41:45 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,19 @@ void test_parser(t_shell *shell)
         "echo -n -n hola",
         "echo -n -nh -n hola",
         "echo -nnnnnnnnn hola",
-		"echo $?hcudshfuewrf ew  wr 4ew""""",
+		"echo $?hcudshfuewrf ew  wr 4ew""""", */
 
 		// ECHO TESTS - Casos complejos con comillas mixtas
         "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb 					\"iujiouhj\"f'f'f'f'f''f'f'f'f'f'f'",
         "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb \"iujiouhj\"f'f'a'j'o''i'w'q''q",
-        "echo \"\"aaaaaaaa\"bbbbb\"'''' ccccccccc \"dddddddd\"e'e'e", */
+        "echo \"\"aaaaaaaa\"bbbbb\"'''' ccccccccc \"dddddddd\"e'e'e",
 
 		// ECHO TESTS - Casos con variables de entorno
-        "echo \"ho   $USER\"  'la   $LESS'   $USER$TERM",	// error
-        "echo \"ho   $USER\"'la   $LESS'$USER$TERM",			// error
+        /* "echo \"ho   $USER\"  'la   $LESS'   $USER$TERM   ",
+        //"echo \"ho   $USER\"'la   $LESS'$USER$TERM",			// error _> malloc(): unaligned tcache chunk detected  Aborted (core dumped)
 
 		// ECHO TESTS - Casos sin espacios
-        /* "echo\"ho   $USER\"",
+        "echo\"ho   $USER\"",
         "echo\"ho   $USE$LESS\"",
 
 		// ECHO TESTS - Comando entre comillas

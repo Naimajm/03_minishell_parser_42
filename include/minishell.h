@@ -6,12 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 13:45:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:36:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+// TODO ----------------------------------------------------
+// CAMBIAR FUNCIONES FT_PRINTF Y QUITAR LIBRERIAS EXTERNA
+// ARREGLA VARIABLES CONSECUTIVAS	$USER$TERM
 
 // EXTERNAL LIBRARIES
 #include <unistd.h>		// write getcwd chdir
@@ -30,7 +34,7 @@
 
 // VALORES EXIT_STATUS
 # define SUCCESS			0
-# define GENERAL_ERROR		1
+# define GEN_ERROR			1
 # define SYNTAX_ERROR		2
 # define COMMAND_NOT_FOUND	127
 # define EXIT_SIGINT		130		// Ctrl+'C'
@@ -49,15 +53,15 @@
 # define ERROR_PIPE_SYNTAX				"Error\n Syntax error: Invalid pipe syntax\n"
 
 // ERRORES CONSTRUCCION
-# define ERROR_INITIALIZATION			"Error\n Initialization error\n" 
-# define ERROR_COMMAND_INITIALIZATION	"Error\n Command structure initialization failed\n" 
-# define ERROR_WORD_INITIALIZATION		"Error\n Word structure initialization failed\n" 
-# define ERROR_TOKEN_INITIALIZATION		"Error\n Token structure initialization failed\n" 
-# define ERROR_EXPAND_INITIALIZATION	"Error\n Expand structure initialization failed\n" 
+# define ERROR_INIT						"Error\n Initialization error\n" 
+# define ERROR_COMMAND_INIT				"Error\n Command structure initialization failed\n" 
+# define ERROR_WORD_INIT				"Error\n Word structure initialization failed\n" 
+# define ERROR_TOKEN_INIT				"Error\n Token structure initialization failed\n" 
+# define ERROR_EXPAND_INIT				"Error\n Expand structure initialization failed\n" 
 
 // ERRORES DE VALIDACIÓN
 # define ERROR_INVALID_INPUT			"Error\n Invalid input parameter\n"
-# define ERROR_MEMORY_ALLOCATION		"Error\n Memory allocation failed\n"
+# define ERROR_MEMORY_ALLOC				"Error\n Memory allocation failed\n"
 # define ERROR_COMMAND_EMPTY			"Error\n Empty command detected\n"
 
 # define PROMPT				"minishell$ "

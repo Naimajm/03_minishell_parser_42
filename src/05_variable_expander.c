@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 11:30:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:22:29 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	variable_expander(t_word *words_list, char **environment, int exit_status)
 	t_token	*current_token;
 
 	if (!words_list)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_word = (t_word *) words_list;
 
 	while (current_word)
@@ -42,7 +42,7 @@ void	variable_expander(t_word *words_list, char **environment, int exit_status)
 void	expand_single_token(t_token *token, char **environment, int exit_status)
 {
 	if (!token)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	
 	extract_expansion_nodes(token);			// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 	resolve_expansion_values(token, environment, exit_status);	// resolver valores	
@@ -55,7 +55,7 @@ void	extract_expansion_nodes(t_token *token)
 	int		subs_len;
 
 	if (!token)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  	
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  	
 	index 		= 0;	
 	
 	if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones        
@@ -73,7 +73,7 @@ void	extract_expansion_nodes(t_token *token)
 				subs_len = curly_braces_expander(token, index);
 			else // caso normal -> EXPANSION BASICA -> AÑADIR A LISTA EXPAND
 				subs_len = basic_expander(token, index);				
-			if (subs_len == GENERAL_ERROR)	// error
+			if (subs_len == GEN_ERROR)	// error
 				return ;			
 			index += subs_len;	
 		}	
@@ -88,7 +88,7 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 	char		*value;
 
 	if (!token || !environment)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	expand_node = (t_expand *) token->expands_list;
 	while (expand_node)
 	{
@@ -96,7 +96,7 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 		{
 			value = ft_itoa(exit_status);	
 			if (!value)
-				print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}				
 		else if (expand_node->type == CURLY_BRACES)
 			value = get_environment_var(environment, expand_node->key);			
@@ -104,7 +104,7 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 		{
 			value = ft_strdup(expand_node->key);
 			if (!value)
-				print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}			
 		else
 			value = get_environment_var(environment, expand_node->key);
@@ -123,7 +123,7 @@ void	insert_expansion_values(t_token *token)
 	{	
 		token->expanded_token = ft_strdup(token->raw_token);
 		if (!token->expanded_token)
-			print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+			return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
 		return ;
 	}			
@@ -143,11 +143,11 @@ int	insert_expand_node_value(t_token *token)
 	int			 last_position;
 
 	if (!token)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);  
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);  
 	current_node = (t_expand *) token->expands_list;
 	result = ft_strdup("");
 	if (!result)
-    	print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+    	return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), GEN_ERROR);
 	last_position 	= 0;
 	while (current_node)
 	{

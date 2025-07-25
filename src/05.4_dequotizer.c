@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 11:30:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 11:23:46 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	dequotize_tokens(t_word *words_list)
 	t_word	*current_word;
 
 	if (!words_list)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{
@@ -35,7 +35,7 @@ void	remove_quotes(t_token *tokens_list)
 	t_token *current_token;
 
 	if (!tokens_list)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_token = (t_token *) tokens_list;
 	while (current_token)
 	{
@@ -45,13 +45,13 @@ void	remove_quotes(t_token *tokens_list)
 		{
 			current_token->noquotes_token = ft_substr(current_token->expanded_token, 1, ft_strlen(current_token->expanded_token) - 2); 
 			if (!current_token->noquotes_token)
-				print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}
 		else
 		{
 			current_token->noquotes_token = ft_strdup(current_token->expanded_token);	
 			if (!current_token->noquotes_token)
-				print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}			
 		//printf("(dequotize) token->final_token-> %s\n", current_token->final_token);		
 		current_token = current_token->next;

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/22 19:10:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 10:48:05 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,18 @@ int	main(int	argc, char **argv, char **environment)
 
 	(void) argc;
 	(void) argv; 
-	if (!validate_environment(environment))		
-		print_error(ERROR_ENVIRONMENT, STDERR_FILENO, GENERAL_ERROR);
+	if (validate_environment(environment))	
+		return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), GEN_ERROR);
 
 	//printf("Shell initialization...\t\t\t OK\n\n");
 	shell = initialize_shell();	
 	
 	//printf("Loading environment variables...\t\t OK\n\n");
-	if (load_environment_variables(shell, environment) == GENERAL_ERROR)		
+	if (load_environment_variables(shell, environment) == GEN_ERROR)		
 	{
         cleanup_minishell(shell);
-        print_error(ERROR_ENVIRONMENT, STDERR_FILENO, GENERAL_ERROR);
+		ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO);
+        return (GEN_ERROR);
     }
 
 	// test parser
@@ -54,7 +55,7 @@ void	run_shell(t_shell *shell)
 	char	*input;
 	
 	if (!shell)											
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	while (1)											// loop ppal
 	{
 		//printf("Input Reading...\t\t\t OK\n\n");
@@ -63,7 +64,7 @@ void	run_shell(t_shell *shell)
 		if (!input)										// CASO EOF - TERMINAR SHELL
 			break ;
 	
-        if (input[0] == '\0')						// 	CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
+        if (input[0] == '\0')							// 	CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
         {
             free(input);
             continue;  									// VOLVER AL INICIO DEL LOOP
@@ -73,7 +74,7 @@ void	run_shell(t_shell *shell)
 		if (!shell->input)
 		{
 			free(input);
-			print_error(ERROR_MEMORY_ALLOCATION, STDERR_FILENO, GENERAL_ERROR);
+			return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}		
 			
 		//printf("Input Processing... %s\n", shell->input);	
@@ -92,7 +93,7 @@ void	process_input(t_shell *shell)
 	//char *syntax_error;
 
 	if (!shell || !shell->input)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 
 	/* printf("Syntax Check...\t\t\t OK\n");
 	if (!validate_syntax(shell))		
@@ -139,7 +140,7 @@ void	process_commands(t_shell *shell)
 	t_cmd	*current_command;
 
 	if (!shell)
-		print_error(ERROR_INVALID_INPUT, STDERR_FILENO, GENERAL_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{
@@ -167,11 +168,9 @@ char	*read_user_input(char *prompt)
 	// CASO EOF (Ctrl+D o fin de pipe)
 	if (!input)
 	{
-		//perror_exit(ERROR_INPUT_READER, STDERR_FILENO, GENERAL_ERROR);
-		//printf("\n"); // Nueva línea para formato limpio
-        return (NULL); // Retornar NULL para indicar EOF		
+		ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO);  // Retornar NULL para indicar EOF	
+		return (NULL); 
 	}
-
 	if (input[0] != '\0')  // añadir a historial si input no vacio	
 		add_history(input);
 	return (input);
