@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:26:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	validate_environment(char **environment)
 	if (!environment | !*environment)
 	{
 		ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO);
-		return (GEN_ERROR);
+		return (FAILURE);
 	}		
 	return (SUCCESS);
 }
@@ -48,7 +48,7 @@ int	load_environment_variables(t_shell *shell, char **environment)
 	int	index;
 
 	if (!shell || !environment)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), GEN_ERROR);
+		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 	env_count 	= 0;
 	index 		= 0;	
 	while (environment[env_count]) 		// calculo total elementos
@@ -58,13 +58,13 @@ int	load_environment_variables(t_shell *shell, char **environment)
 	shell->environment = (char **) malloc(sizeof(char *) * (env_count + 1));
 	// validacion estado carga variables
 	if (env_count <= 0 || !shell->environment)
-		return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), GEN_ERROR);
+		return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), FAILURE);
 
 	while (environment[index])
 	{
 		shell->environment[index] = ft_strdup(environment[index]);
 		if (!shell->environment[index])
-			return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), GEN_ERROR);
+			return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), FAILURE);
 		index++;
 	}
 	shell->environment[index] = NULL;	// terminador nulo char **

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:20:18 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 13:31:27 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ static t_cmd *create_command_node(char *input)
 
 static t_cmd	*find_command_last_node(t_cmd *commands_list)
 {    
-	if (!commands_list) 						
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
+	if (!commands_list) 					// validation 
+		return (NULL);
 	while (commands_list->next)
 		commands_list = commands_list-> next; 	// retorna puntero a ultimo nodo    
 	//printf("find_command_last_node: '%p'\n", commands_list);
@@ -88,7 +88,8 @@ void print_commands_list(t_cmd *commands_list)
 	int node_index;
 
 	if (!commands_list)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO)); 
+		return ;
+		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO)); 
 	command = (t_cmd *)(commands_list);
 	node_index = 1;
 	while (command)
@@ -127,7 +128,10 @@ void	print_command_arguments(char **args)
 	int	index;
 
 	if (!args)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
+    {
+        printf("\t └──> args -> [ (null) ]\n");  // No es error, solo información
+        return;
+    }
 	index = 0;
 	printf("\t └──> args -> [ "); 
 	while (args[index])
@@ -145,7 +149,10 @@ void	print_output(char **args)
 	int	index;
 
 	if (!args)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
+    {
+        printf("└──> OUTPUT -> (null)\n");  // No es error, solo información
+        return;
+    }
 	index = 0;
 	printf("└──> OUTPUT -> ("); 
 	while (args[index])

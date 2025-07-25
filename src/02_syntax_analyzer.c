@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:19:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@ int 	is_pipe_operator(char character);
 void	syntax_analyzer(t_shell *shell)
 {
 	if (!shell)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
+	{
+		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
+		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
+		return ;
+	}	
 
 	// CREAR ESTRUCTURA COMANDOS
 	create_commands_structure(shell);		
@@ -35,7 +39,11 @@ void	create_commands_structure(t_shell *shell)
 	int		input_len;
 
 	if (!shell || !shell->input)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));		
+	{
+		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
+		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
+		return ;
+	}			
 	index = 0;	
 	while (shell->input[index])
 	{
@@ -46,7 +54,6 @@ void	create_commands_structure(t_shell *shell)
 		
 		// CLASIFICACION LISTA PROCESOS
 		input_len = generate_command(shell, index);
-
 
 		// GESTION CASOS ESPECIALES AVANCE INDEX
 		index = advance_index_by_length(index, input_len);
@@ -75,7 +82,7 @@ int generate_command(t_shell *shell, int start_index)
 	char 	character;
 
 	if (!shell)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);	
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
 
 	index = start_index;
 	inside_quotes = false;
@@ -110,18 +117,18 @@ int generate_command(t_shell *shell, int start_index)
 	// Extraer el comando (sin incluir el pipe)
 	command_input = create_clean_command(shell->input, start_index, index);
 	if (!command_input)
-		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), GEN_ERROR);	
+		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);	
 	
 	command_len = ft_strlen(command_input);
 	// AÑADIR NODO COMMAND
 	if (command_len > 0)
 	{
-		printf("Generated command: '%s'\n", command_input);		
+		printf("Generated command: <%s>\n", command_input);		
 		add_command_node(&shell->commands_list, command_input);
-		//printf("DEBUG: add_command_node completed successfully\n");
+		printf("DEBUG: add_command_node completed successfully\n");
 	}	
 	free(command_input);
-	//printf("DEBUG: returning command_len=%d\n", command_len);
+	printf("DEBUG: returning command_len=%d\n", command_len);
 	return (command_len);
 }
 

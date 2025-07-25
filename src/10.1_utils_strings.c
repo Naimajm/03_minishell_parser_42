@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:27:53 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 17:44:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,13 @@
 // Función auxiliar para avanzar index segun la longitud del string
 int	advance_index_by_length(int current_index, int length)
 {
-	if (length == GEN_ERROR)
-		return (ft_putendl_fd(ERROR_ADVANCE_INDEX, STDERR_FILENO), GEN_ERROR);
+	if (length == -1)
+	{
+		printf("DEBUG- >advance_index_by_length() -> length == -1\n");
+		ft_putendl_fd(ERROR_ADVANCE_INDEX, STDERR_FILENO);
+		return (0);
+		//return (current_index);
+	}		
 	if (length == 0)
 		current_index++;
 	else	

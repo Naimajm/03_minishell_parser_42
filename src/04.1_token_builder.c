@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:21:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 12:39:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,9 @@ static t_token *create_token_node(char  *word, int token_type)
 }
 
 static t_token	*find_token_last_node(t_token *token_list)
-{
-	// validation 
+{	
 	if (!token_list)
-		return (NULL);
+		return (NULL);   // validation 
 
 	while (token_list->next)
 		token_list = token_list-> next; // retorna puntero a ultimo nodo    

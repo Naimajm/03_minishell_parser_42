@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:36:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:43:20 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 // MACROS -----------------------------------------------
 
 // VALORES EXIT_STATUS
+# define FAILURE			-1
 # define SUCCESS			0
 # define GEN_ERROR			1
 # define SYNTAX_ERROR		2
@@ -312,7 +313,7 @@ void	print_strings_array(char **array);
 void	test_lexical_analyzer(t_shell *shell);
 
 // 12_test_parser.c			# Testing y debugging
-void test_mode(t_shell *shell);
+void test_basic_parser(t_shell *shell);
 void test_parser(t_shell *shell);
 
 #endif

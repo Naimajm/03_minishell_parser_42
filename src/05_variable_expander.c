@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:22:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	extract_expansion_nodes(t_token *token)
 				subs_len = curly_braces_expander(token, index);
 			else // caso normal -> EXPANSION BASICA -> AÑADIR A LISTA EXPAND
 				subs_len = basic_expander(token, index);				
-			if (subs_len == GEN_ERROR)	// error
+			if (subs_len == FAILURE)	// error
 				return ;			
 			index += subs_len;	
 		}	
@@ -143,11 +143,11 @@ int	insert_expand_node_value(t_token *token)
 	int			 last_position;
 
 	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);  
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);  
 	current_node = (t_expand *) token->expands_list;
 	result = ft_strdup("");
 	if (!result)
-    	return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), GEN_ERROR);
+    	return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 	last_position 	= 0;
 	while (current_node)
 	{

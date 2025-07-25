@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:21:23 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,17 @@ void	tokenizer(t_word *words_list)
 	t_word	*current_word;
 
 	if (!words_list)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
+	{
+		printf("DEBUG -> tokenizer()\n");
+		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
+		return ;
+	}
+			
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{
-		word_tokenizer(current_word);		
+		word_tokenizer(current_word);
+		printf("DEBUG tokenizer\n");	
 		current_word = current_word->next;
 	}		
 }
@@ -69,7 +75,7 @@ int	noquotes_tokenizer(t_word *word, int start_index)
 	int		len_input;
 
 	if (!word || !word->raw_word)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);	
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
 	raw_word 	= (char *) word->raw_word;
 	index 		= start_index;
 	len_input 	= 0;	
@@ -82,7 +88,7 @@ int	noquotes_tokenizer(t_word *word, int start_index)
 		
 	token_input = ft_substr(raw_word, start_index, (index - start_index)); // copiar sub substr
 	if (!token_input)
-		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), GEN_ERROR);
+		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);
 		
 	len_input = ft_strlen(token_input);
 	add_token_node(&word->tokens_list, token_input, NO_QUOTES);			
@@ -113,12 +119,12 @@ int	quotes_tokenizer(t_word *word, int start_index)
 	if (raw_word[index] == delimiter)
 		index++;
 	else					// validacion falta de comilla de cierre
-		return (ft_putendl_fd(ERROR_QUOTE_SYNTAX, STDERR_FILENO), GEN_ERROR);
+		return (ft_putendl_fd(ERROR_QUOTE_SYNTAX, STDERR_FILENO), FAILURE);
 
 
 	token_input = ft_substr(raw_word, start_index, (index - start_index)); // copia expresion con comillas incluidas
 	if (!token_input)
-		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), GEN_ERROR);	
+		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);	
 
 	// Determinar tipo de token
 	if (delimiter == '\"')
