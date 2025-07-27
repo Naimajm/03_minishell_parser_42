@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 18:02:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 18:18:27 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,6 @@ int	last_exit_status_expander(t_token *token, int first_index)
 	t_expand	*expand_node;
 	char	*substitution_str;
 	int		len_input;
-	char	*key;
 
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
@@ -154,17 +153,14 @@ int	last_exit_status_expander(t_token *token, int first_index)
 	len_input = ft_strlen(substitution_str);
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LAST_EXIT_STATUS);	
 
-
 	expand_node->key = ft_strdup("$?");
     if (!expand_node->key)
     {
         free(substitution_str);
-        free(key);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
 	
 	free(substitution_str);
-	free(key);
 	//ft_printf("token -> %s\n", token);
 	return (len_input);
 }
@@ -175,6 +171,7 @@ int	curly_braces_expander(t_token *token, int first_index)
 	char		*substitution_str;
 	int			final_index;
 	int			len_input;
+	char		*key_temp;
 	char		*key;
 
 	if (!token)
@@ -194,15 +191,27 @@ int	curly_braces_expander(t_token *token, int first_index)
 	
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, CURLY_BRACES);
 	
-	key = extract_key(substitution_str, 1); 	// index 0 -> $
-	key = ft_strtrim(key, "{}"); 
+	key_temp = extract_key(substitution_str, 1); 	// index 0 -> $
+	if (!key_temp)
+    {
+        free(substitution_str);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+    }
+
+	key = ft_strtrim(key_temp, "{}"); 
+	if (!key)
+    {
+        free(substitution_str);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+    }
+	free(key_temp);
 	
 	// cortar {}
-	expand_node->key = ft_strdup(key);
+	expand_node->key = ft_strdup(key_temp);
 	if (!expand_node->key)
     {
         free(substitution_str);
-        free(key);
+        free(key_temp);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
 	// calcular last_index del nodo expand

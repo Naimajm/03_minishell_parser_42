@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 21:51:17 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 18:21:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ void test_basic_parser(t_shell *shell)
 		// ECHO TESTS - Casos adicionales con variables
         "echo \"ho   $USER\"",
         "echo \"$HOME '$LESS' $USER\"",
-        //"echo '$HOME \"$LESS\" $USER'",						// error
-        //"echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error
-        //"echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",			// error
-        //"echo '$'\"HOME\"",
+        "echo '$HOME \"$LESS\" $USER'",						// error
+        "echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error
+        "echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",			// error
+        "echo '$'\"HOME\"",
 
 		// COMANDOS BÁSICOS
         /* "ls -la /home",			
@@ -261,7 +261,7 @@ void test_parser(t_shell *shell)
     // Casos de prueba enfocados en argumentos
     char *test_cases[] = {
         // ECHO TESTS (básicos primero)
-        /* "echo",
+        "echo",
         "echo hello",
         "echo hello world",
         "echo hola mundo",
@@ -271,7 +271,7 @@ void test_parser(t_shell *shell)
         "echo -n -n hola",
         "echo -n -nh -n hola",
         "echo -nnnnnnnnn hola",
-		"echo $?hcudshfuewrf ew  wr 4ew""""", */
+		"echo $?hcudshfuewrf ew  wr 4ew""""",
 
 		// ECHO TESTS - Casos complejos con comillas mixtas
         "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb 					\"iujiouhj\"f'f'f'f'f''f'f'f'f'f'f'",
@@ -294,17 +294,17 @@ void test_parser(t_shell *shell)
 		// ECHO TESTS - Casos adicionales con variables
         "echo \"ho   $USER\"",
         "echo \"$HOME '$LESS' $USER\"", */
-        //"echo '$HOME \"$LESS\" $USER'",						// error
-        //"echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error
-        //"echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",			// error
-        //"echo '$'\"HOME\"",
+        "echo '$HOME \"$LESS\" $USER'",						// error
+        "echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error
+        "echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",			// error
+        "echo '$'\"HOME\"",
 
 		// COMANDOS BÁSICOS
-        /* "ls -la /home",
-        "cat file.txt",
-        "grep pattern file.txt",
-        "pwd",
-        "env", */
+        "echo ls -la /home",
+        "echo cat file.txt",
+        "echo grep pattern file.txt",
+        "echo pwd",
+        "echo env",
 
 		// EXPORT TESTS - Casos básicos
 		/* "export a=b",

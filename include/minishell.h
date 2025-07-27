@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 09:22:59 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 19:46:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,7 +300,7 @@ void	cleanup_minishell(t_shell *shell);
 void	free_commands_list(t_cmd **commands_list);
 void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
-void	free_expands_list(t_expand *expand_stack);
+void	free_expands_list(t_expand **expands_list);
 
 void	free_matrix(char **matrix);  // TODO -> LLEVAR A NUEVO ARCHIVO
 

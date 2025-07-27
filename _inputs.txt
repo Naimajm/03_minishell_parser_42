@@ -70,3 +70,6 @@ $SHELL$TERM
 $SHELL$XXXX
 
 $HOME=la
+
+# ejecucion test parser con valgrind
+valgrind --tool=memcheck --leak-check=full --track-origins=yes ./minishell --test

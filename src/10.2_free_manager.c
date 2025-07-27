@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 13:48:51 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 19:47:39 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	free_commands_list(t_cmd **commands_list);
 void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
-void	free_expands_list(t_expand *expand_stack);
+void	free_expands_list(t_expand **expands_list);
 void	free_matrix(char **matrix);
 
 void	cleanup_minishell(t_shell *shell)
@@ -122,7 +122,7 @@ void	free_tokens_list(t_token **tokens_list)
 
 		// Liberar lista nodos expand		
 		if (current_node->expands_list)
-			free_expands_list((*tokens_list)->expands_list);
+			free_expands_list(&current_node->expands_list);
 
 		free(current_node);		// Liberar nodo actual		
 		current_node = next_node; 
@@ -131,12 +131,12 @@ void	free_tokens_list(t_token **tokens_list)
 	//ft_printf(FREE_TOKENS_LIST);
 }
 
-void	free_expands_list(t_expand *expands_list)
+void	free_expands_list(t_expand **expands_list)
 {
 	t_expand	*current_node;
 	t_expand	*next_node;
 
-	if (!expands_list)
+	if (!expands_list || !*expands_list)
 		return ;
 	current_node = (t_expand *) expands_list;
 	while (current_node)
@@ -154,6 +154,7 @@ void	free_expands_list(t_expand *expands_list)
 		free(current_node);		// Liberar nodo actual		
 		current_node = next_node;
 	}
+	*expands_list = NULL;
 	//ft_printf(FREE_EXPANDS_LIST);
 }
 
