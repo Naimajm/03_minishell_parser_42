@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 11:52:22 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,10 +125,10 @@ int generate_command(t_shell *shell, int start_index)
 	{
 		printf("Generated command: <%s>\n", command_input);		
 		add_command_node(&shell->commands_list, command_input);
-		printf("DEBUG: add_command_node completed successfully\n");
+		printf("DEBUG: add command successfully -> command_len = %d\n",command_len);
 	}	
 	free(command_input);
-	printf("DEBUG: returning command_len=%d\n", command_len);
+	//printf("DEBUG: returning \n", command_len);
 	return (command_len);
 }
 

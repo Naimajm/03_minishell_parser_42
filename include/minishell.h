@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:43:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 09:22:59 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void	print_strings_array(char **array);
 void	test_lexical_analyzer(t_shell *shell);
 
 // 12_test_parser.c			# Testing y debugging
-void test_basic_parser(t_shell *shell);
-void test_parser(t_shell *shell);
+void 	test_basic_parser(t_shell *shell);
+void 	test_parser(t_shell *shell);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 09:33:20 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ void	extract_expansion_nodes(t_token *token)
 	{
 		if (token->raw_token[index] == '$' && token->raw_token[index + 1])
 		{
+/* 			// caso nuevo $ ??
+			if (token->raw_token[]) */
+
 			if (token->raw_token[index + 1] == '?') // GESTION CASO ESPECIAL "$?
 				subs_len = last_exit_status_expander(token, index);			
 			else if (index > 0 && token->raw_token[index - 1] == '\\') // caso \$VAR -> literal , no inicia expancion

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:42:35 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/25 21:51:17 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void test_basic_parser(t_shell *shell)
 		"export $USER$SHLVL", */
 		
 		// EXPORT TESTS - Casos especiales
-		/* "export",
+		"export",
 		"           export",
 		"export \"\"",
 		"export a b=$LESS $USER $HOME=la $COLORTERM=pa c=d",
@@ -136,7 +136,7 @@ void test_basic_parser(t_shell *shell)
 		"exit 42",                     // exit con código 42
 		"exit lalal",                  // exit con argumento inválido
 		"exit 256",                    // exit con código > 255
-		"exit -1",                     // exit con código negativo */
+		"exit -1",                     // exit con código negativo
 		
 		// PIPE TESTS
 		/* "ls | wc",                     // pipe básico

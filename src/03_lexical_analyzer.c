@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:30:53 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 12:08:50 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void	lexical_analyzer(t_cmd *commands_list)
 {
 	t_cmd	*current_command;
 	
+	printf("DEBUG -> lexical_analyzer()\n");
 	if (!commands_list)
-	{
-		printf("DEBUG -> lexical_analyzer()\n");			
+	{					
 		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
 		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO)); 
 		return ;
@@ -54,7 +54,7 @@ void	command_extractor(t_cmd *command)
 	
 	while (command_input[index])
 	{
-		printf("DEBUG command_extractor() -> index inicial -> %i\n", index);
+		//printf("DEBUG command_extractor() -> index inicial -> %i\n", index);
 		while (is_space(command_input[index])) // ignorar espacios iniciales 
 			index++;		
 		if (!command_input[index]) // Verificar si llegamos al final después de saltar espacios
@@ -66,9 +66,10 @@ void	command_extractor(t_cmd *command)
 		else
 			word_len = word_extractor(command, index);
 			
-		// GESTION CASOS ESPECIALES AVANCE INDEX
-		printf ("DEBUG command_input -> %s, index -> %i, word_len -> %i, LEN COMAND_INPUT -> %i\n",command_input, index, word_len, ft_strlen(command_input));	
+		// GESTION CASOS ESPECIALES AVANCE INDEX		
 		index = advance_index_by_length(index, word_len);
+
+		printf ("DEBUG final proceso command_extractor() \n -> %s, index -> %i, word_len -> %i, LEN COMAND_INPUT -> %i\n",command_input, index, word_len, ft_strlen(command_input));	
 		//printf("DEBUG -> command_extractor(). advance index ok\n");				
 	}		
 }
@@ -82,9 +83,11 @@ int	word_extractor(t_cmd *command, int start_index)
 	bool	quote_state;  			// false = fuera, true = dentro
 	char	character;
 
+	printf("DEBUG -> word_extractor()\n");
+
 	if (!command->command)
 	{
-		printf("DEBUG -> word_extractor() -> command_input vacio\n");
+		printf("command_input vacio\n");
 		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);	 
 		return (FAILURE);
 	}
@@ -129,7 +132,11 @@ int	word_extractor(t_cmd *command, int start_index)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 	
 	len_input = ft_strlen(command_input);
+
+	printf("Generated word: <%s>\n", command_input);		
 	add_word_node(&command->words_list, command_input, WORD);
+	printf("DEBUG: add word successfully -> word_len = %d\n\n", len_input);
+	
 	free(command_input);
 	
 	return (len_input);

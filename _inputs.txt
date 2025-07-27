@@ -62,3 +62,8 @@ $USER
 # Test no encuentra variable en environment
 input  ->  xx"aaa$ezzz"xx
 output ->  xxaaaxx
+
+# 2 VARIABLES CONSECUTIVAS
+$HOME$SHELL
+$SHELL$TERM
+$SHELL$XXXX

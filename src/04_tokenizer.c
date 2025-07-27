@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 13:04:46 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,9 @@ int		operator_tokenizer(t_word *word, int start_index);
 void	tokenizer(t_word *words_list)
 {
 	t_word	*current_word;
-
+	printf("DEBUG tokenizer\n");
 	if (!words_list)
 	{
-		printf("DEBUG -> tokenizer()\n");
 		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
 		return ;
 	}
@@ -31,8 +30,7 @@ void	tokenizer(t_word *words_list)
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{
-		word_tokenizer(current_word);
-		printf("DEBUG tokenizer\n");	
+		word_tokenizer(current_word);			
 		current_word = current_word->next;
 	}		
 }

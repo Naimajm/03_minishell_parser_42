@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:43:42 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 11:57:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	main(int	argc, char **argv, char **environment)
 	if (argc > 1 && ft_strncmp(argv[1], "--test", 6) == 0)
 	{
 		//test_basic_parser(shell);
-		test_parser(shell);
+		//test_parser(shell);
 	}		
 	
 	//printf("Run Shell...\t\t\t\t OK\n\n");
@@ -101,18 +101,18 @@ void	process_input(t_shell *shell)
 		
 
 	//printf("Syntax analyzer...\t\t\t OK\n");
-	syntax_analyzer(shell);
+	syntax_analyzer(shell);	
 	
-	//print_commands_list(shell->commands_list);		// Debug
 
 	//printf("Lexical analyzer...\t\t\t OK\n");
 	lexical_analyzer(shell->commands_list);	
+	print_commands_list(shell->commands_list);		// Debug
 
 	//printf("Process Comands...\t\t\t OK\n");
 	process_commands(shell);
 
 	//printf("Generating execution structure...\t OK\n");
-	build_execution_structure(shell->commands_list);	
+	//build_execution_structure(shell->commands_list);	
 	
 	//printf("Test ->...					OK\n\n");
 	//test_lexical_analyzer(shell);	
@@ -120,7 +120,7 @@ void	process_input(t_shell *shell)
 	// EJECUTAR COMANDOS
     // execute_commands(shell->command_list);
 	
-	print_commands_list(shell->commands_list);		// Debug
+	//print_commands_list(shell->commands_list);		// Debug
 
 	// LIBERAR ESTRUCTURAS COMMANDS
 	free_commands_list(&shell->commands_list);
@@ -138,15 +138,16 @@ void	process_commands(t_shell *shell)
 	{
 		//printf("Word -> Tokenizer...				OK\n\n");
 		tokenizer(current_command->words_list);
+		print_commands_list(current_command);		// Debug
 
 		//printf("Tokens -> Expand variables $...			OK\n\n");
-		variable_expander(current_command->words_list, shell->environment, shell->exit_status);
+		//variable_expander(current_command->words_list, shell->environment, shell->exit_status);
 
 		//printf("Tokens -> Dequotize tokens...			OK\n\n");
-		dequotize_tokens(current_command->words_list);	
+		//dequotize_tokens(current_command->words_list);	
 
 		//printf("Word -> Join Tokens to 'processed_word'...	OK\n\n");
-		generate_processed_word(&current_command->words_list);	
+		//generate_processed_word(&current_command->words_list);	
 		
 		current_command = current_command->next;
 	}	

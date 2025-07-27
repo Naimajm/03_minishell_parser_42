@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 12:03:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 11:45:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 char	*extract_substitution_segment(char *raw_token, int first_index);
-//static int	find_consecutive_variables(char *raw_token, int first_index);
+
 
 // EXTRAER KEY DE SUBSTITUTION_STR
 char	*extract_key(char *token, int first_index)
@@ -85,9 +85,12 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
 	index = first_index;		
 	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
+	// Extraer variable como noquotes_tokenizer
 	while (!is_space(raw_token[index])
 		&& !is_operator(raw_token[index])
 		&& !is_quote(raw_token[index])
+		//&& raw_token[index] != '$'
+		//&& raw_token[index] != '='
 		&& raw_token[index])
 		index++;
 		
@@ -99,73 +102,6 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
 	return (substitution_str);
 }
 
-/* char	*extract_substitution_segment(char *raw_token, int first_index)
-{
-	char	*substitution_str;
-	int		final_index;
-	//int		raw_len;
-
-	if (!raw_token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
-	final_index = first_index;	
-	
-	// CASO 2 VARIABLES $ A EXPANDIR -> $USER$TERM
-	if (raw_token[final_index] == '$' && raw_token[final_index + 1])
-		final_index = find_consecutive_variables(raw_token, final_index);
-	// CASO SIN $ VARIABLE EXPANDIDA
-	else
-	{		
-		while (!is_space(raw_token[final_index])
-			&& !is_operator(raw_token[final_index])
-			&& !is_quote(raw_token[final_index])
-			//&& raw_token[index] != '$' 		// para variables a expandir consecutivas
-			&& raw_token[final_index])
-			final_index++;
-	}	
-
-	// GESTION CASOS ESPECIALES AVANCE INDEX
-	//final_index = advance_index_by_length(final_index, raw_len);
-
-	// 🔧 FIX: Validar índices antes de ft_substr
-    if (final_index <= first_index)
-    {
-        printf("❌ ERROR: índices inválidos first_index=%d, final_index=%d\n", 
-               first_index, final_index);
-        return (ft_strdup(""));  // Retornar string vacío en lugar de NULL
-    }
-		
-	printf("len total -> %i // final_index-> %i", ft_strlen(raw_token) , final_index);
-	substitution_str = NULL;
-
-	// copiar sub substr
-	//substitution_str = ft_substr(raw_token, first_index, (final_index - first_index));
-	if (!substitution_str)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
-	//ft_printf("variable -> %s\n", variable);
-	return (substitution_str);
-} */
-
-/* static int	find_consecutive_variables(char *raw_token, int first_index)
-{
-	int index;
-
-	index = first_index;
-	index++;						// saltar el caracter $
-	if (raw_token[index] == '?') 	// Caso especial: $?
-		index++;
-	else
-	{
-		// Añadir && raw_token[index] != '$' para parar en siguiente $
-		while (!is_space(raw_token[index])
-			&& !is_operator(raw_token[index])
-			&& !is_quote(raw_token[index])
-			&& raw_token[index] != '$'
-			&& raw_token[index])
-			index++;
-	}
-	return (index);
-} */
-
 /* char *extract_substitution_segment(char *raw_token, int first_index)
 {
     char    *substitution_str;
@@ -173,7 +109,7 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
     int     len_input;
 
     if (!raw_token)
-        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GENERAL_ERROR);
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
     
     index = first_index;
     
@@ -211,55 +147,9 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
     
     substitution_str = ft_substr(raw_token, first_index, len_input);
     if (!substitution_str)
-        return (ft_putendl_fd(ERROR_MEMORY_ALLOCATION, STDERR_FILENO), GENERAL_ERROR);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
     
     return (substitution_str);
-} */
-
-/* static int	find_consecutive_variables(char *raw_token, int first_index)
-{
-    int index;
-    int token_len;
-
-    if (!raw_token)
-        return (first_index);
+}
     
-    token_len = ft_strlen(raw_token);
-    
-    // 🔧 FIX: Validar que first_index esté dentro de límites
-    if (first_index >= token_len || first_index < 0)
-        return (first_index);
-    
-    index = first_index;
-    
-    // 🔧 FIX: Verificar que realmente hay un $
-    if (raw_token[index] != '$')
-        return (first_index + 1);
-    
-    index++;  // saltar el caracter $
-    
-    // 🔧 FIX: Verificar límites después de saltar $
-    if (index >= token_len)
-        return (index);
-    
-    if (raw_token[index] == '?') // Caso especial: $?
-    {
-        index++;
-    }
-    else
-    {
-        // 🔧 FIX: Añadir verificación de límites en el while
-        while (index < token_len &&
-               !is_space(raw_token[index]) &&
-               !is_operator(raw_token[index]) &&
-               !is_quote(raw_token[index]) &&
-               raw_token[index] != '$' &&
-               raw_token[index])
-            index++;
-    }
-    
-    return (index);
-} */
-
-	
-    
+ */
