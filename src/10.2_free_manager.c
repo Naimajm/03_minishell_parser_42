@@ -144,12 +144,12 @@ void	free_expands_list(t_expand *expands_list)
 		next_node = current_node->next;
 
 		// Liberar strings
-		if (expands_list->substitution_str)
-			free(expands_list->substitution_str);
-		if (expands_list->key)
-			free(expands_list->key);
-		if (expands_list->value)
-			free(expands_list->value);
+		if (current_node->substitution_str)
+			free(current_node->substitution_str);
+		if (current_node->key)
+			free(current_node->key);
+		if (current_node->value)
+			free(current_node->value);
 
 		free(current_node);		// Liberar nodo actual		
 		current_node = next_node;

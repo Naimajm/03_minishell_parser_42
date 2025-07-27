@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 11:45:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 13:46:48 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	*get_environment_var(char **env, char *variable)
 }
 
 //	 FUNCIONM ORIGINAL !! NO ARREGLA VARIABLES CONSECUTIVAS	$USER$TERM
-char	*extract_substitution_segment(char *raw_token, int first_index)
+/* char	*extract_substitution_segment(char *raw_token, int first_index)
 {
 	char	*substitution_str;
 	int		index;
@@ -100,6 +100,22 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
 		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), NULL);
 	//ft_printf("variable -> %s\n", variable);
 	return (substitution_str);
+} */
+
+char	*extract_substitution_segment(char *raw_token, int first_index)
+{
+    char	*substitution_str;
+
+	(void)first_index;
+    if (!raw_token)
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
+    
+    // Como el tokenizer ya separó correctamente, solo devolvemos todo el token
+    substitution_str = ft_strdup(raw_token);
+    if (!substitution_str)
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
+    
+    return (substitution_str);
 }
 
 /* char *extract_substitution_segment(char *raw_token, int first_index)

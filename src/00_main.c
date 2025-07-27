@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 11:57:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 17:54:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,16 @@ int	main(int	argc, char **argv, char **environment)
 void	run_shell(t_shell *shell)
 {
 	char	*input;
+	int		iteration;
 	
 	if (!shell)											
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
+	iteration = 0;			// CONTADOR DEBUG
 	while (1)											// loop ppal
 	{
+		iteration++;
+        printf("\n\n=== read_user_input() ITERATION %d ===\n\n", iteration);
+
 		//printf("Input Reading...\t\t\t OK\n\n");
 		input = read_user_input(PROMPT);
 		if (!input)										// CASO EOF - TERMINAR SHELL
@@ -87,6 +92,8 @@ void	run_shell(t_shell *shell)
 		free(input);
 		free(shell->input);
 		shell->input = NULL;
+
+		printf("DEBUG: Memory freed, iteration %d\n", iteration);
 	}	
 }
 
@@ -106,13 +113,13 @@ void	process_input(t_shell *shell)
 
 	//printf("Lexical analyzer...\t\t\t OK\n");
 	lexical_analyzer(shell->commands_list);	
-	print_commands_list(shell->commands_list);		// Debug
+	//print_commands_list(shell->commands_list);		// Debug
 
 	//printf("Process Comands...\t\t\t OK\n");
 	process_commands(shell);
 
 	//printf("Generating execution structure...\t OK\n");
-	//build_execution_structure(shell->commands_list);	
+	build_execution_structure(shell->commands_list);	
 	
 	//printf("Test ->...					OK\n\n");
 	//test_lexical_analyzer(shell);	
@@ -120,7 +127,7 @@ void	process_input(t_shell *shell)
 	// EJECUTAR COMANDOS
     // execute_commands(shell->command_list);
 	
-	//print_commands_list(shell->commands_list);		// Debug
+	print_commands_list(shell->commands_list);		// Debug
 
 	// LIBERAR ESTRUCTURAS COMMANDS
 	free_commands_list(&shell->commands_list);
@@ -138,16 +145,16 @@ void	process_commands(t_shell *shell)
 	{
 		//printf("Word -> Tokenizer...				OK\n\n");
 		tokenizer(current_command->words_list);
-		print_commands_list(current_command);		// Debug
+		//print_commands_list(current_command);		// Debug
 
 		//printf("Tokens -> Expand variables $...			OK\n\n");
-		//variable_expander(current_command->words_list, shell->environment, shell->exit_status);
+		variable_expander(current_command->words_list, shell->environment, shell->exit_status);
 
 		//printf("Tokens -> Dequotize tokens...			OK\n\n");
-		//dequotize_tokens(current_command->words_list);	
+		dequotize_tokens(current_command->words_list);	
 
 		//printf("Word -> Join Tokens to 'processed_word'...	OK\n\n");
-		//generate_processed_word(&current_command->words_list);	
+		generate_processed_word(&current_command->words_list);	
 		
 		current_command = current_command->next;
 	}	

@@ -65,5 +65,8 @@ output ->  xxaaaxx
 
 # 2 VARIABLES CONSECUTIVAS
 $HOME$SHELL
+"zz$HOME$SHELL  xx"
 $SHELL$TERM
 $SHELL$XXXX
+
+$HOME=la
