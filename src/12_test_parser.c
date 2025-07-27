@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 18:21:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 23:44:41 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,180 +15,236 @@
 
 #include <string.h>  // strok
 
-void test_parser(t_shell *shell);
+void test_complex_parser(t_shell *shell);
 void test_basic_parser(t_shell *shell);
 static char **get_bash_args_real(char *input);
 //static char **get_bash_args(char *input);
 static bool compare_args_arrays(char **minishell_args, char **bash_args);
 static void print_args_array(char **args, const char *label);
 
+// Casos de prueba enfocados en argumentos
+char *test_cases[] = {
+	// ECHO TESTS (básicos primero)
+	"echo",
+	"echo hello",
+	"echo hello world",
+	"echo hola mundo",
+	"echo """,
+	"echo "" hola",
+	"echo -n hola",
+	"echo -n -n hola",
+	"echo -n -nh -n hola",
+	"echo -nnnnnnnnn hola",
+	"echo $?hcudshfuewrf ew  wr 4ew""""",
+
+	// ECHO TESTS - Casos complejos con comillas mixtas
+	"echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb 					\"iujiouhj\"f'f'f'f'f''f'f'f'f'f'f'",
+	"echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb \"iujiouhj\"f'f'a'j'o''i'w'q''q",
+	"echo \"\"aaaaaaaa\"bbbbb\"'''' ccccccccc \"dddddddd\"e'e'e",
+
+	// ECHO TESTS - Casos con variables de entorno
+	"echo \"ho   $USER\"  'la   $LESS'   $USER$TERM   ",
+	"echo \"ho   $USER\"'la   $LESS'$USER$TERM",			
+	// ECHO TESTS - Casos sin espacios
+	"echo\"ho   $USER\"",
+	"echo\"ho   $USE$LESS\"",
+
+	// ECHO TESTS - Comando entre comillas
+	"\"echo ho   $USER\"",
+	"\"echo\" \"ho   $USER\"",
+	"e\"cho\" \"ho   $USER\"",
+
+	// ECHO TESTS - Casos adicionales con variables
+	"echo \"ho   $USER\"",
+	"echo \"$HOME '$LESS' $USER\"",
+	"echo '$HOME \"$LESS\" $USER'",						// error?
+	"echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error ?
+	"echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",		// error ?
+	"echo '$'\"HOME\"",
+
+	// COMANDOS BÁSICOS
+	"echo ls -la /home",
+	"echo cat file.txt",
+	"echo grep pattern file.txt",
+	"echo pwd",
+	"echo env",
+
+	// EXPORT TESTS - Casos básicos
+	"echo export a=b",
+	"echo export b=wawa", 
+	"echo export b=lala",
+	"echo export c=lala=kaka",
+	"echo export a",
+	"echo export a=",
+	"echo export a= b=o",
+	"echo export a===",
+	"echo export a3=l",
+	"echo export 2a=lala",
+	"echo export !a=ma",
+	
+	// EXPORT TESTS - Con variables de entorno
+	"echo export $USER=la",
+	"echo export $USER=$TERM",
+	"echo export $USER=$TERM$HOME",
+	"echo export $USER=$TERM$HOM",
+	"echo export $HOME=$USER",
+	//"echo export $USER$SHLVL",  // esta ok. cambia el valor numero de  $SHLVL
+	
+	// EXPORT TESTS - Casos especiales
+	"echo export",
+	"           echo export",
+	//"echo export \"\"",			// esta ok. bash no genera ""
+	"echo export a b=$LESS $USER $HOME=la $COLORTERM=pa c=d",
+
+	// CD TESTS
+	"echo cd /home",                    // directorio existe
+	"echo cd /nonexistent",             // directorio no existe  
+	"echo cd /etc/passwd",              // file existe
+	"echo cd",                          // cd solo
+	"           echo cd",               // cd con espacios
+	"echo cd -",                        // cd - = $OLDPWD
+	"echo cd $HOME",                    // cd $HOME (si $HOME no existe)
+	"echo cd /root",                    // directorio con distintos permisos
+	
+	// ENV TESTS
+	"echo env",                         // env solo
+	"echo env lalal",                   // env con argumento inválido
+	"echo env /home",                   // env con directorio
+	
+	// PWD TESTS
+	"echo pwd",                         // pwd sin argumentos
+	"echo pwd arg1",                    // pwd con argumentos (inválido)
+	"echo pwd arg1 arg2",               // pwd con múltiples argumentos
+	
+	// UNSET TESTS
+	"echo unset",                       // unset sin argumentos
+	"echo unset PATH",                  // unset con un argumento
+	"echo unset PATH HOME USER",        // unset con varios argumentos
+	"echo unset NONEXISTENT_VAR",       // unset variable inexistente
+	
+	// EXIT TESTS
+	"echo exit",                        // exit sin argumentos
+	"echo exit 0",                      // exit con código 0
+	"echo  exit 1",                      // exit con código 1
+	"echo exit 42",                     // exit con código 42
+	"echo exit lalal",                  // exit con argumento inválido
+	"echo exit 256",                    // exit con código > 255
+	"echo exit -1",                     // exit con código negativo
+	
+	// PIPE TESTS
+	"echo ls wc",                     // pipe básico
+	"echo lswc",                       // pipe sin espacios
+	"echo sort colors.txt uniq sort -r  wc",  // pipe múltiple
+	"echo ls  wc",                    // double pipe (OR lógico)
+	"echo ls    wc",                 // pipe con comando vacío
+	"echo ls     wc",         // pipe con redirecciones mezcladas
+	"echo ls  wc ",                   // pipe terminando en pipe
+	"echo ",                           // solo pipe
+	"echo  ls  wc",                   // pipe al inicio
+
+	// REDIRECTION TESTS - Casos básicos 	--------------------------------
+	"echo hola  file",                 // Output redirection básica
+	"echo hola file",                      // Sin espacios
+	"echo wc  colors.txt",                     // Input redirection básica
+	"echo wc  colors.txt  file",              // Input y output combinadas
+	"echo cat colors.txt  wc",                 // Pipe simple (referencia)
+	
+	// REDIRECTION TESTS - Casos múltiples
+	"echo hola  file  file2  file3",    // Múltiples outputs
+	"echo hola  file  file2  file3  ls", // Múltiples outputs + pipe
+	
+	// REDIRECTION TESTS - Heredoc básicos
+	"echo cat  EOF",                          // Heredoc simple
+	"echo hola  file  EOF",             // Output + heredoc
+	"echo cat  EOF  file",                   // Heredoc + output
+	"echo cat  EOF  ls",                     // Heredoc + pipe
+	
+	// REDIRECTION TESTS - Heredoc múltiples
+	"echo cat  hola  que  tal",           // Múltiples heredoc
+
+	// REDIRECTION TESTS - Pipes complejos
+	"echo hola  cat  cat  cat  cat  cat  cat  cat", // Pipe muy largo	
+
+	// INPUTS PERSONALIZADOS SIN OPERADORES	
+	//"echo \"cat  ho\"la a'$e\" ta'l   ,qu'e\" hac\"$\"es ",	
+	"echo 'ho<<$la' 'cara<>|cola'  'ey '  ",
+	"  \"ho<< $? la\" \"car$a<>|cola\"  ' ey'  ", 
+	" h\"ola $HOME \"caracola  ",	
+	" \"aa $HOME $? bb ${HOME}xxx zz\" ",	
+
+	// CASOS ESPECIALES
+	" \" $ \"",
+	"'$ '",
+	"\"$  $HOME\"",
+	
+	"\" $ $\"",				
+	"'$?'",
+	"$ \" $ \"",
+	"\"$ $ \"",
+	"\"$ $\"",	
+	"\"$ff{HOME}ff\"",
+	"\"ff${HOME}ff\"",
+	"xx\"aaa$ezzz\"xx",
+
+	// 2 VARIABLES CONSECUTIVAS
+	"$HOME$SHELL", 
+	"\"$HOME$SHELL\"",
+	"\"zz$HOME$SHELL  xx\"",
+	"$SHELL$TERM",
+	"$SHELL$XXXX",
+	"$HOME=la",
+
+	// LITERALES
+	/* "cc\"\\$literal\"",
+	"\" aa\"\\$a\\$b\"xx \"",
+	"dd\"\\\\$USER\"",
+	"ee\"\\\"\\$test\\\"\"",
+	"aa\"$HOME\"zz   bb\"$?\"yy   cc\"\\$literal\"  \"${HOME}xxx\"ww",
+	"'aa $HOME bb \\$literal ${HOME}xxx $?z zz'",
+	" aa\"\\$a\\$b\"xx ", */
+
+	// INPUTS PERSONALIZADOS CON OPERADORES
+	//"hola < cara | \"$HOME\" >> caracola | \"$HOME\" << heredoc ",
+	//"  cmd1 'literal' > O  \"hola x\" 1234 | cmd2 << H  ",
+	//"aa > aa >> bb << bb < cc",
+
+	// REDIRECTION TESTS - Casos complejos/erróneos
+	/* "</<</>/>>",                           // Solo operadores (error sintaxis)
+	"echo hola >>>>>>> file",              // Múltiples > seguidos (error)
+	"echo hola <<<<<<< file",              // Múltiples < seguidos (error)
+	"echo hola </<</>/>>   </<</>/>> file", // Operadores mezclados (error)
+	"echo hola </<</>/>>   | file",        // Redirección + pipe mezclados (error)
+	"echo hola > file </<</>/>>",          // Redirección válida + inválida (error)
+	"<< EOF",                              // Heredoc sin comando (error) */
+
+	// ERROR SINTAXIS
+	//"'$\"' '$",			// error
+	
+	NULL
+};
+    
 void test_basic_parser(t_shell *shell)
 {
+	int index;
+    int test_number;
+    int passed;
+    int failed;
+
     printf("\n🧪 TESTING PARSER - SIMPLIFIED\n");
     printf("===============================\n");
     
-    // Casos de prueba enfocados en argumentos
-    char *test_cases[] = {
-        // ECHO TESTS (básicos primero)
-        "echo",
-        "echo hello",
-        "echo hello world",
-        "echo hola mundo",
-        "echo """,
-        "echo "" hola",
-        "echo -n hola",
-        "echo -n -n hola",
-        "echo -n -nh -n hola",
-        "echo -nnnnnnnnn hola",
-		"echo $?hcudshfuewrf ew  wr 4ew""""",
-
-		// ECHO TESTS - Casos complejos con comillas mixtas
-        "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb 					\"iujiouhj\"f'f'f'f'f''f'f'f'f'f'f'",
-        "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb \"iujiouhj\"f'f'a'j'o''i'w'q''q",
-        "echo \"\"aaaaaaaa\"bbbbb\"'''' ccccccccc \"dddddddd\"e'e'e",
-
-		// ECHO TESTS - Casos con variables de entorno
-        "echo \"ho   $USER\"  'la   $LESS'   $USER$TERM   ",
-        //"echo \"ho   $USER\"'la   $LESS'$USER$TERM",			// error _> malloc(): unaligned tcache chunk detected  Aborted (core dumped)
-
-		// ECHO TESTS - Casos sin espacios
-        "echo\"ho   $USER\"",
-        "echo\"ho   $USE$LESS\"",
-
-		// ECHO TESTS - Comando entre comillas
-        "\"echo ho   $USER\"",
-        "\"echo\" \"ho   $USER\"",
-        "e\"cho\" \"ho   $USER\"",
-
-		// ECHO TESTS - Casos adicionales con variables
-        "echo \"ho   $USER\"",
-        "echo \"$HOME '$LESS' $USER\"",
-        "echo '$HOME \"$LESS\" $USER'",						// error
-        "echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error
-        "echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",			// error
-        "echo '$'\"HOME\"",
-
-		// COMANDOS BÁSICOS
-        /* "ls -la /home",			
-        "cat file.txt",
-        "grep pattern file.txt",
-        "pwd",
-        "env", */
-
-		// EXPORT TESTS - Casos básicos
-		/* "export a=b",
-		"export b=wawa", 
-		"export b=lala",
-		"export c=lala=kaka",
-		"export a",
-		"export a=",
-		"export a= b=o",
-		"export a===",
-		"export a3=l",
-		"export 2a=lala",
-		"export !a=ma",
-		
-		// EXPORT TESTS - Con variables de entorno
-		"export $USER=la",
-		"export $USER=$TERM",
-		"export $USER=$TERM$HOME",
-		"export $USER=$TERM$HOM",
-		"export $HOME=$USER",
-		"export $USER$SHLVL", */
-		
-		// EXPORT TESTS - Casos especiales
-		"export",
-		"           export",
-		"export \"\"",
-		"export a b=$LESS $USER $HOME=la $COLORTERM=pa c=d",
-
-		// CD TESTS
-		"cd /home",                    // directorio existe
-		"cd /nonexistent",             // directorio no existe  
-		"cd /etc/passwd",              // file existe
-		"cd",                          // cd solo
-		"           cd",               // cd con espacios
-		"cd -",                        // cd - = $OLDPWD
-		"cd ~",                        // cd ~ = $HOME
-		"cd $HOME",                    // cd $HOME (si $HOME no existe)
-		"cd /root",                    // directorio con distintos permisos
-		
-		// ENV TESTS
-		"env",                         // env solo
-		"env lalal",                   // env con argumento inválido
-		"env /home",                   // env con directorio
-		
-		// PWD TESTS
-		"pwd",                         // pwd sin argumentos
-		"pwd arg1",                    // pwd con argumentos (inválido)
-		"pwd arg1 arg2",               // pwd con múltiples argumentos
-		
-		// UNSET TESTS
-		"unset",                       // unset sin argumentos
-		"unset PATH",                  // unset con un argumento
-		"unset PATH HOME USER",        // unset con varios argumentos
-		"unset NONEXISTENT_VAR",       // unset variable inexistente
-		
-		// EXIT TESTS
-		"exit",                        // exit sin argumentos
-		"exit 0",                      // exit con código 0
-		"exit 1",                      // exit con código 1
-		"exit 42",                     // exit con código 42
-		"exit lalal",                  // exit con argumento inválido
-		"exit 256",                    // exit con código > 255
-		"exit -1",                     // exit con código negativo
-		
-		// PIPE TESTS
-		/* "ls | wc",                     // pipe básico
-		"ls|wc",                       // pipe sin espacios
-		"sort colors.txt | uniq | sort -r | wc",  // pipe múltiple
-		"ls || wc",                    // double pipe (OR lógico)
-		"ls |   | wc",                 // pipe con comando vacío
-		"ls |   >/>>/</<< wc",         // pipe con redirecciones mezcladas
-		"ls | wc |",                   // pipe terminando en pipe
-		"|",                           // solo pipe
-		"| ls | wc",                   // pipe al inicio */
-
-		// REDIRECTION TESTS - Casos básicos 	--------------------------------
-		/* "echo hola > file",                 // Output redirection básica
-		"echo hola>file",                      // Sin espacios
-		"wc < colors.txt",                     // Input redirection básica
-		"wc < colors.txt > file",              // Input y output combinadas
-		"cat colors.txt | wc",                 // Pipe simple (referencia)
-		
-		// REDIRECTION TESTS - Casos múltiples
-		"echo hola > file > file2 > file3",    // Múltiples outputs
-		"echo hola > file > file2 > file3 | ls", // Múltiples outputs + pipe
-		
-		// REDIRECTION TESTS - Heredoc básicos
-		"cat << EOF",                          // Heredoc simple
-		"echo hola > file << EOF",             // Output + heredoc
-		"cat << EOF > file",                   // Heredoc + output
-		"cat << EOF | ls",                     // Heredoc + pipe
-		
-		// REDIRECTION TESTS - Heredoc múltiples
-		"cat << hola << que << tal",           // Múltiples heredoc
-		
-		// REDIRECTION TESTS - Casos complejos/erróneos
-		"</<</>/>>",                           // Solo operadores (error sintaxis)
-		"echo hola >>>>>>> file",              // Múltiples > seguidos (error)
-		"echo hola <<<<<<< file",              // Múltiples < seguidos (error)
-		"echo hola </<</>/>>   </<</>/>> file", // Operadores mezclados (error)
-		"echo hola </<</>/>>   | file",        // Redirección + pipe mezclados (error)
-		"echo hola > file </<</>/>>",          // Redirección válida + inválida (error)
-		"<< EOF",                              // Heredoc sin comando (error)
-		
-		// REDIRECTION TESTS - Pipes complejos
-		"echo hola | cat | cat | cat | cat | cat | cat | cat", // Pipe muy largo */
-        NULL
-    };
     
     printf("📋 Testing basic parsing pipeline only...\n\n");
     
-    int index = 0;
+	index = 0;
+    test_number = 0;
+    passed = 0;
+    failed = 0;
+
     while (test_cases[index])
     {
-        printf("TEST %d: %s\n", index + 1, test_cases[index]);
+        test_number++;
+        printf("TEST %d: %s\n", test_number, test_cases[index]);
         
         shell->input = ft_strdup(test_cases[index]);
         
@@ -225,6 +281,7 @@ void test_basic_parser(t_shell *shell)
         
         // Mostrar resultado
         print_args_array(shell->commands_list->args, "Generated args");
+		passed++;
         
 cleanup:
         free(shell->input);
@@ -235,13 +292,25 @@ cleanup:
         printf("────────────────────────────────\n\n");
         index++;
     }
+	
     
-    printf("✅ Basic pipeline test completed\n");
+    printf("\n📊 BASIC PARSER TEST SUMMARY\n");
+    printf("============================\n");
+    printf("✅ Passed: \t %d/%d\n", passed, test_number);
+    printf("❌ Failed: \t %d/%d\n", failed, test_number);
+    printf("Success rate: \t %.1f %%\n", (float) passed / (float) test_number * 100);
+    
+    if (failed == 0)
+        printf("🎉 All basic pipeline tests passed!\n");
+	else
+		printf("⚠️ %d tests need attention\n", failed);
+
+	cleanup_minishell(shell);		// limpieza    
     exit(0);
 }
 
 
-void test_parser(t_shell *shell)
+void test_complex_parser(t_shell *shell)
 {
 	int index;
     int test_number;
@@ -258,166 +327,11 @@ void test_parser(t_shell *shell)
 	printf("\n💡 This test verifies that the parsing pipeline correctly\n");
     printf("   generates the same argument list that bash would receive.\n\n");    
     
-    // Casos de prueba enfocados en argumentos
-    char *test_cases[] = {
-        // ECHO TESTS (básicos primero)
-        "echo",
-        "echo hello",
-        "echo hello world",
-        "echo hola mundo",
-        "echo """,
-        "echo "" hola",
-        "echo -n hola",
-        "echo -n -n hola",
-        "echo -n -nh -n hola",
-        "echo -nnnnnnnnn hola",
-		"echo $?hcudshfuewrf ew  wr 4ew""""",
-
-		// ECHO TESTS - Casos complejos con comillas mixtas
-        "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb 					\"iujiouhj\"f'f'f'f'f''f'f'f'f'f'f'",
-        "echo \"\"uhjkhnkj\"hjbmb\"'''' defdjhfkjb \"iujiouhj\"f'f'a'j'o''i'w'q''q",
-        "echo \"\"aaaaaaaa\"bbbbb\"'''' ccccccccc \"dddddddd\"e'e'e",
-
-		// ECHO TESTS - Casos con variables de entorno
-        /* "echo \"ho   $USER\"  'la   $LESS'   $USER$TERM   ",
-        //"echo \"ho   $USER\"'la   $LESS'$USER$TERM",			// error _> malloc(): unaligned tcache chunk detected  Aborted (core dumped)
-
-		// ECHO TESTS - Casos sin espacios
-        "echo\"ho   $USER\"",
-        "echo\"ho   $USE$LESS\"",
-
-		// ECHO TESTS - Comando entre comillas
-        "\"echo ho   $USER\"",
-        "\"echo\" \"ho   $USER\"",
-        "e\"cho\" \"ho   $USER\"",
-
-		// ECHO TESTS - Casos adicionales con variables
-        "echo \"ho   $USER\"",
-        "echo \"$HOME '$LESS' $USER\"", */
-        "echo '$HOME \"$LESS\" $USER'",						// error
-        "echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error
-        "echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",			// error
-        "echo '$'\"HOME\"",
-
-		// COMANDOS BÁSICOS
-        "echo ls -la /home",
-        "echo cat file.txt",
-        "echo grep pattern file.txt",
-        "echo pwd",
-        "echo env",
-
-		// EXPORT TESTS - Casos básicos
-		/* "export a=b",
-		"export b=wawa", 
-		"export b=lala",
-		"export c=lala=kaka",
-		"export a",
-		"export a=",
-		"export a= b=o",
-		"export a===",
-		"export a3=l",
-		"export 2a=lala",
-		"export !a=ma",
-		
-		// EXPORT TESTS - Con variables de entorno
-		"export $USER=la",
-		"export $USER=$TERM",
-		"export $USER=$TERM$HOME",
-		"export $USER=$TERM$HOM",
-		"export $HOME=$USER",
-		"export $USER$SHLVL", */
-		
-		// EXPORT TESTS - Casos especiales
-		/* "export",
-		"           export",
-		"export \"\"",
-		"export a b=$LESS $USER $HOME=la $COLORTERM=pa c=d",
-
-		// CD TESTS
-		"cd /home",                    // directorio existe
-		"cd /nonexistent",             // directorio no existe  
-		"cd /etc/passwd",              // file existe
-		"cd",                          // cd solo
-		"           cd",               // cd con espacios
-		"cd -",                        // cd - = $OLDPWD
-		"cd ~",                        // cd ~ = $HOME
-		"cd $HOME",                    // cd $HOME (si $HOME no existe)
-		"cd /root",                    // directorio con distintos permisos
-		
-		// ENV TESTS
-		"env",                         // env solo
-		"env lalal",                   // env con argumento inválido
-		"env /home",                   // env con directorio
-		
-		// PWD TESTS
-		"pwd",                         // pwd sin argumentos
-		"pwd arg1",                    // pwd con argumentos (inválido)
-		"pwd arg1 arg2",               // pwd con múltiples argumentos
-		
-		// UNSET TESTS
-		"unset",                       // unset sin argumentos
-		"unset PATH",                  // unset con un argumento
-		"unset PATH HOME USER",        // unset con varios argumentos
-		"unset NONEXISTENT_VAR",       // unset variable inexistente
-		
-		// EXIT TESTS
-		"exit",                        // exit sin argumentos
-		"exit 0",                      // exit con código 0
-		"exit 1",                      // exit con código 1
-		"exit 42",                     // exit con código 42
-		"exit lalal",                  // exit con argumento inválido
-		"exit 256",                    // exit con código > 255
-		"exit -1",                     // exit con código negativo */
-		
-		// PIPE TESTS
-		/* "ls | wc",                     // pipe básico
-		"ls|wc",                       // pipe sin espacios
-		"sort colors.txt | uniq | sort -r | wc",  // pipe múltiple
-		"ls || wc",                    // double pipe (OR lógico)
-		"ls |   | wc",                 // pipe con comando vacío
-		"ls |   >/>>/</<< wc",         // pipe con redirecciones mezcladas
-		"ls | wc |",                   // pipe terminando en pipe
-		"|",                           // solo pipe
-		"| ls | wc",                   // pipe al inicio */
-
-		// REDIRECTION TESTS - Casos básicos 	--------------------------------
-		/* "echo hola > file",                 // Output redirection básica
-		"echo hola>file",                      // Sin espacios
-		"wc < colors.txt",                     // Input redirection básica
-		"wc < colors.txt > file",              // Input y output combinadas
-		"cat colors.txt | wc",                 // Pipe simple (referencia)
-		
-		// REDIRECTION TESTS - Casos múltiples
-		"echo hola > file > file2 > file3",    // Múltiples outputs
-		"echo hola > file > file2 > file3 | ls", // Múltiples outputs + pipe
-		
-		// REDIRECTION TESTS - Heredoc básicos
-		"cat << EOF",                          // Heredoc simple
-		"echo hola > file << EOF",             // Output + heredoc
-		"cat << EOF > file",                   // Heredoc + output
-		"cat << EOF | ls",                     // Heredoc + pipe
-		
-		// REDIRECTION TESTS - Heredoc múltiples
-		"cat << hola << que << tal",           // Múltiples heredoc
-		
-		// REDIRECTION TESTS - Casos complejos/erróneos
-		"</<</>/>>",                           // Solo operadores (error sintaxis)
-		"echo hola >>>>>>> file",              // Múltiples > seguidos (error)
-		"echo hola <<<<<<< file",              // Múltiples < seguidos (error)
-		"echo hola </<</>/>>   </<</>/>> file", // Operadores mezclados (error)
-		"echo hola </<</>/>>   | file",        // Redirección + pipe mezclados (error)
-		"echo hola > file </<</>/>>",          // Redirección válida + inválida (error)
-		"<< EOF",                              // Heredoc sin comando (error)
-		
-		// REDIRECTION TESTS - Pipes complejos
-		"echo hola | cat | cat | cat | cat | cat | cat | cat", // Pipe muy largo */
-        NULL
-    };
-    
     index 		= 0;
 	test_number = 0;
 	passed 		= 0;
 	failed 		= 0;
+	
     while (test_cases[index])
     {
 		test_number++;

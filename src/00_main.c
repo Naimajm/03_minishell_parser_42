@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 18:18:57 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 22:44:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	main(int	argc, char **argv, char **environment)
 	if (argc > 1 && ft_strncmp(argv[1], "--test", 6) == 0)
 	{
 		//test_basic_parser(shell);
-		test_parser(shell);
+		test_complex_parser(shell);
 	}		
 	
 	//printf("Run Shell...\t\t\t\t OK\n\n");

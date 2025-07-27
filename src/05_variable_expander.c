@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 17:55:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 23:40:09 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	expand_single_token(t_token *token, char **environment, int exit_status)
 	insert_expansion_values(token);			// INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
 }
 
-void	extract_expansion_nodes(t_token *token)
+/* void	extract_expansion_nodes(t_token *token)
 {
 	int		index;
 	int		subs_len;
@@ -65,9 +65,6 @@ void	extract_expansion_nodes(t_token *token)
 	{
 		if (token->raw_token[index] == '$' && token->raw_token[index + 1])
 		{
-			/*// caso nuevo $ ??
-			if (token->raw_token[]) */
-
 			if (token->raw_token[index + 1] == '?') // GESTION CASO ESPECIAL "$?
 				subs_len = last_exit_status_expander(token, index);			
 			else if (index > 0 && token->raw_token[index - 1] == '\\') // caso \$VAR -> literal , no inicia expancion
@@ -83,7 +80,52 @@ void	extract_expansion_nodes(t_token *token)
 		else	
 			index++;	 // $sin caracter adicional o resto caracteres
 	}
+} */
+
+// ...existing code...
+void	extract_expansion_nodes(t_token *token)
+{
+    int		index;
+    int		subs_len;
+
+    if (!token)
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  	
+    index 		= 0;	
+    
+    if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones        
+        return ;
+    
+    while (token->raw_token[index]) // CATEGORIZACION EXPAND NODOS
+    {
+        if (token->raw_token[index] == '$')
+        {
+            // Caso $ sin nada después O $ seguido de espacio -> NO ES EXPANSIÓN, saltar
+            if (!token->raw_token[index + 1] || is_space(token->raw_token[index + 1]) || token->raw_token[index + 1] == '"')
+            {
+                index++; // Simplemente avanzar, tratar $ como texto normal
+            }
+            // Caso $ seguido de carácter válido para expansión
+            else if (token->raw_token[index + 1])
+            {
+                if (token->raw_token[index + 1] == '?') // GESTION CASO ESPECIAL "$?
+                    subs_len = last_exit_status_expander(token, index);			
+                else if (index > 0 && token->raw_token[index - 1] == '\\') // caso \$VAR -> literal , no inicia expancion
+                    subs_len = literal_expander(token, index);
+                else if (token->raw_token[index + 1] == '{') // caso ${VAR}xx
+                    subs_len = curly_braces_expander(token, index);
+                else // caso normal -> EXPANSION BASICA -> AÑADIR A LISTA EXPAND
+                    subs_len = basic_expander(token, index);				
+                
+                if (subs_len == FAILURE)	// error
+                    return ;			
+                index += subs_len;	
+            }
+        }	
+        else	
+            index++;	 // resto caracteres
+    }
 }
+// ...existing code...
 
 void resolve_expansion_values(t_token *token, char **environment, int exit_status)
 {
@@ -154,9 +196,17 @@ int	insert_expand_node_value(t_token *token)
 	last_position 	= 0;
 	while (current_node)
 	{
+		/* printf("DEBUG insert_expand_node_value:\n");
+        printf("  raw_token: '%s'\n", token->raw_token);
+        printf("  first_index: %d\n", current_node->first_index);
+        printf("  last_index: %d\n", current_node->last_index);
+        printf("  value: '%s'\n", current_node->value);
+        printf("  last_position: %d\n", last_position); */
+
 		if (current_node->first_index > last_position) // Añadir texto antes de la variable
 		{
 			prefix	= ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
+			printf("  prefix: '%s'\n", prefix);
 			result	= ft_strjoin_free(result, prefix);
 			free(prefix);
 		}       

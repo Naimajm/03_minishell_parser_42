@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 19:47:39 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 19:50:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void	free_expands_list(t_expand **expands_list)
 
 	if (!expands_list || !*expands_list)
 		return ;
-	current_node = (t_expand *) expands_list;
+	current_node = (t_expand *) *expands_list;
 	while (current_node)
 	{
 		next_node = current_node->next;

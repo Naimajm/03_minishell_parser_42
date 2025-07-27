@@ -30,7 +30,7 @@ SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c \
 				06_word_processor.c \
 				07_execution_builder.c \
 				10_utils_core.c 10.1_utils_strings.c 10.2_free_manager.c 10.3_utils_debug.c \
-				11_testing.c 12_test_parser.c )
+				12_test_parser.c )
 
 OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)
 

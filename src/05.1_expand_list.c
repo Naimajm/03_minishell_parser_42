@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 18:18:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 23:28:31 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,13 @@ static int	extract_single_variable_length(char *raw_token, int start_index)
     int	index;
     
     if (!raw_token || raw_token[start_index] != '$')
-        return (0);
+        return (0);	
         
     index = start_index + 1; // Saltar el $
+
+	// CASO $ UNICO " $  " 
+	if (is_space(raw_token[index]) || !raw_token[index])
+		return (1);			// Solo el carácter $
     
     // Caso $?
     if (raw_token[index] == '?')
@@ -197,7 +201,6 @@ int	curly_braces_expander(t_token *token, int first_index)
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
-
 	key = ft_strtrim(key_temp, "{}"); 
 	if (!key)
     {
@@ -207,11 +210,10 @@ int	curly_braces_expander(t_token *token, int first_index)
 	free(key_temp);
 	
 	// cortar {}
-	expand_node->key = ft_strdup(key_temp);
+	expand_node->key = ft_strdup(key);
 	if (!expand_node->key)
     {
         free(substitution_str);
-        free(key_temp);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
 	// calcular last_index del nodo expand
@@ -222,7 +224,8 @@ int	curly_braces_expander(t_token *token, int first_index)
 	return (len_input); //ft_printf("quote_token -> %s\n", token);	
 }
 
-int	literal_expander(t_token *token, int first_index)
+// FUNCION VERSION INICIAL
+/* int	literal_expander(t_token *token, int first_index)
 {
 	t_expand	*expand_node;
 	char		*substitution_str;
@@ -231,11 +234,13 @@ int	literal_expander(t_token *token, int first_index)
 
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
+
 	substitution_str = extract_substitution_segment(token->raw_token, first_index);
 	if (!substitution_str)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 	//ft_printf("substitution_str -> %s\n", substitution_str);
 	len_input = ft_strlen(substitution_str);
+	
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LITERAL);		
 
 	key = ft_strdup(substitution_str);
@@ -252,4 +257,115 @@ int	literal_expander(t_token *token, int first_index)
 	free(substitution_str);
 	free(key);	
 	return (len_input);
+} */
+
+int	literal_expander(t_token *token, int first_index)
+{
+    t_expand	*expand_node;
+    char		*substitution_str;
+    int			len_input;
+    //char		*key;
+    char		*key;
+    int			i;
+	int			j;
+	int			end_index;
+
+    if (!token)
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
+		
+	// CALCULAR LONGITUD DEL ESCAPE MANUALMENTE
+    end_index = first_index;
+    if (token->raw_token[end_index] == '\\' && 
+        (token->raw_token[end_index + 1] == '$' || token->raw_token[end_index + 1] == '"'))
+    {
+        end_index += 2; // \$ o \" = 2 caracteres
+    }
+    else
+    {
+        return (FAILURE); // No es un escape válido
+    }
+
+	// FASE GENERAR SUBSTITUCION SEGMENT 
+    // EXTRAER SOLO LA PARTE DEL ESCAPE
+    len_input = end_index - first_index;
+    substitution_str = ft_substr(token->raw_token, first_index, len_input);
+	if (!substitution_str)
+		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+
+   
+	printf("DEBUG literal_expander FIXED:\n");
+    printf("  raw_token: '%s'\n", token->raw_token);
+    printf("  substitution_str: '%s'\n", substitution_str);
+    printf("  first_index: %d\n", first_index);
+    printf("  len_input: %d\n", len_input);
+
+    len_input = ft_strlen(substitution_str);
+    expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LITERAL);	
+	if (!expand_node)  // VERIFICAR QUE SE CREÓ CORRECTAMENTE
+    {
+        free(substitution_str);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+    }	
+
+
+	// FASE EXTRACT KEY !!
+    // PROCESAR ESCAPES CONSECUTIVOS (como variables consecutivas)
+    key = malloc(ft_strlen(substitution_str) + 1);
+    if (!key)
+    {
+        free(substitution_str);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+    }
+
+    i = 0; 
+    j = 0;
+    while (substitution_str[i])
+    {
+        // DETECTAR ESCAPE \$ o \"
+        if (substitution_str[i] == '\\' && 
+            (substitution_str[i + 1] == '$' || substitution_str[i + 1] == '"'))
+        {
+            // SALTAR \ y COPIAR solo el carácter escapado
+            i++; // Saltar backslash
+            key[j++] = substitution_str[i++]; // Copiar carácter escapado
+        }
+        else
+        {
+            // COPIAR carácter normal
+            key[j++] = substitution_str[i++];
+        }
+    }
+    key[j] = '\0';
+
+    // ASIGNAR KEY Y VALUE CORRECTAMENTE (duplicando)
+    expand_node->key = ft_strdup(key);
+    if (!expand_node->key)
+    {
+        free(substitution_str);
+        free(key);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+    }
+
+	// PARA LITERAL: value es igual a key (carácter procesado)
+    expand_node->value = ft_strdup(key);
+    if (!expand_node->value)
+    {
+        free(substitution_str);
+        free(key);
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+    }
+    
+    // Calcular last_index del nodo expand
+    expand_node->last_index = first_index + len_input - 1;
+
+	printf("DEBUG literal_expander:\n");
+    printf("  raw_token: '%s'\n", token->raw_token);
+    printf("  substitution_str: '%s'\n", substitution_str);
+    printf("  first_index: %d\n", first_index);
+    printf("  len_input: %d\n", len_input);
+    printf("  last_index: %d\n", expand_node->last_index);
+    
+    free(substitution_str);
+	free(key);
+    return (len_input);
 }
