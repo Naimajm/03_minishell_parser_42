@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 23:44:41 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/28 11:38:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,13 +195,14 @@ char *test_cases[] = {
 	"$HOME=la",
 
 	// LITERALES
-	/* "cc\"\\$literal\"",
-	"\" aa\"\\$a\\$b\"xx \"",
-	"dd\"\\\\$USER\"",
-	"ee\"\\\"\\$test\\\"\"",
+	"cc\"\\$literal\"",
+	//"\" aa\"\\$a\\$b\"xx \"",	// error
+	//"dd\"\\\\$USER\"",			// error	
+	//"dd\"\\$USER\"",			// error
+	//"ee\"\\\"\\$test\\\"\"",	// error
 	"aa\"$HOME\"zz   bb\"$?\"yy   cc\"\\$literal\"  \"${HOME}xxx\"ww",
 	"'aa $HOME bb \\$literal ${HOME}xxx $?z zz'",
-	" aa\"\\$a\\$b\"xx ", */
+	" aa\"\\$a\\$b\"xx ",
 
 	// INPUTS PERSONALIZADOS CON OPERADORES
 	//"hola < cara | \"$HOME\" >> caracola | \"$HOME\" << heredoc ",

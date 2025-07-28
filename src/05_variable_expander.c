@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 23:40:09 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/27 23:47:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	extract_expansion_nodes(t_token *token)
             // Caso $ sin nada después O $ seguido de espacio -> NO ES EXPANSIÓN, saltar
             if (!token->raw_token[index + 1] || is_space(token->raw_token[index + 1]) || token->raw_token[index + 1] == '"')
             {
-                index++; // Simplemente avanzar, tratar $ como texto normal
+                index++; // tratar $ como texto normal
             }
             // Caso $ seguido de carácter válido para expansión
             else if (token->raw_token[index + 1])
