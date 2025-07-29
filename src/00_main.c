@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 22:44:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/29 13:39:17 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,10 @@ int	main(int	argc, char **argv, char **environment)
     }
 
 	// test parser
+	if (argc > 1 && ft_strncmp(argv[1], "--test_basic", 12) == 0)
+		test_basic_parser(shell);
 	if (argc > 1 && ft_strncmp(argv[1], "--test", 6) == 0)
-	{
-		//test_basic_parser(shell);
 		test_complex_parser(shell);
-	}		
 	
 	//printf("Run Shell...\t\t\t\t OK\n\n");
 	run_shell(shell);	
@@ -60,23 +59,21 @@ void	run_shell(t_shell *shell)
 	
 	if (!shell)											
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
-	iteration = 0;			// CONTADOR DEBUG
+	iteration = 0;										// CONTADOR DEBUG
 	while (1)											// loop ppal
 	{
 		iteration++;
-        printf("\n\n=== read_user_input() ITERATION %d ===\n\n", iteration);
+        printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 
 		//printf("Input Reading...\t\t\t OK\n\n");
 		input = read_user_input(PROMPT);
 		if (!input)										// CASO EOF - TERMINAR SHELL
-			break ;
-	
+			break ;	
         if (input[0] == '\0')							// 	CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
         {
             //free(input);
             continue;  									// VOLVER AL INICIO DEL LOOP
         }
-
 		shell->input = ft_strdup(input);				// PROCESAR INPUT VÁLIDO
 		if (!shell->input)
 		{
@@ -102,14 +99,18 @@ void	process_input(t_shell *shell)
 	//char *syntax_error;
 
 	if (!shell || !shell->input)
-	{
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
-	}
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
 		
+	//printf("Check Syntax...\t\t\t OK\n");
+	if (validate_syntax(shell) == SYNTAX_ERROR)		
+	{
+        //free_commands_list(&shell->commands_list);
+		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
+        return ;
+    }
 
 	//printf("Syntax analyzer...\t\t\t OK\n");
-	syntax_analyzer(shell);	
-	
+	syntax_analyzer(shell);		
 
 	//printf("Lexical analyzer...\t\t\t OK\n");
 	lexical_analyzer(shell->commands_list);	
@@ -119,15 +120,12 @@ void	process_input(t_shell *shell)
 	process_commands(shell);
 
 	//printf("Generating execution structure...\t OK\n");
-	build_execution_structure(shell->commands_list);	
-	
-	//printf("Test ->...					OK\n\n");
-	//test_lexical_analyzer(shell);	
+	build_execution_structure(shell->commands_list);		
 
 	// EJECUTAR COMANDOS
     // execute_commands(shell->command_list);
 	
-	print_commands_list(shell->commands_list);		// Debug
+	print_commands_list(shell->commands_list);			// Debug
 
 	// LIBERAR ESTRUCTURAS COMMANDS
 	free_commands_list(&shell->commands_list);
@@ -168,10 +166,10 @@ char	*read_user_input(char *prompt)
 	// CASO EOF (Ctrl+D o fin de pipe)
 	if (!input)
 	{
-		//ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO);  // Retornar NULL para indicar EOF	
-		return (NULL); 
+		//ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO);  
+		return (NULL); 		// Retornar NULL para indicar EOF	
 	}
-	if (input[0] != '\0')  // añadir a historial si input no vacio	
+	if (input[0] != '\0')  	// añadir a historial si input no vacio	
 		add_history(input);
 	return (input);
 }

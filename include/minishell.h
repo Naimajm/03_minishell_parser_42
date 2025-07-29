@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 22:45:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/29 13:28:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,8 @@ void	process_commands(t_shell *shell);
 char	*read_user_input(char *prompt);
 
 // 01.1_check_syntax.c		# Validacion sintaxis input
-char	*validate_syntax(t_shell *shell);
+int		validate_syntax(t_shell *shell);
+
 int		check_pipe_syntax(char *input);
 int		check_balanced_quotes(char *input);
 int		check_redirection_syntax(char *input);
@@ -213,9 +214,19 @@ void	syntax_analyzer(t_shell *shell);
 void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);
 char	*create_clean_command(char *input, int start_index, int final_index);
-int 	is_pipe_operator(char character);
+int 	is_pipe(char character);
 
-// 02.1_command_builder.c	# Constructor de comandos
+// 02.1_syntax_check.c	# Validacion sintaxis input
+
+int 	validate_command_structure(t_cmd *commands_list);
+
+int validate_pipe_structure(t_cmd *commands_list);
+
+int validate_redirections_structure(t_cmd *commands_list);
+
+int validate_command_semantics(t_cmd *commands_list);
+
+// 02.2_command_builder.c	# Constructor de comandos
 void	add_command_node(t_cmd **commands_list, char *input);
 void	print_commands_list(t_cmd *commands_list);
 void	print_command_arguments(char **args);
@@ -292,7 +303,6 @@ int		is_space(char character);
 
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);
-void	print_error(char *message, int fd, int exit_code);
 char	*ft_strjoin_free(char *str1, char *str2);
 	
 // 10.2_free_manager.c		# Gestión de memoria

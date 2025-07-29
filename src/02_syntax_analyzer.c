@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 11:52:22 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/29 13:37:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 // 	ANALISIS SINTACTICO PARA GENERACION LISTA DE COMANDOS
 
+int		check_pipe_syntax(char *input);
 void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);
 char	*create_clean_command(char *input, int start_index, int final_index);
-int 	is_pipe_operator(char character);
+int 	is_pipe(char character);
 
 void	syntax_analyzer(t_shell *shell)
 {
@@ -26,10 +27,18 @@ void	syntax_analyzer(t_shell *shell)
 		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
 		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
 		return ;
-	}	
-
+	}
+	
 	// CREAR ESTRUCTURA COMANDOS
-	create_commands_structure(shell);		
+	create_commands_structure(shell);	
+
+	/* // VALIDAR ESTRUCTURA COMANDOS ¡¡
+	if (validate_command_structure(shell->commands_list) == SYNTAX_ERROR)		
+	{
+        //free_commands_list(&shell->commands_list);
+		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
+        return ;
+    } */
 }
 
 // AGRUPAR INPUT NO PROCESADOS PARA DIFERENTES JOBS EN EL CASO DE PIPES
@@ -63,7 +72,7 @@ void	create_commands_structure(t_shell *shell)
 			index++;
 
 		// Si encontramos un pipe, saltarlo para el siguiente comando
-		if (is_pipe_operator(shell->input[index]))
+		if (is_pipe(shell->input[index]))
 		{
 			printf("Found pipe, creating new command structure\n");
 			index++; // Saltar el pipe			
@@ -109,7 +118,7 @@ int generate_command(t_shell *shell, int start_index)
 			// Si es comilla diferente dentro de comillas, se trata como literal
 		}
 		// Solo terminar si encontramos pipe fuera de comillas
-		else if (inside_quotes == false && is_pipe_operator(character))
+		else if (inside_quotes == false && is_pipe(character))
 			break;    
 		index++;
 	}
@@ -165,7 +174,7 @@ char	*create_clean_command(char *input, int start_index, int final_index)
 	return (clean_command);
 }
 
-int is_pipe_operator(char character)
+int is_pipe(char character)
 {
 	int	pipe;
 

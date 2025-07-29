@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/28 11:38:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/29 19:38:04 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 #include <sys/wait.h>
 
 #include <string.h>  // strok
+void test_basic_parser(t_shell *shell);
 
 void test_complex_parser(t_shell *shell);
-void test_basic_parser(t_shell *shell);
 static char **get_bash_args_real(char *input);
+static bool is_expected_syntax_error(char *input);
 //static char **get_bash_args(char *input);
 static bool compare_args_arrays(char **minishell_args, char **bash_args);
 static void print_args_array(char **args, const char *label);
@@ -57,9 +58,9 @@ char *test_cases[] = {
 	// ECHO TESTS - Casos adicionales con variables
 	"echo \"ho   $USER\"",
 	"echo \"$HOME '$LESS' $USER\"",
-	"echo '$HOME \"$LESS\" $USER'",						// error?
-	"echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		// error ?
-	"echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",		// error ?
+	"echo '$HOME \"$LESS\" $USER'",						
+	"echo \"$HOME '$LESS \"pa $TERM\" na' $USER\"",		
+	"echo '$HOME \"$LESS 'pa $TERM' na\" $USER'",		
 	"echo '$'\"HOME\"",
 
 	// COMANDOS BÁSICOS
@@ -93,7 +94,7 @@ char *test_cases[] = {
 	// EXPORT TESTS - Casos especiales
 	"echo export",
 	"           echo export",
-	//"echo export \"\"",			// esta ok. bash no genera ""
+	//"echo export \"\"",			// OK = BENITEZ		// esta ok. bash no genera ""
 	"echo export a b=$LESS $USER $HOME=la $COLORTERM=pa c=d",
 
 	// CD TESTS
@@ -132,35 +133,35 @@ char *test_cases[] = {
 	"echo exit -1",                     // exit con código negativo
 	
 	// PIPE TESTS
-	"echo ls wc",                     // pipe básico
-	"echo lswc",                       // pipe sin espacios
+	"echo ls wc",                     	// pipe básico
+	"echo lswc",                       	// pipe sin espacios
 	"echo sort colors.txt uniq sort -r  wc",  // pipe múltiple
-	"echo ls  wc",                    // double pipe (OR lógico)
-	"echo ls    wc",                 // pipe con comando vacío
-	"echo ls     wc",         // pipe con redirecciones mezcladas
-	"echo ls  wc ",                   // pipe terminando en pipe
-	"echo ",                           // solo pipe
-	"echo  ls  wc",                   // pipe al inicio
+	"echo ls  wc",                    	// double pipe (OR lógico)
+	"echo ls    wc",                 	// pipe con comando vacío
+	"echo ls     wc",         			// pipe con redirecciones mezcladas
+	"echo ls  wc ",                   	// pipe terminando en pipe
+	"echo ",                           	// solo pipe
+	"echo  ls  wc",                   	// pipe al inicio
 
-	// REDIRECTION TESTS - Casos básicos 	--------------------------------
-	"echo hola  file",                 // Output redirection básica
-	"echo hola file",                      // Sin espacios
-	"echo wc  colors.txt",                     // Input redirection básica
-	"echo wc  colors.txt  file",              // Input y output combinadas
-	"echo cat colors.txt  wc",                 // Pipe simple (referencia)
+	// REDIRECTION TESTS - Casos básicos 
+	"echo hola  file",                 	// Output redirection básica
+	"echo hola file",                 	// Sin espacios
+	"echo wc  colors.txt",             	// Input redirection básica
+	"echo wc  colors.txt  file",      	// Input y output combinadas
+	"echo cat colors.txt  wc",         	// Pipe simple (referencia)
 	
 	// REDIRECTION TESTS - Casos múltiples
 	"echo hola  file  file2  file3",    // Múltiples outputs
 	"echo hola  file  file2  file3  ls", // Múltiples outputs + pipe
 	
 	// REDIRECTION TESTS - Heredoc básicos
-	"echo cat  EOF",                          // Heredoc simple
+	"echo cat  EOF",                  	// Heredoc simple
 	"echo hola  file  EOF",             // Output + heredoc
-	"echo cat  EOF  file",                   // Heredoc + output
-	"echo cat  EOF  ls",                     // Heredoc + pipe
+	"echo cat  EOF  file",          	// Heredoc + output
+	"echo cat  EOF  ls",           		// Heredoc + pipe
 	
 	// REDIRECTION TESTS - Heredoc múltiples
-	"echo cat  hola  que  tal",           // Múltiples heredoc
+	"echo cat  hola  que  tal",       	// Múltiples heredoc
 
 	// REDIRECTION TESTS - Pipes complejos
 	"echo hola  cat  cat  cat  cat  cat  cat  cat", // Pipe muy largo	
@@ -175,8 +176,7 @@ char *test_cases[] = {
 	// CASOS ESPECIALES
 	" \" $ \"",
 	"'$ '",
-	"\"$  $HOME\"",
-	
+	"\"$  $HOME\"",	
 	"\" $ $\"",				
 	"'$?'",
 	"$ \" $ \"",
@@ -197,50 +197,142 @@ char *test_cases[] = {
 	// LITERALES
 	"cc\"\\$literal\"",
 	//"\" aa\"\\$a\\$b\"xx \"",	// error
-	//"dd\"\\\\$USER\"",			// error	
+	//"dd\"\\\\$USER\"",		// error	
 	//"dd\"\\$USER\"",			// error
 	//"ee\"\\\"\\$test\\\"\"",	// error
 	"aa\"$HOME\"zz   bb\"$?\"yy   cc\"\\$literal\"  \"${HOME}xxx\"ww",
 	"'aa $HOME bb \\$literal ${HOME}xxx $?z zz'",
-	" aa\"\\$a\\$b\"xx ",
+	" aa\"\\$a\\$b\"xx ",	
+
+	/// CHECK SYNTAX --------------------------------------------------------
+
+	/// PIPE TESTS - ERRORES DE SINTAXIS
+	// 1. PIPES AL INICIO (error de sintaxis)
+	"| echo hello",                          // Pipe al inicio
+	"|echo hello",                           // Pipe al inicio sin espacio
+	"  | echo hello",                        // Pipe al inicio con espacios
+	"	| echo hello",                        // Pipe al inicio con tab
+
+	// 2. PIPES AL FINAL (error de sintaxis)  
+	"echo hello |",                          // Pipe al final
+	"echo hello |  ",                        // Pipe al final con múltiples espacios
+	"echo hello |	",                        // Pipe al final con tab
+
+	// 3. PIPES MÚLTIPLES CONSECUTIVOS (error de sintaxis)
+	"echo hello || echo world",              // Double pipe (OR lógico - no soportado)
+	"echo hello ||| echo world",             // Triple pipe (error)
+	"echo hello ||||",                       // Múltiples pipes al final
+	"|| echo hello",                         // Double pipe al inicio
+	//"echo hello | | echo world", 		// error       // Pipes separados por espacio
+	//"echo hello |  | echo world",    	// error       // Pipes separados por múltiples espacios
+
+	// 5. PIPES DENTRO DE PALABRAS/TOKENS (casos especiales)
+	//"echo|hello",                 	// error         	// Pipe pegado sin espacios
+	//"echo|",                          // OK = BENITEZ 	// Comando pegado a pipe al final
+	//"|hello",                     	// OK = BENITEZ    	// Pipe pegado al inicio sin espacios
+	//"ech|o hello",                    // OK = BENITEZ      // Pipe en medio de palabra
+	//"echo hel|lo",                  	// DISTINTO BENITEZ        // Pipe en medio de argumento
+	"echo 'hello|world'",                    // Pipe dentro de comillas simples (válido)
+	"echo \"hello|world\"",                  // Pipe dentro de comillas dobles (válido)
+
+	// 6. PIPES CON COMANDOS VACÍOS
+	//"echo hello |  | echo world",    	// error		// Comando vacío entre pipes
+	//"echo hello |   |   | echo world", // error      	// Múltiples comandos vacíos
+	" | | ",                                 			// Solo pipes y espacios
+	"||",                                    			// Solo double pipe
+	"| |",                                   			// Pipes separados por espacio
+
+	// 7. PIPES CON HEREDOC (casos complejos)
+	"cat << EOF | ",                    // OK = BENITEZ     // Heredoc seguido de pipe al final
+	"| cat << EOF",                          // Pipe al inicio con heredoc
+	//"cat << EOF | | cat",                    // Heredoc con pipes múltiples
+	//"echo hello | << EOF",            // DISTINTO BENITEZ        // Pipe seguido de heredoc sin comando
+
+	// 8. CASOS EXTREMOS Y COMBINACIONES
+	//"echo | | | hello",      			// error        // Múltiples pipes con argumentos mezclados
+	"| | echo hello | |",                    			// Pipes al inicio y al final
+	//"echo 'hello | world' |",  		// OK = BENITEZ  // Comillas con pipe interno + pipe real al final
+	//"echo \"hello | world\" | | echo test", 	// error // Comillas con pipe interno + error de sintaxis
+	//"echo$USER|echo$HOME",            // OK = BENITEZ      // Variables pegadas a pipes
+	//"$USER|$HOME",                   	// OK = BENITEZ    // Solo variables con pipe
+	"|$USER",                                				// Pipe + variable al inicio
+	//"$USER|",                        	// OK = BENITEZ      // Variable + pipe al final
+
+	// 9. PIPES CON ESPACIOS ESPECIALES
+	"echo hello |		",                     // Pipe con tab al final
+	//"	|	echo hello",                       // Tabs alrededor de pipe inicial
+	//"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
+	"echo hello \n| echo world",             // Pipe con caracteres especiales
+
+	// CASOS VÁLIDOS PARA COMPARAR (deberían funcionar)
+	"echo hello | cat",                      // Pipe básico válido
+	//"echo hello | cat | wc",           // OK = BENITEZ      // Pipe múltiple válido
+	"echo 'pipe|inside' | cat",              // Pipe literal dentro de comillas
+	"echo \"pipe|inside\" | cat",            // Pipe literal dentro de comillas dobles
+
+	// CASOS EDGE CON VARIABLES Y PIPES
+	//"echo $USER | echo $HOME",            // OK = BENITEZ   // Variables con pipe válido
+	//"$USER|$HOME",                      // OK = BENITEZ   // Variables con pipe sin espacios (error)
+	//"echo $USER| echo $HOME",           // OK = BENITEZ     // Variable pegada a pipe (error)
+	//"echo $USER |echo $HOME",           // OK = BENITEZ    // Comando pegado después de pipe (error)
+
+	// 10. CASOS MIXTOS CON OPERADORES
+	//"echo hello | > file < input",  	// DISTINTO BENITEZ         // Pipe con múltiples redirecciones
+	//"echo hello | >> file << EOF",    // DISTINTO BENITEZ    // Pipe con append y heredoc
+	"echo hello || > file",                  // Double pipe con redirección
+	//"echo hello | & echo world",    	// OK = BENITEZ    // Pipe con background operator
+
+	// 4. PIPES MEZCLADOS CON REDIRECCIONES (casos complejos)
+	//"echo hello | > file",        	// error            // Pipe seguido de redirección sin comando
+	//"echo hello > file |",            // OK = BENITEZ     // Redirección seguida de pipe al final
+	//"echo hello | | > file",          // error     		// Pipes múltiples con redirección
+	//"echo hello | < file",            // OK = BENITEZ     	// Pipe seguido de input redirection
+	//"< file | echo hello",              // OK = BENITEZ     // Input redirection seguida de pipe al inicio
 
 	// INPUTS PERSONALIZADOS CON OPERADORES
 	//"hola < cara | \"$HOME\" >> caracola | \"$HOME\" << heredoc ",
 	//"  cmd1 'literal' > O  \"hola x\" 1234 | cmd2 << H  ",
-	//"aa > aa >> bb << bb < cc",
+	//"aa > aa >> bb << bb < cc",			// OK = BENITEZ
 
-	// REDIRECTION TESTS - Casos complejos/erróneos
-	/* "</<</>/>>",                           // Solo operadores (error sintaxis)
+	/// REDIRECTION TESTS - ERRORES DE SINTAXIS
+
+	"</<</>/>>",                     	// OK = BENITEZ      // Solo operadores (error sintaxis)
 	"echo hola >>>>>>> file",              // Múltiples > seguidos (error)
 	"echo hola <<<<<<< file",              // Múltiples < seguidos (error)
-	"echo hola </<</>/>>   </<</>/>> file", // Operadores mezclados (error)
-	"echo hola </<</>/>>   | file",        // Redirección + pipe mezclados (error)
-	"echo hola > file </<</>/>>",          // Redirección válida + inválida (error)
-	"<< EOF",                              // Heredoc sin comando (error) */
+	"echo hola </<</>/>>   </<</>/>> file", // OK = BENITEZ// Operadores mezclados (error)
+	"echo hola </<</>/>>   | file",    // OK = BENITEZ    // Redirección + pipe mezclados (error)
+	"echo hola > file </<</>/>>",        // OK = BENITEZ  // Redirección válida + inválida (error)
+	//"<< EOF",                              // Heredoc sin comando (error)
 
 	// ERROR SINTAXIS
-	//"'$\"' '$",			// error
-	
+	//"'$\"' '$",					// error	
 	NULL
 };
-    
+
 void test_basic_parser(t_shell *shell)
 {
-	int index;
+    int index;
     int test_number;
     int passed;
     int failed;
+    int syntax_errors;
+    int *failed_tests; // Array para guardar números de tests fallidos
+    int failed_count;
 
     printf("\n🧪 TESTING PARSER - SIMPLIFIED\n");
     printf("===============================\n");
     
-    
     printf("📋 Testing basic parsing pipeline only...\n\n");
     
-	index = 0;
+    index = 0;
     test_number = 0;
     passed = 0;
     failed = 0;
+    syntax_errors = 0;
+    failed_count = 0;
+    
+    // Allocar array para guardar números de tests fallidos (máximo todos los tests)
+    failed_tests = malloc(sizeof(int) * 1000); // Tamaño suficiente para todos los tests
 
     while (test_cases[index])
     {
@@ -248,153 +340,470 @@ void test_basic_parser(t_shell *shell)
         printf("TEST %d: %s\n", test_number, test_cases[index]);
         
         shell->input = ft_strdup(test_cases[index]);
+        bool test_passed = true;
         
-        printf("  1. Syntax analyzer...");
-        syntax_analyzer(shell);
-        if (!shell->commands_list)
+        // FASE 0: Validación de sintaxis
+        printf("  0. Syntax validation...");
+        if (validate_syntax(shell) == SYNTAX_ERROR)
         {
-            printf(" ❌ FAILED\n");
-            goto cleanup;
+            // Verificar si es un error esperado
+            if (is_expected_syntax_error(test_cases[index]))
+            {
+                printf(" ✅ SYNTAX ERROR (expected)\n");
+                syntax_errors++;
+                passed++; // Contar como éxito porque detectó el error correctamente
+            }
+            else
+            {
+                printf(" ❌ UNEXPECTED SYNTAX ERROR\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+            }
+            test_passed = false;
         }
-        printf(" ✅ OK\n");
-        
-        printf("  2. Lexical analyzer...");
-        lexical_analyzer(shell->commands_list);
-        if (!shell->commands_list->words_list)
+        else
         {
-            printf(" ❌ FAILED\n");
-            goto cleanup;
+            printf(" ✅ OK\n");
         }
-        printf(" ✅ OK\n");
         
-        printf("  3. Process commands...");
-        process_commands(shell);
-        printf(" ✅ OK\n");
-        
-        printf("  4. Build execution...");
-        build_execution_structure(shell->commands_list);
-        if (!shell->commands_list->args)
+        // Solo continuar si no hay errores de sintaxis
+        if (test_passed)
         {
-            printf(" ❌ FAILED\n");
-            goto cleanup;
+            // FASE 1: Syntax analyzer (ahora solo crea estructura)
+            printf("  1. Syntax analyzer...");
+            syntax_analyzer(shell);
+            if (!shell->commands_list)
+            {
+                printf(" ❌ FAILED\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+                test_passed = false;
+            }
+            else
+            {
+                printf(" ✅ OK\n");
+            }
         }
-        printf(" ✅ OK\n");
         
-        // Mostrar resultado
-        print_args_array(shell->commands_list->args, "Generated args");
-		passed++;
+        // FASE 2: Lexical analyzer
+        if (test_passed)
+        {
+            printf("  2. Lexical analyzer...");
+            lexical_analyzer(shell->commands_list);
+            if (!shell->commands_list->words_list)
+            {
+                printf(" ❌ FAILED\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+                test_passed = false;
+            }
+            else
+            {
+                printf(" ✅ OK\n");
+            }
+        }
         
-cleanup:
+        // FASE 3: Process commands
+        if (test_passed)
+        {
+            printf("  3. Process commands...");
+            process_commands(shell);
+            printf(" ✅ OK\n");
+        }
+        
+        // FASE 4: Build execution
+        if (test_passed)
+        {
+            printf("  4. Build execution...");
+            build_execution_structure(shell->commands_list);
+            if (!shell->commands_list->args)
+            {
+                printf(" ❌ FAILED\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+                test_passed = false;
+            }
+            else
+            {
+                printf(" ✅ OK\n");
+                // Mostrar resultado solo para casos válidos
+                print_args_array(shell->commands_list->args, "Generated args");
+            }
+        }
+        
+        // Incrementar passed solo si no es error de sintaxis y pasó todas las fases
+        if (test_passed && !is_expected_syntax_error(test_cases[index]))
+        {
+            passed++;
+        }
+        
+        // Cleanup después de cada test
         free(shell->input);
-        free_commands_list(&shell->commands_list);
+        if (shell->commands_list)
+            free_commands_list(&shell->commands_list);
         shell->input = NULL;
         shell->commands_list = NULL;
+        shell->exit_status = 0; // Reset exit status
         
         printf("────────────────────────────────\n\n");
         index++;
     }
-	
     
     printf("\n📊 BASIC PARSER TEST SUMMARY\n");
     printf("============================\n");
-    printf("✅ Passed: \t %d/%d\n", passed, test_number);
-    printf("❌ Failed: \t %d/%d\n", failed, test_number);
+    printf("✅ Passed: \t\t %d/%d\n", passed, test_number);
+    printf("❌ Failed: \t\t %d/%d\n", failed, test_number);
     printf("Success rate: \t %.1f %%\n", (float) passed / (float) test_number * 100);
+    
+    // Mostrar desglose de resultados
+    if (syntax_errors > 0)
+    {
+        printf("\n📝 Test breakdown:\n");
+        printf("   • Valid syntax tests: \t %d/%d\n", passed - syntax_errors, test_number - syntax_errors);
+        printf("   • Syntax error tests: \t %d (correctly detected)\n", syntax_errors);
+    }
     
     if (failed == 0)
         printf("🎉 All basic pipeline tests passed!\n");
-	else
-		printf("⚠️ %d tests need attention\n", failed);
+    else
+    {
+        printf("⚠️ %d tests need attention: [", failed);
+        for (int i = 0; i < failed_count; i++)
+        {
+            printf("%d", failed_tests[i]);
+            if (i < failed_count - 1)
+                printf(", ");
+        }
+        printf("]\n");
+    }
 
-	cleanup_minishell(shell);		// limpieza    
+    free(failed_tests); // Liberar memoria
+    cleanup_minishell(shell);		// limpieza    
     exit(0);
 }
 
-
 void test_complex_parser(t_shell *shell)
 {
-	int index;
+    int index;
     int test_number;
     int passed;
     int failed;
+    int syntax_errors;
+    int *failed_tests; // Array para guardar números de tests fallidos
+    int failed_count;
 
-	char **minishell_args;
-	char **bash_args;
+    char **minishell_args;
+    char **bash_args;
     
     printf("\n🧪 TESTING PARSER ARGUMENT GENERATION\n");
     printf("=====================================\n");
     printf(" t_cmd->args matches bash argument parsing \n"); 
 
-	printf("\n💡 This test verifies that the parsing pipeline correctly\n");
+    printf("\n💡 This test verifies that the parsing pipeline correctly\n");
     printf("   generates the same argument list that bash would receive.\n\n");    
     
-    index 		= 0;
-	test_number = 0;
-	passed 		= 0;
-	failed 		= 0;
-	
+    index = 0;
+    test_number = 0;
+    passed = 0;
+    failed = 0;
+    syntax_errors = 0;
+    failed_count = 0;
+    
+    // Allocar array para guardar números de tests fallidos
+    failed_tests = malloc(sizeof(int) * 1000); // Tamaño suficiente para todos los tests
+    
     while (test_cases[index])
     {
-		test_number++;
-        printf("📋 TEST %d -> \t\t %s\n\n", test_number, test_cases[index]);  		     
+        test_number++;
+        printf("📋 TEST %d -> \t\t < %s >\n\n", test_number, test_cases[index]);  		     
         
-        shell->input = ft_strdup(test_cases[index]);		// Procesar con minishell
-        
-        // Ejecutar pipeline completo de minishell
-        syntax_analyzer(shell);        
-        lexical_analyzer(shell->commands_list);
-		process_commands(shell);        
-        build_execution_structure(shell->commands_list);
-        
-        // Obtener argumentos de minishell
-        minishell_args = shell->commands_list->args;
-        
-        // Obtener argumentos esperados (simulando bash)
-        bash_args = get_bash_args_real(test_cases[index]);
-        
-        // Imprimir ambos arrays para comparación visual
-        print_args_array(bash_args, "Expected (bash)");
-        print_args_array(minishell_args, "Actual (minishell)");
-        
-        // Comparar arrays
-        if (compare_args_arrays(minishell_args, bash_args))
+        shell->input = ft_strdup(test_cases[index]);
+        bool test_passed = true;
+
+        // FASE 0: Validación de sintaxis
+        if (validate_syntax(shell) == SYNTAX_ERROR)
         {
-            printf("✅ PASSED -> \t Arguments match\n");
-            passed++;
+            // Verificar si es un error esperado
+            if (is_expected_syntax_error(test_cases[index]))
+            {
+                printf("✅ SYNTAX ERROR DETECTED -> \t Correctly identified as invalid syntax\n");
+                syntax_errors++;
+                passed++; // Contar como éxito porque detectó el error correctamente
+            }
+            else
+            {
+                printf("❌ UNEXPECTED SYNTAX ERROR -> \t Should be valid syntax\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+            }
+            printf("──────────────────────────────────────\n\n");
+            test_passed = false;
         }
-        else
+        
+        // Solo continuar si no hay errores de sintaxis
+        if (test_passed)
         {
-            printf("❌ FAILED -> \t Arguments don't match\n");
-            failed++;
-        }        
+            // FASE 1: Syntax analyzer
+            syntax_analyzer(shell);
+            if (!shell->commands_list)
+            {
+                printf("❌ FAILED -> \t Syntax analyzer failed to create command structure\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+                test_passed = false;
+            }
+        }
+        
+        // FASE 2: Lexical analyzer
+        if (test_passed)
+        {
+            lexical_analyzer(shell->commands_list);
+            if (!shell->commands_list->words_list)
+            {
+                printf("❌ FAILED -> \t Lexical analysis failed\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+                test_passed = false;
+            }
+        }
+        
+        // FASE 3: Process commands  
+        if (test_passed)
+        {
+            process_commands(shell);
+        }
+        
+        // FASE 4: Build execution structure
+        if (test_passed)
+        {
+            build_execution_structure(shell->commands_list);
+            if (!shell->commands_list->args)
+            {
+                printf("❌ FAILED -> \t Build execution failed\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+                test_passed = false;
+            }
+        }
+        
+        // Comparar con bash solo si el test pasó todas las fases
+        if (test_passed)
+        {
+            // Obtener argumentos de minishell
+            minishell_args = shell->commands_list->args;
+            
+            // Obtener argumentos esperados (simulando bash)
+            bash_args = get_bash_args_real(test_cases[index]);
+            
+            // Imprimir ambos arrays para comparación visual
+            print_args_array(bash_args, "Expected (bash)");
+            print_args_array(minishell_args, "Actual (minishell)");
+            
+            // Comparar arrays
+            if (compare_args_arrays(minishell_args, bash_args))
+            {
+                printf("✅ PASSED -> \t Arguments match\n");
+                passed++;
+            }
+            else
+            {
+                printf("❌ FAILED -> \t Arguments don't match\n");
+                failed++;
+                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
+            }        
+            
+            // Limpiar memoria
+            if (bash_args)
+                free_matrix(bash_args);
+        }
+        
         printf("──────────────────────────────────────\n\n");
         
-        // Limpiar memoria
-        if (bash_args)
-            free_matrix(bash_args);
-
+        // Cleanup después de cada test
         free(shell->input);
-        free_commands_list(&shell->commands_list);
+        if (shell->commands_list)
+            free_commands_list(&shell->commands_list);
         shell->input = NULL;
         shell->commands_list = NULL;
+        shell->exit_status = 0; // Reset exit status
         
-		index++;
+        index++;
     }        
-    cleanup_minishell(shell);		// limpieza
+    
+    cleanup_minishell(shell);
     
     printf("\n📊 PARSER ARGUMENT TEST SUMMARY\n");
     printf("================================\n");
-    printf("✅ Passed: \t %d/%d\n", passed, test_number);
-    printf("❌ Failed: \t %d/%d\n", failed, test_number);
+    printf("✅ Passed: \t\t %d/%d\n", passed, test_number);
+    printf("❌ Failed: \t\t %d/%d\n", failed, test_number);
     printf("Success rate: \t %.1f %%\n", (float) passed / (float) test_number * 100);
+    
+    // Mostrar desglose de resultados
+    if (syntax_errors > 0)
+    {
+        printf("\n📝 Test breakdown:\n");
+        printf("   • Valid syntax tests: \t %d/%d\n", passed - syntax_errors, test_number - syntax_errors);
+        printf("   • Syntax error tests: \t %d (correctly detected)\n", syntax_errors);
+    }
     
     if (failed == 0)
         printf("🎉 All argument parsing tests passed!\n");
-	else
-		printf("⚠️ %d tests need attention\n", failed);
+    else
+    {
+        printf("⚠️ %d tests need attention: [", failed);
+        for (int i = 0; i < failed_count; i++)
+        {
+            printf("%d", failed_tests[i]);
+            if (i < failed_count - 1)
+                printf(", ");
+        }
+        printf("]\n");
+    }
 
-	exit(0);
+    free(failed_tests); // Liberar memoria
+    exit(0);
 }
+
+/* // Nueva función para identificar errores de sintaxis esperados
+static bool is_expected_syntax_error(char *input)
+{
+    int i;
+    
+    if (!input)
+        return false;
+    
+    // Saltar espacios iniciales para hacer la comparación
+    i = 0;
+    while (input[i] && is_space(input[i]))
+        i++;
+    
+    // PATRÓN 1: Pipe al inicio
+    if (input[i] == '|')
+        return true;
+    
+    // PATRÓN 2: Buscar pipe al final
+    int len = ft_strlen(input);
+    int end = len - 1;
+    
+    // Saltar espacios al final
+    while (end >= 0 && is_space(input[end]))
+        end--;
+    
+    if (end >= 0 && input[end] == '|')
+    {
+        // Verificar que no hay caracteres no-espacio después del pipe
+        int j = end + 1;
+        while (j < len && is_space(input[j]))
+            j++;
+        if (j == len)  // Solo espacios después del pipe
+            return true;
+    }
+    
+    // PATRÓN 3: Double pipes o más
+    if (ft_strnstr(&input[i], "||", ft_strlen("||")))
+        return true;
+    
+    // PATRÓN 4: Pipes separados por espacios
+	if (ft_strnstr(&input[i], "| |", ft_strlen("| |"))) 
+        return true;
+    
+    // PATRÓN 5: Redirecciones múltiples consecutivas
+	if (ft_strnstr(&input[i], ">>>", ft_strlen(">>>")) 
+		|| ft_strnstr(&input[i], "<<<", ft_strlen("<<<")))     
+        return true;
+    
+    // PATRÓN 6: Operadores de redirección mezclados/inválidos
+	if (ft_strnstr(&input[i], "</<</>/>>", ft_strlen("</<</>/>>"))) 
+        return true;
+    
+    // PATRÓN 7: Heredoc sin comando al inicio
+    if (ft_strncmp(&input[i], "<< EOF", 6) == 0)
+        return true;
+    
+    // PATRÓN 8: Solo operadores
+    if (ft_strncmp(&input[i], " | | ", 5) == 0 || 
+        ft_strncmp(&input[i], "||", 2) == 0 ||
+        ft_strncmp(&input[i], "| |", 3) == 0)
+        return true;
+    
+    // PATRÓN 9: Pipes con caracteres especiales
+	if (ft_strnstr(&input[i], "\\n|", ft_strlen("\\n|"))) 
+        return true;
+    
+    return false;
+} */
+
+static bool is_expected_syntax_error(char *input)
+{
+    int i;
+    
+    if (!input)
+        return false;
+    
+    // Saltar espacios iniciales
+    i = 0;
+    while (input[i] && is_space(input[i]))
+        i++;
+    
+    // Lista de patrones que deberían dar error de sintaxis
+    char *error_patterns[] = {
+        // Pipes inválidos
+        "| echo hello",           
+        "|echo hello",            
+        "echo hello |",           
+        "echo hello ||",          
+        "echo hello |||",         
+        "|| echo hello",          
+        "| |",                    
+        "||",                     
+        "| | echo hello | |",     
+        "|$USER",                 
+        "echo hello |		",     
+        "	|	echo hello",       
+        "echo hello \\n| echo world",
+        
+        // Redirecciones inválidas
+        "echo hola >>>>>>> file", 
+        "echo hola <<<<<<< file", 
+        "echo hola </<</>/>>",    
+        "<< EOF",                 
+        "echo hola > file </<</>/>>",
+		"| cat << EOF",
+		"cat << EOF | ",		
+        
+        // Solo operadores
+        " | | ",                  
+        
+        NULL
+    };
+    
+    int j = 0;
+    while (error_patterns[j])
+    {
+        if (ft_strncmp(&input[i], error_patterns[j], ft_strlen(error_patterns[j])) == 0)
+            return true;
+        j++;
+    }
+    
+    // Verificaciones adicionales con patrones generales
+    char *input_trimmed = &input[i];
+    
+    // Múltiples redirecciones consecutivas
+	if (ft_strnstr(input_trimmed, ">>>", ft_strlen(">>>"))
+		|| ft_strnstr(input_trimmed, "<<<", ft_strlen("<<<")))
+        return true;
+        
+    // Double pipes
+	if (ft_strnstr(input_trimmed, "||", ft_strlen("||")))
+        return true;
+        
+    // Operadores mezclados
+	if (ft_strnstr(input_trimmed, "</<</>/>>", ft_strlen("</<</>/>>")))
+        return true;
+    
+    return false;
+}
+
 
 // Función auxiliar para obtener argumentos que bash recibiría
 static char **get_bash_args_real(char *input)

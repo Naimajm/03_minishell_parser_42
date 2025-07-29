@@ -22,7 +22,7 @@ EXT_LIBRARYS 	:= $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCH
 SRC_DIR			:= ./src
 SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c \
 				01_shell_init.c 01.1_check_syntax.c \
-				02_syntax_analyzer.c 02.1_command_builder.c \
+				02_syntax_analyzer.c  02.1_syntax_check.c 02.2_command_builder.c \
 				03_lexical_analyzer.c 03.1_word_builder.c \
 				04_tokenizer.c 04.1_token_builder.c \
 				05_variable_expander.c \

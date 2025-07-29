@@ -4,26 +4,22 @@
 hola < cara | "$HOME" >> caracola | "$HOME" << heredoc
 
 // INPUTS
-
 "cat  ho"la a'$e" ta'l   ,qu'e" hac"$"es
   cmd1 'literal' > O  "hola x" 1234 | cmd2 << H 
  'ho<<$la' 'cara<>|cola' '' 'ey ' 
  "ho<< $? la" "car$a<>|cola" ' ey'
 
 // WORDS TOKENS
-
 h"ola $HOME "caracola
 h"ola $HOME "caracola | valgrind --leak-check=full ./minishell
 aa > aa >> bb << bb < cc 
 
 // EXPANSION VARIABLES 
-
 aa"$HOME"zz   bb"$?"yy   cc"\$literal"  "${HOME}xxx"ww
 "aa $HOME $? bb \$literal ${HOME}xxx zz"
 'aa $HOME bb \$literal ${HOME}xxx $?z zz'
 
 // EXPANSION -> CASO LITERALES
-
 cc"\$literal"			-> cc$literal
 " aa"\$a\$b"xx "		-> aa$a$b
 dd"\\$USER"				-> dd\$USER
@@ -50,6 +46,7 @@ caso especial '$?'
 "test ey
 cmd1 'test | "test
 "Hola '$USER'" 
+|hola | caravol
 
 ####  TESTEO 
 
