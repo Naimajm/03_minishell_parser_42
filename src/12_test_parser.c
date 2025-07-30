@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 08:34:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 12:07:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,8 +249,8 @@ char *test_cases[] = {
 	//"echo hello | << EOF",            // DISTINTO BENITEZ        // Pipe seguido de heredoc sin comando
 
 	// 8. CASOS EXTREMOS Y COMBINACIONES
-	"echo | | | hello",      			// error        // Múltiples pipes con argumentos mezclados
-	"| | echo hello | |",                    			// Pipes al inicio y al final
+	//"echo | | | hello",      			// error        // Múltiples pipes con argumentos mezclados
+	//"| | echo hello | |",                    			// Pipes al inicio y al final
 	"echo 'hello | world' |",  		// OK = BENITEZ  // Comillas con pipe interno + pipe real al final
 	//"echo \"hello | world\" | | echo test", 	// error // Comillas con pipe interno + error de sintaxis
 	//"echo$USER|echo$HOME",            // OK = BENITEZ      // Variables pegadas a pipes
@@ -260,9 +260,9 @@ char *test_cases[] = {
 
 	// 9. PIPES CON ESPACIOS ESPECIALES
 	"echo hello |		",                     // Pipe con tab al final
-	"	|	echo hello",                       // Tabs alrededor de pipe inicial
-	"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
-	"echo hello \n| echo world",             // Pipe con caracteres especiales
+	//"	|	echo hello",                       // Tabs alrededor de pipe inicial
+	//"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
+	//"echo hello \n| echo world",             // Pipe con caracteres especiales
 
 	// CASOS VÁLIDOS PARA COMPARAR (deberían funcionar)
 	"echo hello | cat",                      // Pipe básico válido

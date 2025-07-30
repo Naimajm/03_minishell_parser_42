@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/20 19:59:09 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:33:29 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,18 @@ int find_index_char(const char *str, char character)
 		index++; 
 	}
 	return (0);
+}
+
+int is_pipe(char character)
+{
+	int	pipe;
+
+	if (!character)
+		return (0);
+	pipe = 0;
+	if (character == '|')
+		pipe = 1;
+	return (pipe);
 }
 
 int	is_quote(char character)

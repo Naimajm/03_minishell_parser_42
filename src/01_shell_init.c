@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 18:24:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:14:07 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ int	load_environment_variables(t_shell *shell, char **environment)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 	env_count 	= 0;
 	index 		= 0;	
-	while (environment[env_count]) 		// calculo total elementos
+	while (environment[env_count]) 					// calculo total elementos
 		env_count++;
 	
 	// reserva + carga copia en shell
 	shell->environment = (char **) malloc(sizeof(char *) * (env_count + 1));
-	// validacion estado carga variables
-	if (env_count <= 0 || !shell->environment)
+	
+	if (env_count <= 0 || !shell->environment)		// validacion estado carga variables
 		return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), FAILURE);
 
 	while (environment[index])
@@ -67,6 +67,6 @@ int	load_environment_variables(t_shell *shell, char **environment)
 			return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), FAILURE);
 		index++;
 	}
-	shell->environment[index] = NULL;	// terminador nulo char **
+	shell->environment[index] = NULL;				// terminador nulo char **
 	return (SUCCESS);
 }

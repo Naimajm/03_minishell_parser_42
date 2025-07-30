@@ -6,15 +6,15 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 11:21:02 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:47:23 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static t_word *create_word_node(char  *input, char word_type);
+static t_word 	*create_word_node(char  *input, char word_type);
 static t_word	*find_word_last_node(t_word *word_list);
-void print_words_list(t_word *word_list);
+void 			print_words_list(t_word *word_list);
 
 void	add_word_node(t_word **word_list, char  *input, char word_type)
 {
@@ -24,12 +24,11 @@ void	add_word_node(t_word **word_list, char  *input, char word_type)
 	if (!word_list || !input) 						
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	
-	new_node = create_word_node(input, word_type); 	// inicializar nuevo nodo token
+	new_node = create_word_node(input, word_type); 	
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_WORD_INIT, STDERR_FILENO));
 		
-	last_node = find_word_last_node(*word_list); 	// encontrar ultimo nodo y enlazar
-	
+	last_node = find_word_last_node(*word_list); 	// encontrar ultimo nodo y enlazar	
 	if (!last_node)     							// caso lista vacio -> añadir en 1º nodo
 		*word_list = new_node;   
 	else            								// lista no vacia      
@@ -47,26 +46,25 @@ static t_word *create_word_node(char  *input, char word_type)
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
 		
-	new_node->raw_word      = ft_strdup(input);
+	new_node->raw_word      	= ft_strdup(input);
 	if (!new_node->raw_word)
 		return (ft_putendl_fd(ERROR_WORD_INIT, STDERR_FILENO), NULL);
 
 	new_node->word_type         = word_type;
 	new_node->processed_word    = NULL;
 
-	new_node->tokens_list	= NULL;
-	new_node->next	        = NULL;
-	//ft_printf("new_word_node -> %s\n", new_node->token);
+	new_node->tokens_list		= NULL;
+	new_node->next	        	= NULL;
 	return  (new_node);
 }
 
 static t_word	*find_word_last_node(t_word *word_list)
 {    
-	if (!word_list) 					// validation 
+	if (!word_list) 					
 		return (NULL);
 
 	while (word_list->next)
-		word_list = word_list-> next; 	// retorna puntero a ultimo nodo    
+		word_list = word_list-> next;
 	return (word_list);
 }
 

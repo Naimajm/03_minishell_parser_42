@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 08:19:00 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:35:29 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,9 @@ void	create_commands_structure(t_shell *shell)
 	int		input_len;
 
 	if (!shell || !shell->input)
-	{
-		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
-		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
-		return ;
-	}			
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));			
 	index = 0;	
+
 	while (shell->input[index])
 	{
 		while (is_space(shell->input[index])) 	// ignorar espacios iniciales 
@@ -40,29 +37,23 @@ void	create_commands_structure(t_shell *shell)
 		if (!shell->input[index]) 				// Verificar si llegamos al final después de saltar espacios
 			break;
 		
-		// CLASIFICACION LISTA PROCESOS
-		input_len = generate_command(shell, index);
-
-		// Verificar que se generó un comando válido
-        if (input_len <= 0)
-        {
-            // Si no se pudo generar comando válido, avanzar un carácter
-            index++;
+		input_len = generate_command(shell, index);	// CLASIFICACION LISTA PROCESOS		
+        if (input_len <= 0)						// Verificar que se generó un comando válido
+        {            
+            index++;							// Si no se pudo generar comando válido, avanzar un carácter
             continue;
         }
 
-		// GESTION CASOS ESPECIALES AVANCE INDEX
-		index = advance_index_by_length(index, input_len);
+		index = advance_index_by_length(index, input_len);	// GESTION CASOS ESPECIALES AVANCE INDEX
 
 		// CASO PIPE -> ' | ' (operador aislado con espacios)
 		while (is_space(shell->input[index])) 	// ignorar espacios iniciales 
 			index++;
-
-		// Si encontramos un pipe, saltarlo para el siguiente comando
-		if (is_pipe(shell->input[index]))
+		
+		if (is_pipe(shell->input[index]))		// Si encontramos un pipe, saltarlo para el siguiente comando
 		{
 			printf("Found pipe, creating new command structure\n");
-			index++; // Saltar el pipe			
+			index++; 							// Saltar el pipe			
 		}	
 	}	
 }
@@ -79,10 +70,9 @@ int generate_command(t_shell *shell, int start_index)
 
 	if (!shell)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
-
-	index = start_index;
-	inside_quotes = false;
-	active_quote_char = 0;
+	index 				= start_index;
+	inside_quotes 		= false;
+	active_quote_char 	= 0;
 
 	// Procesar hasta encontrar pipe fuera de comillas o final de input
 	while (shell->input[index])
@@ -109,7 +99,6 @@ int generate_command(t_shell *shell, int start_index)
 			break;    
 		index++;
 	}
-
 	// Extraer el comando (sin incluir el pipe)
 	command_input = create_clean_command(shell->input, start_index, index);
 	if (!command_input)
@@ -157,18 +146,6 @@ char	*create_clean_command(char *input, int start_index, int final_index)
     	return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
 	}
 	free(raw_command);
-
 	return (clean_command);
 }
 
-int is_pipe(char character)
-{
-	int	pipe;
-
-	if (!character)
-		return (0);
-	pipe = 0;
-	if (character == '|')
-		pipe = 1;
-	return (pipe);
-}

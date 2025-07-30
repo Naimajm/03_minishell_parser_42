@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 19:44:09 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:35:15 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,21 +210,15 @@ int		load_environment_variables(t_shell *shell, char **environment);
 
 /// ANÁLISIS SINTÁCTICO -------------------------------------------
 // 02_command_generate.c	# Análisis sintáctico inicial
-void	syntax_analyzer(t_shell *shell);
 void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);
 char	*create_clean_command(char *input, int start_index, int final_index);
-int 	is_pipe(char character);
 
 // 02.1_syntax_check.c	# Validacion sintaxis input
-
-int 	validate_command_structure(t_cmd *commands_list);
-
-int validate_pipe_structure(t_cmd *commands_list);
-
-int validate_redirections_structure(t_cmd *commands_list);
-
-int validate_command_semantics(t_cmd *commands_list);
+/* int 	validate_command_structure(t_cmd *commands_list);
+int 	validate_pipe_structure(t_cmd *commands_list);
+int 	validate_redirections_structure(t_cmd *commands_list);
+int 	validate_command_semantics(t_cmd *commands_list); */
 
 // 02.2_command_builder.c	# Constructor de comandos
 void	add_command_node(t_cmd **commands_list, char *input);
@@ -297,6 +291,7 @@ bool 	is_builtin_command(char *command);
 /// UTILIDADES Y TESTING -------------------------------------------
 // 10_utils_core.c			 # Utilidades básicas
 int 	find_index_char(const char *str, char character);
+int 	is_pipe(char character);
 int		is_quote(char character);
 int		is_operator(char character);
 int		is_space(char character);

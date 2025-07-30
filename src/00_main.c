@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 19:45:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:12:38 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,22 +69,17 @@ void	run_shell(t_shell *shell)
 		input = read_user_input(PROMPT);
 		if (!input)										// CASO EOF - TERMINAR SHELL
 			break ;	
-        if (input[0] == '\0')							// 	CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
-        {
-            //free(input);
+        if (input[0] == '\0')							// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
             continue;  									// VOLVER AL INICIO DEL LOOP
-        }
 		shell->input = ft_strdup(input);				// PROCESAR INPUT VÁLIDO
 		if (!shell->input)
-		{
-			//free(input);
-			return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
-		}		
+			return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));	
 			
 		//printf("Input Processing... %s\n", shell->input);	
 		process_input(shell);
 		
-		//print_config_shell(shell);					
+		//print_config_shell(shell);		// DEBUG
+						
 		// LIBERAR INPUT
 		free(input);
 		free(shell->input);
@@ -96,15 +91,12 @@ void	run_shell(t_shell *shell)
 
 void	process_input(t_shell *shell)
 {
-	//char *syntax_error;
-
 	if (!shell || !shell->input)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
 		
 	//printf("Check Syntax...\t\t\t OK\n");
 	if (validate_syntax(shell) == SYNTAX_ERROR)		
 	{
-        //free_commands_list(&shell->commands_list);
 		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
         return ;
     }
@@ -143,7 +135,6 @@ void	process_commands(t_shell *shell)
 	{
 		//printf("Word -> Tokenizer...				OK\n\n");
 		tokenizer(current_command->words_list);
-		//print_commands_list(current_command);		// Debug
 
 		//printf("Tokens -> Expand variables $...			OK\n\n");
 		variable_expander(current_command->words_list, shell->environment, shell->exit_status);
@@ -163,12 +154,14 @@ char	*read_user_input(char *prompt)
 	char	*input;
 
 	input = readline(prompt);
+
 	// CASO EOF (Ctrl+D o fin de pipe)
+
 	if (!input)
 	{
-		//ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO);  
 		return (NULL); 		// Retornar NULL para indicar EOF	
 	}
+	
 	if (input[0] != '\0')  	// añadir a historial si input no vacio	
 		add_history(input);
 	return (input);

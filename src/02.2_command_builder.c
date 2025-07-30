@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02.1_command_builder.c                             :+:      :+:    :+:   */
+/*   02.2_command_builder.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 11:53:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:41:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,27 @@ void	add_command_node(t_cmd **commands_list, char *input)
 	if (!commands_list || !input) 		
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	
-	//printf("add_command_node: '%s'\n", input);
-	new_node = create_command_node(input); 				// inicializar nuevo nodo command	
+	new_node = create_command_node(input); 					
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_COMMAND_INIT, STDERR_FILENO));
 		
 	last_node = find_command_last_node(*commands_list); // encontrar ultimo nodo y enlazar
-	//printf("add_command_node: last_node '%p'\n", last_node);
 	if (!last_node)     								
 		*commands_list = new_node;   					// caso lista vacio -> añadir en 1º nodo
 	else            								    
-		last_node->next = new_node;						// lista no vacia  
-
+		last_node->next = new_node;						// lista no vacia
 }
 
 static t_cmd *create_command_node(char *input)
 {
 	t_cmd *new_node;
-	//printf("add_command_node: '%s'\n", input);
+
 	if (!input)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
 	
 	new_node = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!new_node)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
-		
+		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);		
 	new_node->command = ft_strdup(input);
 	if (!new_node->command)
 		return (ft_putendl_fd(ERROR_COMMAND_INIT, STDERR_FILENO), NULL);
@@ -68,17 +64,15 @@ static t_cmd *create_command_node(char *input)
 
 	new_node->words_list	= NULL;
 	new_node->next	        = NULL;
-	//ft_printf("new_word_node -> %s\n", new_node->token);	
 	return  (new_node);
 }
 
 static t_cmd	*find_command_last_node(t_cmd *commands_list)
 {    
-	if (!commands_list) 					// validation 
+	if (!commands_list) 					
 		return (NULL);
 	while (commands_list->next)
-		commands_list = commands_list-> next; 	// retorna puntero a ultimo nodo    
-	//printf("find_command_last_node: '%p'\n", commands_list);
+		commands_list = commands_list-> next; 	// retorna puntero a ultimo nodo   
 	return (commands_list);
 }
 
@@ -89,7 +83,6 @@ void print_commands_list(t_cmd *commands_list)
 
 	if (!commands_list)
 		return ;
-		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO)); 
 	command = (t_cmd *)(commands_list);
 	node_index = 1;
 	while (command)

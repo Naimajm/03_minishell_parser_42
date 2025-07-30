@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/28 11:28:09 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 12:01:46 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,10 +275,11 @@ int	literal_expander(t_token *token, int index)
 
     if (!token)
         return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
-		
+	
+    first_index = index - 1; // coger cchar anterior '\'
 	// CALCULAR LONGITUD DEL ESCAPE MANUALMENTE
     //first_index = first_index - 1; 
-	first_index = index - 1; // coger cchar anterior '\'
+	
     /* if (token->raw_token[first_index - 1] == '\\' && 
         (token->raw_token[first_index] == '$' || token->raw_token[first_index] == '"'))
 	{
