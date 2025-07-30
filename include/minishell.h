@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 13:28:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/29 19:44:09 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ t_shell *initialize_shell(void);
 int		load_environment_variables(t_shell *shell, char **environment);
 
 /// ANÁLISIS SINTÁCTICO -------------------------------------------
-// 02_syntax_analyzer.c		# Análisis sintáctico inicial
+// 02_command_generate.c	# Análisis sintáctico inicial
 void	syntax_analyzer(t_shell *shell);
 void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);

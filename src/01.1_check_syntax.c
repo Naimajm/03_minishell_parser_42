@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 23:10:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 19:27:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 08:23:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,6 @@ void		handle_quote_state(bool *inside_quotes, char *quote_char, char current_cha
 static bool	is_redirection_char(char c);
 static int	validate_redirection_at_position(char *input, int pos);
 static int	get_operator_length(char *input, int pos);
-
-// VALIDACION SINTAXIS RAW_INPUT
-	// Verificar:
-	// - No pipes al inicio/final
-	// - No operadores consecutivos
-	// - Argumentos después de redirects
-	// - Comillas balanceadas (ya hecho)
 
 int	validate_syntax(t_shell *shell)
 {
@@ -55,6 +48,7 @@ int	validate_syntax(t_shell *shell)
 	return (SUCCESS);
 }
 
+/* 
 int	check_pipe_syntax(char *input)
 {
     int		index;
@@ -91,6 +85,68 @@ int	check_pipe_syntax(char *input)
         }
         index++;
     }
+    return (SUCCESS);
+}
+ */
+
+int check_pipe_syntax(char *input)
+{
+    int     index;
+    bool    inside_quotes;
+    char    quote_char;
+    bool    found_pipe;
+    bool    found_command_after_pipe;
+    
+    index = 0;
+    inside_quotes = false;
+    quote_char = 0;
+    found_pipe = false;
+    found_command_after_pipe = false;
+    
+    // Saltar espacios iniciales
+    while (input[index] && is_space(input[index]))
+        index++;
+        
+    // ERROR: Pipe al inicio
+    if (input[index] == '|')
+        return (SYNTAX_ERROR);
+    
+    while (input[index])
+    {
+        handle_quote_state(&inside_quotes, &quote_char, input[index]);
+        
+        if (!inside_quotes && input[index] == '|')
+        {
+            // Si ya encontramos un pipe y no hubo comando válido después
+            if (found_pipe && !found_command_after_pipe)
+                return (SYNTAX_ERROR); // Comando vacío entre pipes
+                
+            found_pipe = true;
+            found_command_after_pipe = false;
+            
+            // Verificar double pipe
+            if (input[index + 1] == '|')
+                return (SYNTAX_ERROR);
+                
+            // Saltar espacios después del pipe
+            int temp_index = index + 1;
+            while (input[temp_index] && is_space(input[temp_index]))
+                temp_index++;
+                
+            // ERROR: Pipe al final o seguido de otro pipe
+            if (!input[temp_index] || input[temp_index] == '|')
+                return (SYNTAX_ERROR);
+        }
+        else if (!inside_quotes && !is_space(input[index]) && input[index] != '|')
+        {
+            // Encontramos contenido real después de un pipe
+            if (found_pipe)
+                found_command_after_pipe = true;
+        }
+        
+        index++;
+    }
+    
     return (SUCCESS);
 }
 

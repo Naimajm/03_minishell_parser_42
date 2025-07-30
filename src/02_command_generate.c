@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   02_syntax_analyzer.c                               :+:      :+:    :+:   */
+/*   02_command_generate.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 13:37:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 08:19:00 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,11 @@
 
 // 	ANALISIS SINTACTICO PARA GENERACION LISTA DE COMANDOS
 
-int		check_pipe_syntax(char *input);
 void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);
 char	*create_clean_command(char *input, int start_index, int final_index);
 int 	is_pipe(char character);
 
-void	syntax_analyzer(t_shell *shell)
-{
-	if (!shell)
-	{
-		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
-		//return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
-		return ;
-	}
-	
-	// CREAR ESTRUCTURA COMANDOS
-	create_commands_structure(shell);	
-
-	/* // VALIDAR ESTRUCTURA COMANDOS ¡¡
-	if (validate_command_structure(shell->commands_list) == SYNTAX_ERROR)		
-	{
-        //free_commands_list(&shell->commands_list);
-		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
-        return ;
-    } */
-}
 
 // AGRUPAR INPUT NO PROCESADOS PARA DIFERENTES JOBS EN EL CASO DE PIPES
 void	create_commands_structure(t_shell *shell)
@@ -63,6 +42,14 @@ void	create_commands_structure(t_shell *shell)
 		
 		// CLASIFICACION LISTA PROCESOS
 		input_len = generate_command(shell, index);
+
+		// Verificar que se generó un comando válido
+        if (input_len <= 0)
+        {
+            // Si no se pudo generar comando válido, avanzar un carácter
+            index++;
+            continue;
+        }
 
 		// GESTION CASOS ESPECIALES AVANCE INDEX
 		index = advance_index_by_length(index, input_len);

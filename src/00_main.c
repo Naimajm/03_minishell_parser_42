@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 13:39:17 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/29 19:45:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	process_input(t_shell *shell)
     }
 
 	//printf("Syntax analyzer...\t\t\t OK\n");
-	syntax_analyzer(shell);		
+	create_commands_structure(shell);	
 
 	//printf("Lexical analyzer...\t\t\t OK\n");
 	lexical_analyzer(shell->commands_list);	
@@ -122,7 +122,7 @@ void	process_input(t_shell *shell)
 	//printf("Generating execution structure...\t OK\n");
 	build_execution_structure(shell->commands_list);		
 
-	// EJECUTAR COMANDOS
+	// EJECUTAR COMANDOS !!! JUANJE
     // execute_commands(shell->command_list);
 	
 	print_commands_list(shell->commands_list);			// Debug

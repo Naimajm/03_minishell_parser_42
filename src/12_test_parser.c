@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 19:38:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 08:34:49 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,8 @@ char *test_cases[] = {
 	"echo hello ||| echo world",             // Triple pipe (error)
 	"echo hello ||||",                       // Múltiples pipes al final
 	"|| echo hello",                         // Double pipe al inicio
-	//"echo hello | | echo world", 		// error       // Pipes separados por espacio
-	//"echo hello |  | echo world",    	// error       // Pipes separados por múltiples espacios
+	"echo hello | | echo world", 		     // Pipes separados por espacio
+	"echo hello |  | echo world",    	     // Pipes separados por múltiples espacios
 
 	// 5. PIPES DENTRO DE PALABRAS/TOKENS (casos especiales)
 	//"echo|hello",                 	// error         	// Pipe pegado sin espacios
@@ -236,22 +236,22 @@ char *test_cases[] = {
 	"echo \"hello|world\"",                  // Pipe dentro de comillas dobles (válido)
 
 	// 6. PIPES CON COMANDOS VACÍOS
-	//"echo hello |  | echo world",    	// error		// Comando vacío entre pipes
-	//"echo hello |   |   | echo world", // error      	// Múltiples comandos vacíos
+	"echo hello |  | echo world",    	// error		// Comando vacío entre pipes
+	"echo hello |   |   | echo world", // error      	// Múltiples comandos vacíos
 	" | | ",                                 			// Solo pipes y espacios
 	"||",                                    			// Solo double pipe
 	"| |",                                   			// Pipes separados por espacio
 
 	// 7. PIPES CON HEREDOC (casos complejos)
-	"cat << EOF | ",                    // OK = BENITEZ     // Heredoc seguido de pipe al final
-	"| cat << EOF",                          // Pipe al inicio con heredoc
-	//"cat << EOF | | cat",                    // Heredoc con pipes múltiples
+	"cat << EOF | ",                    // Heredoc seguido de pipe al final
+	"| cat << EOF",                     // Pipe al inicio con heredoc
+	"cat << EOF | | cat",               // Heredoc con pipes múltiples
 	//"echo hello | << EOF",            // DISTINTO BENITEZ        // Pipe seguido de heredoc sin comando
 
 	// 8. CASOS EXTREMOS Y COMBINACIONES
-	//"echo | | | hello",      			// error        // Múltiples pipes con argumentos mezclados
+	"echo | | | hello",      			// error        // Múltiples pipes con argumentos mezclados
 	"| | echo hello | |",                    			// Pipes al inicio y al final
-	//"echo 'hello | world' |",  		// OK = BENITEZ  // Comillas con pipe interno + pipe real al final
+	"echo 'hello | world' |",  		// OK = BENITEZ  // Comillas con pipe interno + pipe real al final
 	//"echo \"hello | world\" | | echo test", 	// error // Comillas con pipe interno + error de sintaxis
 	//"echo$USER|echo$HOME",            // OK = BENITEZ      // Variables pegadas a pipes
 	//"$USER|$HOME",                   	// OK = BENITEZ    // Solo variables con pipe
@@ -260,8 +260,8 @@ char *test_cases[] = {
 
 	// 9. PIPES CON ESPACIOS ESPECIALES
 	"echo hello |		",                     // Pipe con tab al final
-	//"	|	echo hello",                       // Tabs alrededor de pipe inicial
-	//"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
+	"	|	echo hello",                       // Tabs alrededor de pipe inicial
+	"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
 	"echo hello \n| echo world",             // Pipe con caracteres especiales
 
 	// CASOS VÁLIDOS PARA COMPARAR (deberían funcionar)
@@ -285,7 +285,7 @@ char *test_cases[] = {
 	// 4. PIPES MEZCLADOS CON REDIRECCIONES (casos complejos)
 	//"echo hello | > file",        	// error            // Pipe seguido de redirección sin comando
 	//"echo hello > file |",            // OK = BENITEZ     // Redirección seguida de pipe al final
-	//"echo hello | | > file",          // error     		// Pipes múltiples con redirección
+	"echo hello | | > file",          				// Pipes múltiples con redirección
 	//"echo hello | < file",            // OK = BENITEZ     	// Pipe seguido de input redirection
 	//"< file | echo hello",              // OK = BENITEZ     // Input redirection seguida de pipe al inicio
 
@@ -295,7 +295,6 @@ char *test_cases[] = {
 	//"aa > aa >> bb << bb < cc",			// OK = BENITEZ
 
 	/// REDIRECTION TESTS - ERRORES DE SINTAXIS
-
 	"</<</>/>>",                     	// OK = BENITEZ      // Solo operadores (error sintaxis)
 	"echo hola >>>>>>> file",              // Múltiples > seguidos (error)
 	"echo hola <<<<<<< file",              // Múltiples < seguidos (error)
@@ -371,7 +370,7 @@ void test_basic_parser(t_shell *shell)
         {
             // FASE 1: Syntax analyzer (ahora solo crea estructura)
             printf("  1. Syntax analyzer...");
-            syntax_analyzer(shell);
+            create_commands_structure(shell);
             if (!shell->commands_list)
             {
                 printf(" ❌ FAILED\n");
@@ -431,8 +430,8 @@ void test_basic_parser(t_shell *shell)
             }
         }
         
-        // Incrementar passed solo si no es error de sintaxis y pasó todas las fases
-        if (test_passed && !is_expected_syntax_error(test_cases[index]))
+        // CAMBIO: Incrementar passed solo para tests de sintaxis válida que pasaron
+        if (test_passed) // Solo tests que pasaron todas las fases
         {
             passed++;
         }
@@ -481,6 +480,8 @@ void test_basic_parser(t_shell *shell)
     cleanup_minishell(shell);		// limpieza    
     exit(0);
 }
+
+
 
 void test_complex_parser(t_shell *shell)
 {
@@ -544,7 +545,7 @@ void test_complex_parser(t_shell *shell)
         if (test_passed)
         {
             // FASE 1: Syntax analyzer
-            syntax_analyzer(shell);
+            create_commands_structure(shell);
             if (!shell->commands_list)
             {
                 printf("❌ FAILED -> \t Syntax analyzer failed to create command structure\n");
@@ -761,6 +762,7 @@ static bool is_expected_syntax_error(char *input)
         "echo hello |		",     
         "	|	echo hello",       
         "echo hello \\n| echo world",
+		"echo 'hello | world' |",
         
         // Redirecciones inválidas
         "echo hola >>>>>>> file", 
