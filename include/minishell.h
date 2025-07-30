@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 17:42:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 21:41:43 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,15 @@
 # define ERROR_MEMORY_ALLOC				"Error\n Memory allocation failed\n"
 # define ERROR_COMMAND_EMPTY			"Error\n Empty command detected\n"
 
-# define PROMPT				"minishell$ "
+# define PROMPT					"minishell$ "
 
-# define FREE_ALL_SHELL		"Free\n Total cleaning minishell... OK\n"
-# define FREE_COMMANDS_LIST	"Free\n Commands list...\t\t\t OK\n"
-# define FREE_WORDS_LIST	"Free\n Words list...\t\t\t\t OK\n"
-# define FREE_TOKENS_LIST	"Free\n Tokens List...\t\t\t\t OK\n"
-# define FREE_EXPANDS_LIST	"Free\n Expands List...\t\t\t OK\n"
-# define FREE_MATRIX		"Free\n Cleaning matrix...\t\t\t OK\n"
+# define FREE_ALL_SHELL			"Free\n Total cleaning minishell... OK\n"
+# define FREE_ITERATION_INPUT	"Free\n Iteration Input...\t\t\t OK\n"
+# define FREE_COMMANDS_LIST		"Free\n Commands list...\t\t\t OK\n"
+# define FREE_WORDS_LIST		"Free\n Words list...\t\t\t\t OK\n"
+# define FREE_TOKENS_LIST		"Free\n Tokens List...\t\t\t\t OK\n"
+# define FREE_EXPANDS_LIST		"Free\n Expands List...\t\t\t OK\n"
+# define FREE_MATRIX			"Free\n Cleaning matrix...\t\t\t OK\n"
 
 // categorizacion TIPOS WORD_TOKEN
 # define WORD					'W'		// W -> palabra generica no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
@@ -91,6 +92,9 @@
 
 // STRUCT -----------------------------------------------------
 
+// GLOBAL VARIABLE
+extern int	g_signal_flag;
+
 // VARIABLES EXPANDIDAS
 typedef struct s_expand
 {	
@@ -111,7 +115,7 @@ typedef struct s_token
 	char		*expanded_token;	
 	char		*noquotes_token;
 	
-	t_expand	*expands_list; 			// lista nodos expansion variables
+	t_expand	*expands_list; 			
 	
 	struct		s_token	*next;	
 }				t_token;
@@ -123,7 +127,7 @@ typedef struct s_word
 	char		*raw_word;
 	char		*processed_word;
 
-	t_token		*tokens_list;  			// lista tokens para expansion variables
+	t_token		*tokens_list;  			
 	
 	struct		s_word *next;	
 }				t_word;
@@ -151,8 +155,7 @@ typedef struct s_word
 
 typedef	struct 	s_cmd
 {
-	char		*command;		// NUEVO -> trozo input perteneciente a este proceso
-
+	char		*command;			// NUEVO -> trozo input perteneciente a este proceso
 	char		**args;				// Array de argumentos
 
 	char		*infile;			// Archivo de entrada	
@@ -164,7 +167,7 @@ typedef	struct 	s_cmd
 	bool		is_btn;				// flag si el comando es builtin
 	int			exit_status;
 
-	t_word *words_list;				// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
+	t_word 		*words_list;		// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
 
 	struct 		s_cmd	*next;
 }				t_cmd; 
@@ -182,26 +185,26 @@ typedef struct	s_shell
 }				t_shell;
 
 // FUNCTIONS -----------------------------------------------------
-
 /// ARCHIVOS PRINCIPALES -------------------------------------------
-// 00_main.c 				# Función main y loop principal
+// 00_main.c 				# Función main 
 int		main(int	argc, char **argv, char **environment);
-void	run_shell(t_shell *shell);
-void	process_input(t_shell *shell);
-void	process_commands(t_shell *shell);
-char	*read_user_input(char *prompt);
-
-// 01.1_check_syntax.c		# Validacion sintaxis input
-int		validate_syntax(t_shell *shell);
-
-int		check_pipe_syntax(char *input);
-int		check_balanced_quotes(char *input);
-int		check_redirection_syntax(char *input);
-
-// 01_shell_init.c			# Inicialización del shell
 int		validate_environment(char **environment);
 t_shell *initialize_shell(void);
 int		load_environment_variables(t_shell *shell, char **environment);
+void	cleanup_minishell(t_shell *shell);
+
+// 01_run_shell.c			# loop principal Shell
+void	run_shell(t_shell *shell);
+void	recover_previous_status(t_shell *shell);
+char	*read_user_input(char *prompt);
+void	process_input(t_shell *shell);
+void	process_commands(t_shell *shell);
+
+// 01.1_check_syntax.c		# Validacion sintaxis input
+int		validate_syntax(t_shell *shell);
+int		check_pipe_syntax(char *input);
+int		check_balanced_quotes(char *input);
+int		check_redirection_syntax(char *input);
 
 /// ANÁLISIS SINTÁCTICO -------------------------------------------
 // 02_command_generate.c	# Análisis sintáctico inicial
@@ -294,15 +297,14 @@ int		is_space(char character);
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);
 char	*ft_strjoin_free(char *str1, char *str2);
+void	free_matrix(char **matrix);
 	
 // 10.2_free_manager.c		# Gestión de memoria
-void	cleanup_minishell(t_shell *shell);
+void	free_iteration_input(t_shell *shell);
 void	free_commands_list(t_cmd **commands_list);
 void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
 void	free_expands_list(t_expand **expands_list);
-
-void	free_matrix(char **matrix);  // TODO -> LLEVAR A NUEVO ARCHIVO
 
 // 10.3_utils_debug.c 		# Utilidades de debug
 void	print_text_file(const char *filename);

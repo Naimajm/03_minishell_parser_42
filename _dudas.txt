@@ -1,3 +1,2 @@
 
 
-01_shell_init.c -> shell->environment		= NULL;   // inicializacion con env xq ??

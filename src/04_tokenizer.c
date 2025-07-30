@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 17:17:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 22:33:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ void	tokenizer(t_word *words_list)
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{
-		word_tokenizer(current_word);			
+		word_tokenizer(current_word);	
+		/* // ESTADO COMPORTAMIENTO FUNCIONES CLASIFICACION
+		if (exit_status == FAILURE)
+			// shell->exit_status = GEN_ERROR;	 */	
 		current_word = current_word->next;
 	}		
 }
@@ -56,7 +59,7 @@ void	word_tokenizer(t_word *word)
 		else if (is_operator(raw_word[index]))
 			token_len = operator_tokenizer(word, index);		
 		else 											// 1º letra palabra simple sin inicio comillas
-			token_len = noquotes_tokenizer(word, index);
+			token_len = noquotes_tokenizer(word, index);		
 		
 		index = advance_index_by_length(index, token_len);  // GESTION CASOS ESPECIALES AVANCE INDEX
 	}	
@@ -129,16 +132,15 @@ int	quotes_tokenizer(t_word *word, int start_index)
 	index 			= start_index + 1;  		// Empezar después de la comilla
 	token_type 		= 0;
 	len_input 		= 0;
-
-	// Buscar comilla de cierre
-	while (raw_word[index] && raw_word[index] != delimiter)
+	
+	while (raw_word[index] && raw_word[index] != delimiter)		// Buscar comilla de cierre
 		index++;
 
-	if (raw_word[index] == delimiter)
+	if (raw_word[index] == delimiter)							// validacion falta de comilla de cierre
 		index++;
-	else					// validacion falta de comilla de cierre
+	else		
 		return (ft_putendl_fd(ERROR_QUOTE_SYNTAX, STDERR_FILENO), FAILURE);
-
+										
 	token_input = ft_substr(raw_word, start_index, (index - start_index)); // copia expresion con comillas incluidas
 	if (!token_input)
 		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);	

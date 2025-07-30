@@ -12,14 +12,13 @@ LIBFT_ARCHIVE 	:= libft.a
 
 CC 				:= cc
 CFLAGS 			:= -Wall -Wextra -Werror
-MAKE_LIBRARY 	:= ar -rcs 
 
 INCLUDES		:= -I$(LIBFT_DIR) -I$(INCLUDES_DIR)
 EXT_LIBRARYS 	:= $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
 
 SRC_DIR			:= ./src
 SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c \
-				01_shell_init.c 01.1_check_syntax.c \
+				01_run_shell.c 01.1_check_syntax.c \
 				02_command_generate.c  02.2_command_builder.c \
 				03_lexical_analyzer.c 03.1_word_builder.c \
 				04_tokenizer.c 04.1_token_builder.c \

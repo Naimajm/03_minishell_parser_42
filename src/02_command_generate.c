@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 13:35:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 18:27:13 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	create_commands_structure(t_shell *shell)
             index++;							// Si no se pudo generar comando válido, avanzar un carácter
             continue;
         }
-
 		index = advance_index_by_length(index, input_len);	// GESTION CASOS ESPECIALES AVANCE INDEX
 
 		// CASO PIPE -> ' | ' (operador aislado con espacios)

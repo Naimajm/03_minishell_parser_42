@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 13:41:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 22:04:49 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static t_cmd *create_command_node(char *input)
 	new_node->append		= false;
 	new_node->hd			= false;	
 	new_node->is_btn		= false;
-	new_node->exit_status	= 0;
+	new_node->exit_status	= SUCCESS;
 
 	new_node->words_list	= NULL;
 	new_node->next	        = NULL;

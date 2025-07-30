@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 17:40:31 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 19:09:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,17 @@ void	free_commands_list(t_cmd **commands_list);
 void	free_words_list(t_word **words_list);
 void	free_tokens_list(t_token **token_list);
 void	free_expands_list(t_expand **expands_list);
-void	free_matrix(char **matrix);
 
-void	cleanup_minishell(t_shell *shell)
+void	free_iteration_input(t_shell *shell)
 {
-	if (!shell)
-		return ;
-	
-	if (shell->environment)						
-		free_matrix(shell->environment);
-	if (shell->commands_list) 				
+	if (shell->input)
+	{
+		free(shell->input);
+		shell->input = NULL;
+	}
+	if (shell->commands_list)		// Liberar lista comandos iteracion
 		free_commands_list(&shell->commands_list);
-	free(shell);
-	shell = NULL;
-	printf(FREE_ALL_SHELL);
+	printf(FREE_ITERATION_INPUT);
 }
 
 void	free_commands_list(t_cmd **commands_list)
@@ -153,24 +150,3 @@ void	free_expands_list(t_expand **expands_list)
 	//printf(FREE_EXPANDS_LIST);
 }
 
-void	free_matrix(char **matrix)
-{
-	int row;
-
-	if (!matrix)
-		return ;
-	row 	= 0;
-	
-	while (matrix[row])	// limpieza por filas
-	{
-		if (matrix[row])
-		{
-			free(matrix[row]);
-			matrix[row] = NULL;
-		}
-		row++;
-	}
-	free(matrix);
-	matrix = NULL;
-	//printf(FREE_MATRIX);
-}
