@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 23:47:58 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:26:50 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,52 +49,17 @@ void	expand_single_token(t_token *token, char **environment, int exit_status)
 	insert_expansion_values(token);			// INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
 }
 
-/* void	extract_expansion_nodes(t_token *token)
-{
-	int		index;
-	int		subs_len;
-
-	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  	
-	index 		= 0;	
-	
-	if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones        
-		return ;
-	
-	while (token->raw_token[index]) // CATEGORIZACION EXPAND NODOS
-	{
-		if (token->raw_token[index] == '$' && token->raw_token[index + 1])
-		{
-			if (token->raw_token[index + 1] == '?') // GESTION CASO ESPECIAL "$?
-				subs_len = last_exit_status_expander(token, index);			
-			else if (index > 0 && token->raw_token[index - 1] == '\\') // caso \$VAR -> literal , no inicia expancion
-				subs_len = literal_expander(token, index);
-			else if (token->raw_token[index + 1] == '{') // caso ${VAR}xx
-				subs_len = curly_braces_expander(token, index);
-			else // caso normal -> EXPANSION BASICA -> AÑADIR A LISTA EXPAND
-				subs_len = basic_expander(token, index);				
-			if (subs_len == FAILURE)	// error
-				return ;			
-			index += subs_len;	
-		}	
-		else	
-			index++;	 // $sin caracter adicional o resto caracteres
-	}
-} */
-
-// ...existing code...
 void	extract_expansion_nodes(t_token *token)
 {
     int		index;
     int		subs_len;
 
     if (!token)
-        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  	
-    index 		= 0;	
-    
-    if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones        
-        return ;
-    
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));    
+    if (token->type == SINGLE_QUOTES) // Para tokens literales, no hay expansiones
+		return ;
+		
+	index = 0;   
     while (token->raw_token[index]) // CATEGORIZACION EXPAND NODOS
     {
         if (token->raw_token[index] == '$')
@@ -113,19 +78,18 @@ void	extract_expansion_nodes(t_token *token)
                     subs_len = literal_expander(token, index);
                 else if (token->raw_token[index + 1] == '{') // caso ${VAR}xx
                     subs_len = curly_braces_expander(token, index);
-                else // caso normal -> EXPANSION BASICA -> AÑADIR A LISTA EXPAND
+                else 							// caso normal -> EXPANSION BASICA 
                     subs_len = basic_expander(token, index);				
                 
-                if (subs_len == FAILURE)	// error
+                if (subs_len == FAILURE)		// error
                     return ;			
                 index += subs_len;	
             }
         }	
         else	
-            index++;	 // resto caracteres
+            index++;							 // resto caracteres
     }
 }
-// ...existing code...
 
 void resolve_expansion_values(t_token *token, char **environment, int exit_status)
 {
@@ -158,18 +122,16 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 	}
 }
 
-// INSERTAR VALORE EN TOKEN -> FINAL TOKEN
+// INSERTAR VALOR EN TOKEN -> FINAL TOKEN
 void	insert_expansion_values(t_token *token)
 {
 	int			 last_position;
 
-	//printf("(insert_expansion_values) token->raw_token -> %s\n", token->raw_token);	
 	if (!token || !token->expands_list || token->type == SINGLE_QUOTES)   // tokens literales o NO HAY EXPANSION VARIABLE
 	{	
 		token->expanded_token = ft_strdup(token->raw_token);
 		if (!token->expanded_token)
 			return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
-		//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
 		return ;
 	}			
 	last_position = insert_expand_node_value(token); // insertar valores expandidos de cada nodo
@@ -177,7 +139,6 @@ void	insert_expansion_values(t_token *token)
 	// Añadir el resto del token después de la última expansión
 	if (token->raw_token[last_position])
 		token->expanded_token = ft_strjoin_free(token->expanded_token, &token->raw_token[last_position]);
-	//printf("(insert_expansion_values) token->expanded_token -> %s\n\n", token->expanded_token);
 }
 
 int	insert_expand_node_value(t_token *token)
@@ -196,13 +157,6 @@ int	insert_expand_node_value(t_token *token)
 	last_position 	= 0;
 	while (current_node)
 	{
-		/* printf("DEBUG insert_expand_node_value:\n");
-        printf("  raw_token: '%s'\n", token->raw_token);
-        printf("  first_index: %d\n", current_node->first_index);
-        printf("  last_index: %d\n", current_node->last_index);
-        printf("  value: '%s'\n", current_node->value);
-        printf("  last_position: %d\n", last_position); */
-
 		if (current_node->first_index > last_position) // Añadir texto antes de la variable
 		{
 			prefix	= ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
@@ -215,6 +169,5 @@ int	insert_expand_node_value(t_token *token)
 		current_node = current_node->next;
 	}
 	token->expanded_token = result;
-	//printf("insert_expand_node_value -> %s\n", token->final_token);
 	return  (last_position);
 }

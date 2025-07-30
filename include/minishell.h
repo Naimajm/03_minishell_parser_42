@@ -6,16 +6,12 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 13:35:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:42:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-// TODO ----------------------------------------------------
-// CAMBIAR FUNCIONES FT_PRINTF Y QUITAR LIBRERIAS EXTERNA
-// ARREGLA VARIABLES CONSECUTIVAS	$USER$TERM
 
 // EXTERNAL LIBRARIES
 #include <unistd.h>		// write getcwd chdir
@@ -28,7 +24,6 @@
 
 // OWN LIBRARIES
 #include	"../libft/libft.h"
-#include	"../ft_printf/ft_printf.h"
 
 // MACROS -----------------------------------------------
 

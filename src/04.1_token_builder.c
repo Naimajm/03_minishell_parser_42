@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/25 12:39:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:18:39 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,10 @@ void	add_token_node(t_token **token_list, char  *word, int token_type)
 	
 	if (!token_list || !word)                       
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));      
-	new_node = create_token_node(word, token_type); // inicializar nuevo nodo token
+	new_node = create_token_node(word, token_type); 
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_TOKEN_INIT, STDERR_FILENO));
-	//ft_printf("token -> %s\n", new_node->token);    
-	last_node = find_token_last_node(*token_list);  // encontrar ultimo nodo y enlazar
-	
+	last_node = find_token_last_node(*token_list);  	
 	if (!last_node)                                 // caso lista vacio -> añadir en 1º nodo
 		*token_list = new_node;   
 	else                                            // lista no vacia      
@@ -40,8 +38,7 @@ static t_token *create_token_node(char  *word, int token_type)
 	t_token *new_node;
 
 	if (!word)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);  
-
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL); 
 	new_node = (t_token *) malloc(sizeof(t_token));
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
@@ -55,18 +52,15 @@ static t_token *create_token_node(char  *word, int token_type)
 
 	new_node->expands_list   = NULL;
 	new_node->next	        = NULL;
-
-	//ft_printf("new_node -> %s\n", new_node->token);
 	return  (new_node);
 }
 
 static t_token	*find_token_last_node(t_token *token_list)
 {	
 	if (!token_list)
-		return (NULL);   // validation 
-
+		return (NULL);
 	while (token_list->next)
-		token_list = token_list-> next; // retorna puntero a ultimo nodo    
+		token_list = token_list-> next;
 	return (token_list);
 }
 

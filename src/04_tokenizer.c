@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 13:50:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:17:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int	operator_tokenizer(t_word *word, int start_index)
 
 	raw_word = (char *) word->raw_word;
 
-	if (raw_word[start_index] == '>') 			// operadores especiales -> OUTFILE o APPEND
+	if (raw_word[start_index] == '>') 		
 	{
 		if (raw_word[start_index + 1] == '>')
 		{
@@ -174,7 +174,7 @@ int	operator_tokenizer(t_word *word, int start_index)
 		else
 			add_token_node(&word->tokens_list, ">", OPERATOR);		
 	}		
-	else if (raw_word[start_index] == '<') 	    // operadores especiales -> INFILE o HERE_DOC
+	else if (raw_word[start_index] == '<') 	
 	{
 		if (raw_word[start_index + 1] == '<')
 		{
@@ -184,7 +184,7 @@ int	operator_tokenizer(t_word *word, int start_index)
 		else
 			add_token_node(&word->tokens_list, "<", OPERATOR);							
 	}		
-	else if (raw_word[start_index] == '|') 	    // operadores especiales -> PIPE
+	else if (is_pipe(raw_word[start_index])) 	    
 		add_token_node(&word->tokens_list, "|", OPERATOR);	
 	return (len_input = 1);
 }

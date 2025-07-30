@@ -6,18 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/27 13:46:48 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:29:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 // FUNCIIONES AUXILIARES EXTRACCION KEY Y BUSQUEDA VALUE
-
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 char	*extract_substitution_segment(char *raw_token, int first_index);
-
 
 // EXTRAER KEY DE SUBSTITUTION_STR
 char	*extract_key(char *token, int first_index)
@@ -26,8 +24,7 @@ char	*extract_key(char *token, int first_index)
 	int		index;
 
 	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);	
-	//variable = NULL;
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
 	index  = first_index;
 
 	// calcular index final variable -> limites > < | " " '"' /0		
@@ -39,11 +36,9 @@ char	*extract_key(char *token, int first_index)
 		&& token[index])
 		index++;
 	
-	// copiar sub substr
 	key = ft_substr(token, first_index, (index - first_index));
 	if (!key)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
-	//ft_printf("extract_key -> key -> %s\n", key);
 	return (key);
 }
 
@@ -62,45 +57,15 @@ char	*get_environment_var(char **env, char *variable)
 	while (env[index]) // busqueda por key en lista env
 	{		
 		match = ft_strncmp(env[index], variable, ft_strlen(variable));
-		//ft_printf("match ? %d\n", match);
 		if (!match && env[index][ft_strlen(variable)] == '=')			// coincidencia exacta
 		{
 			value = ft_strdup(&env[index][ft_strlen(variable) + 1]);  	// copiar valor pasado signo '='
 			return (value);
 		}			
 		index++;
-	}
-	// CASO NO COINCIDENCIA
-	//ft_printf("get_environment_var / value -> %s\n", value);
+	}	
 	return (NULL);	
 }
-
-//	 FUNCIONM ORIGINAL !! NO ARREGLA VARIABLES CONSECUTIVAS	$USER$TERM
-/* char	*extract_substitution_segment(char *raw_token, int first_index)
-{
-	char	*substitution_str;
-	int		index;
-
-	if (!raw_token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
-	index = first_index;		
-	// longitud de caracteres de la palabra -> limites > < | " " '"' /0
-	// Extraer variable como noquotes_tokenizer
-	while (!is_space(raw_token[index])
-		&& !is_operator(raw_token[index])
-		&& !is_quote(raw_token[index])
-		//&& raw_token[index] != '$'
-		//&& raw_token[index] != '='
-		&& raw_token[index])
-		index++;
-		
-	// copiar sub substr
-	substitution_str = ft_substr(raw_token, first_index, (index - first_index));
-	if (!substitution_str)
-		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), NULL);
-	//ft_printf("variable -> %s\n", variable);
-	return (substitution_str);
-} */
 
 char	*extract_substitution_segment(char *raw_token, int first_index)
 {
@@ -108,64 +73,11 @@ char	*extract_substitution_segment(char *raw_token, int first_index)
 
 	(void)first_index;
     if (!raw_token)
-        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
-    
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);    
     // Como el tokenizer ya separó correctamente, solo devolvemos todo el token
     substitution_str = ft_strdup(raw_token);
     if (!substitution_str)
-        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
-    
+        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);    
     return (substitution_str);
 }
 
-/* char *extract_substitution_segment(char *raw_token, int first_index)
-{
-    char    *substitution_str;
-    int     index;
-    int     len_input;
-
-    if (!raw_token)
-        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);
-    
-    index = first_index;
-    
-    // Algoritmo inspirado en word_tokenizer()
-    if (raw_token[index] == '$' && raw_token[index + 1])
-    {
-        index++; // Saltar $
-        
-        if (raw_token[index] == '?')
-            index++; // Caso $?
-        else
-        {
-            // Extraer variable como noquotes_tokenizer
-            while (!is_space(raw_token[index]) 
-                && !is_operator(raw_token[index]) 
-                && !is_quote(raw_token[index])
-                && raw_token[index] != '$'
-                && raw_token[index])
-                index++;
-        }
-    }
-    else
-    {
-        // Texto normal como noquotes_tokenizer
-        while (!is_space(raw_token[index])
-            && !is_operator(raw_token[index]) 
-            && !is_quote(raw_token[index]) 
-            && raw_token[index])
-            index++;
-    }
-    
-    len_input = index - first_index;
-    if (len_input <= 0)
-        return (ft_strdup(""));
-    
-    substitution_str = ft_substr(raw_token, first_index, len_input);
-    if (!substitution_str)
-        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
-    
-    return (substitution_str);
-}
-    
- */

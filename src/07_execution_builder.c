@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/29 19:14:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:34:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ void    build_execution_structure(t_cmd *commands_list)
 	while (current_command)
 	{
 		extract_command_arguments(current_command);
-		extract_redirections(current_command);
-
+		extract_redirections(current_command);		
 		current_command = current_command->next;
 	}    
 }
@@ -63,10 +62,8 @@ void    extract_command_arguments(t_cmd *command)
 		}
 		current_word = current_word->next;
 	}
-	command->args[index] = NULL; // terminador nulo char **    
-
-	// verificar si es comando builtin
-	if (command->args[0])
+	command->args[index] = NULL; 					// terminador nulo char **   	
+	if (command->args[0])							// verificar si es comando builtin
         command->is_btn = is_builtin_command(command->args[0]);
 }
 
@@ -80,12 +77,12 @@ void    extract_redirections(t_cmd *command)
     current_word = command->words_list;
     while (current_word)
     {
-        if (current_word->word_type == OUTFILE) 	// CASO REDIRECCION OUT
+        if (current_word->word_type == OUTFILE)
         {            
             if (current_word->next && current_word->next->word_type == WORD)
                 command->outfile = ft_strdup(current_word->next->processed_word);
         }
-        else if (current_word->word_type == APPEND) 	// CASO REDIRECCION APPEND
+        else if (current_word->word_type == APPEND) 
         {            
             if (current_word->next && current_word->next->word_type == WORD)
             {
@@ -93,12 +90,12 @@ void    extract_redirections(t_cmd *command)
                 command->append = true;
             }
         }
-        else if (current_word->word_type == INFILE) 	// CASO REDIRECCION IN -> INFILE
+        else if (current_word->word_type == INFILE)
         {
             if (current_word->next && current_word->next->word_type == WORD)
                 command->infile = ft_strdup(current_word->next->processed_word);
         }
-        else if (current_word->word_type == HERE_DOC) 	// CASO REDIRECCION delimitador
+        else if (current_word->word_type == HERE_DOC)
         {
             if (current_word->next && current_word->next->word_type == WORD)
             {
@@ -111,7 +108,6 @@ void    extract_redirections(t_cmd *command)
 }
 
 // FUNCIONES AUXILIARES
-
 // Verificar si commando es builtin
 bool is_builtin_command(char *command)
 {
@@ -140,7 +136,6 @@ int count_word_arguments(t_word *words_list)
 
 	if(!words_list)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);
-
 	current_word    = (t_word *) words_list;
 	args_count      = 0;
 	while (current_word)

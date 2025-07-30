@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 12:01:46 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:25:53 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,35 +19,6 @@ int		curly_braces_expander(t_token *token, int first_index);
 int		literal_expander(t_token *token, int first_index);
 
 static int	extract_single_variable(char *raw_token, int start_index);
-
-/* int	basic_expander(t_token *token, int first_index)
-{
-	t_expand	*expand_node;
-	char		*substitution_str;
-	int			len_input;
-	char		*key;
-
-	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
-	len_input = 0;		
-	substitution_str = extract_substitution_segment(token->raw_token, first_index);
-	if (!substitution_str)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);	
-	len_input = ft_strlen(substitution_str);
-	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, BASIC_EXPANSION);
-
-	key = extract_key(substitution_str, 1); // index 0 -> $	
-	//expand_node->key = key;
-	expand_node->key = ft_strdup(key);
-	if (!expand_node->key)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-
-	free(substitution_str);	
-	free(key);
-
-	//printf("(basic_expander) len_input -> %i\n", len_input);	
-	return (len_input);	
-} */
 
 int	basic_expander(t_token *token, int index)
 {
@@ -62,17 +33,15 @@ int	basic_expander(t_token *token, int index)
     
     first_index = index;
     
-    // NUEVA LÓGICA: Extraer solo UNA variable, no todo el resto del token
+    // Extraer solo UNA variable, no todo el resto del token
     subs_len = extract_single_variable(token->raw_token, index);
     if (subs_len <= 0)
-        return (1); // Saltar solo el $ si no es válido
+        return (1); 			// Saltar solo el $ si no es válido
     
     // Extraer la variable individual
     substitution_str = ft_substr(token->raw_token, first_index, subs_len);
     if (!substitution_str)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-		
-	printf("DEBUG: substitution_str = '%s'\n", substitution_str);
     
     expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, BASIC_EXPANSION);
     if (!expand_node)
@@ -80,10 +49,7 @@ int	basic_expander(t_token *token, int index)
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
-	printf("DEBUG: expand_node created successfully\n");
-
-	// EXTRACCION KEY -------------------------
-    
+	// EXTRACCION KEY -------------------------    
     // Extraer la key (sin el $) y asignarla
     key = extract_key(substitution_str, 1); // Saltar el $
     if (!key)
@@ -91,22 +57,18 @@ int	basic_expander(t_token *token, int index)
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
-	printf("DEBUG: key = '%s'\n", key);
-
 	expand_node->key = ft_strdup(key);
     if (!expand_node->key)
     {
         free(substitution_str);
         free(key);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-    }
-    
+    }    
     // Calcular last_index del nodo expand (como en curly_braces_expander)
     expand_node->last_index = first_index + subs_len - 1;
     
     free(substitution_str);	
-    free(key);
-    
+    free(key);    
     return (subs_len);
 }
 
@@ -117,29 +79,25 @@ static int	extract_single_variable(char *raw_token, int start_index)
     if (!raw_token || raw_token[start_index] != '$')
         return (0);	
         
-    index = start_index + 1; // Saltar el $
+    index = start_index + 1;		// Saltar el $
 
 	// CASO $ UNICO " $  " 
 	if (is_space(raw_token[index]) || !raw_token[index])
-		return (1);			// Solo el carácter $
+		return (1);				// Solo el carácter $  
     
-    // Caso $?
-    if (raw_token[index] == '?')
+    if (raw_token[index] == '?')	// Caso $?
     {
-        return (2); // $?
-    }
-    
+        return (2); 				// $?
+    }    
     // Verificar que empiece con letra o _
     if (!ft_isalpha(raw_token[index]) && raw_token[index] != '_')
     {
         return (1); // Solo el $ (inválido)
-    }
-    
+    }    
     // Extraer nombre de variable válido
     while ((ft_isalnum(raw_token[index]) || raw_token[index] == '_') 
         && raw_token[index])
-        index++;
-    
+        index++;    
     return (index - start_index);
 }
 
@@ -151,7 +109,7 @@ int	last_exit_status_expander(t_token *token, int first_index)
 
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
-	substitution_str = ft_strdup("$?"); // copiar sub substr
+	substitution_str = ft_strdup("$?");
 	if (!substitution_str)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 	len_input = ft_strlen(substitution_str);
@@ -162,10 +120,8 @@ int	last_exit_status_expander(t_token *token, int first_index)
     {
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-    }
-	
+    }	
 	free(substitution_str);
-	//ft_printf("token -> %s\n", token);
 	return (len_input);
 }
 
@@ -180,10 +136,10 @@ int	curly_braces_expander(t_token *token, int first_index)
 
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
-	final_index = first_index + 2; 		// Saltar "${"
+	final_index = first_index + 2; 				// Saltar "${"
 	while (token->raw_token[final_index] && token->raw_token[final_index] != '}')
 		final_index++;
-	if (token->raw_token[final_index] != '}') // No se encontró llave de cierre
+	if (token->raw_token[final_index] != '}') 	// No se encontró llave de cierre
 		return (FAILURE); 	
 
 	substitution_str = ft_substr(token->raw_token, first_index, (final_index - first_index + 1));
@@ -191,7 +147,6 @@ int	curly_braces_expander(t_token *token, int first_index)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
 
 	len_input = ft_strlen(substitution_str);
-	//printf("len_input _> %i\n", len_input);
 	
 	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, CURLY_BRACES);
 	
@@ -201,15 +156,14 @@ int	curly_braces_expander(t_token *token, int first_index)
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
-	key = ft_strtrim(key_temp, "{}"); 
+	key = ft_strtrim(key_temp, "{}"); 				// cortar {}
 	if (!key)
     {
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
     }
-	free(key_temp);
+	free(key_temp);	
 	
-	// cortar {}
 	expand_node->key = ft_strdup(key);
 	if (!expand_node->key)
     {
@@ -221,123 +175,36 @@ int	curly_braces_expander(t_token *token, int first_index)
 	
 	free(substitution_str);	
 	free(key);
-	return (len_input); //ft_printf("quote_token -> %s\n", token);	
-}
-
-// FUNCION VERSION INICIAL
-/* int	literal_expander(t_token *token, int first_index)
-{
-	t_expand	*expand_node;
-	char		*substitution_str;
-	int			len_input;
-	char		*key;
-
-	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
-
-	substitution_str = extract_substitution_segment(token->raw_token, first_index);
-	if (!substitution_str)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-	//ft_printf("substitution_str -> %s\n", substitution_str);
-	len_input = ft_strlen(substitution_str);
-	
-	expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LITERAL);		
-
-	key = ft_strdup(substitution_str);
-	if (!key)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-
-	expand_node->key = ft_strdup(key);
-	if (!expand_node->key)
-    {
-        free(substitution_str);
-        free(key);
-        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-    }	
-	free(substitution_str);
-	free(key);	
 	return (len_input);
-} */
+}
 
 int	literal_expander(t_token *token, int index)
 {
     t_expand	*expand_node;
     char		*substitution_str;
     int			len_input;
-    //char		*key;
     char		*key;
-    //int			i;
-	//int			j;
 	int			first_index;
-
-	printf("DEBUG literal_expander FIXED:\n");
-	printf("  first_index: %d\n", index);
 
     if (!token)
         return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
 	
     first_index = index - 1; // coger cchar anterior '\'
-	// CALCULAR LONGITUD DEL ESCAPE MANUALMENTE
-    //first_index = first_index - 1; 
-	
-    /* if (token->raw_token[first_index - 1] == '\\' && 
-        (token->raw_token[first_index] == '$' || token->raw_token[first_index] == '"'))
-	{
-		final_index++; // \$ o \" = 2 caracteres
-	}        
-	else
-		return (FAILURE); // No es un escape válido */
-	printf("  first_index: %d\n", first_index);
 		
 	len_input = extract_single_variable(token->raw_token, first_index + 1);
-	printf("  len_input: %d\n", len_input);
 
-	// FASE GENERAR SUBSTITUCION SEGMENT 
     // EXTRAER SOLO LA PARTE DEL ESCAPE
-    //len_input = final_index - first_index + 1;
-
     substitution_str = ft_substr(token->raw_token, first_index, len_input + 1);
 	if (!substitution_str)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-	printf("DEBUG: substitution_str = '%s'\n", substitution_str);  
 
     expand_node = add_expand_node(&token->expands_list, substitution_str, first_index, LITERAL);	
-	if (!expand_node)  // VERIFICAR QUE SE CREÓ CORRECTAMENTE
+	if (!expand_node)
     {
         free(substitution_str);
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-    }	
-
-	printf("  len_input: %d\n", len_input);
-
+    }
 	// FASE EXTRACT KEY !!
-    // PROCESAR ESCAPES CONSECUTIVOS (como variables consecutivas)
-    /* key = malloc(ft_strlen(substitution_str) + 1);
-    if (!key)
-    {
-        free(substitution_str);
-        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-    }
-
-    i = 0; 
-    j = 0;
-    while (substitution_str[i])
-    {
-        // DETECTAR ESCAPE \$ o \"
-        if (substitution_str[i] == '\\' && 
-            (substitution_str[i + 1] == '$' || substitution_str[i + 1] == '"'))
-        {
-            // SALTAR \ y COPIAR solo el carácter escapado
-            index++; // Saltar backslash
-            key[j++] = substitution_str[i++]; // Copiar carácter escapado
-        }
-        else
-        {
-            // COPIAR carácter normal
-            key[j++] = substitution_str[i++];
-        }
-    }
-    key[j] = '\0'; */
 	key = ft_substr(substitution_str, 1, ft_strlen(substitution_str) - 1); // Saltar '\'
 	if (!key)
     {
@@ -351,17 +218,8 @@ int	literal_expander(t_token *token, int index)
 		free(key);
         free(substitution_str);        
         return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
-    }    
-    // Calcular last_index del nodo expand
-    expand_node->last_index = index + len_input - 1;
-
-	printf("DEBUG literal_expander:\n");
-    printf("  raw_token: '%s'\n", token->raw_token);
-    printf("  substitution_str: '%s'\n", substitution_str);
-    printf("  first_index: %d\n", index);
-    printf("  len_input: %d\n", len_input);
-    printf("  last_index: %d\n", expand_node->last_index);
-    
+    }      
+    expand_node->last_index = index + len_input - 1; 	// Calcular last_index del nodo expand    
 	free(key);
     free(substitution_str);	
     return (len_input);

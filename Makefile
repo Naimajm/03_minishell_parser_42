@@ -9,15 +9,13 @@ NAME := minishell
 INCLUDES_DIR 	:= ./include
 LIBFT_DIR 		:= ./libft
 LIBFT_ARCHIVE 	:= libft.a
-FT_PRINTF_DIR 		:= ./ft_printf
-FT_PRINTF_ARCHIVE 	:= libftprintf.a
 
 CC 				:= cc
-CFLAGS 		:= -Wall -Wextra -Werror
+CFLAGS 			:= -Wall -Wextra -Werror
 MAKE_LIBRARY 	:= ar -rcs 
 
-INCLUDES		:= -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR) -I$(INCLUDES_DIR)
-EXT_LIBRARYS 	:= $(FT_PRINTF_DIR)/$(FT_PRINTF_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
+INCLUDES		:= -I$(LIBFT_DIR) -I$(INCLUDES_DIR)
+EXT_LIBRARYS 	:= $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
 
 SRC_DIR			:= ./src
 SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c \
@@ -45,19 +43,16 @@ $(NAME):  $(OBJ_FILES)
 library:
 	@echo "$(ORANGE)📦 Packing external libraries...$(DEF_COLOR)"
 	@make -s -C $(LIBFT_DIR)
-	@make -s -C $(FT_PRINTF_DIR)
 	@echo "$(DARK_GREEN)📦 external libraries created			OK$(DEF_COLOR)"
 
 clean:
 	@rm -f $(OBJ_FILES)	
 	@make clean -s -C $(LIBFT_DIR)
-	@make clean -s -C $(FT_PRINTF_DIR)
 	@echo "${MID_GRAY}Cleaning objects $(NAME)			OK$(DEF_COLOR)"
 
 fclean: clean
 	@rm -f $(NAME)
 	@make fclean -s -C $(LIBFT_DIR)
-	@make fclean -s -C $(FT_PRINTF_DIR)
 	@echo "$(MID_GRAY)Cleaning $(NAME)				OK$(DEF_COLOR)"
 
 debug: CFLAGS += -g -fsanitize=address

@@ -6,13 +6,11 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 10:13:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/19 11:14:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:39:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-// UTILIDADES PROCESO DESARROLLO
 
 void	print_text_file(const char *filename)
 {
@@ -23,7 +21,7 @@ void	print_text_file(const char *filename)
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		perror(ERROR_OPEN_FILE);
+		ft_putendl_fd(ERROR_OPEN_FILE, STDERR_FILENO);
 		return ;
 	}
 	buffer = (char *) malloc(sizeof(char) * (1024));
@@ -31,7 +29,6 @@ void	print_text_file(const char *filename)
 		return ;		
 	while ((bytes_read = read(fd, buffer, 1024)) > 0)
 		write(1, buffer, bytes_read);
-	// liberar memoria
 	free(buffer);
 	close (fd);
 }
@@ -42,8 +39,7 @@ void	print_config_shell(t_shell *shell)
 		return ;
 	
 	//print_strings_array(shell->environment); // imprimir copia variables entorno
-
-	ft_printf("input -> %s\n", shell->input);	
+	printf("input -> %s\n", shell->input);	
 	print_commands_list(shell->commands_list);	
 }
 
@@ -56,7 +52,7 @@ void	print_strings_array(char **array)
 	index = 0;
 	while (array[index])
 	{
-		ft_printf("%s\n", array[index]);
+		printf("%s\n", array[index]);
 		index++;
 	}
 }
