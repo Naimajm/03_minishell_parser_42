@@ -1,0 +1,20 @@
+{
+	"files.associations": {
+		"*.html": "html",
+		"system_error": "c",
+		"array": "c",
+		"functional": "c",
+		"tuple": "c",
+		"type_traits": "c",
+		"utility": "c",
+		"minishell.h": "c",
+		"algorithm": "c",
+		"*.c ": "c",
+		"wait.h": "c",
+		"string.h": "c"
+	},
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"files.autoSave": "onFocusChange",
+	"editor.renderWhitespace": "none"
+}

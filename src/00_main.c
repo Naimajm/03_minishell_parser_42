@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   00_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 21:18:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:04:07 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../inc/minishell.h" //  ../.. segun los niveles de carpetas
 
 int		validate_environment(char **environment);
 t_shell	*initialize_shell(void);
@@ -69,6 +69,7 @@ t_shell *initialize_shell(void)
 	}			
 	shell->input 			= NULL;
 	shell->environment		= NULL;
+	shell->readonly_vars		= NULL;
 	shell->exit_status		= SUCCESS;
 	shell->last_exit_status = SUCCESS;
 	shell->commands_list	= NULL;		

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   01_run_shell.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 10:55:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:04:12 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../inc/minishell.h" //  ../.. segun los niveles de carpetas
 
 void	recover_previous_status(t_shell *shell);
 void	read_user_input(t_shell *shell, char *prompt);
@@ -30,7 +30,9 @@ void	run_shell(t_shell *shell)
         printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 		
 		recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro de esta funcion
-		read_user_input(shell, PROMPT);					
+
+		read_user_input(shell, PROMPT);
+					
 		process_input(shell);
 		
 		//print_config_shell(shell);		// DEBUG

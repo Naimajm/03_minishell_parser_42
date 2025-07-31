@@ -1,24 +1,42 @@
-
+# OUTPUT COLORS
 DEF_COLOR           = \033[0;39m
 ORANGE              = \033[38;5;209m
 MID_GRAY            = \033[38;5;245m
 DARK_GREEN          = \033[38;2;75;179;82m
 
-NAME := minishell
+# PROGRAM NAME 
+NAME 			:= minishell
 
-INCLUDES_DIR 	:= ./include
-LIBFT_DIR 		:= ./libft
+# ARCH.H
+INCLUDES_DIR 	:= ./inc 
+
+# LIBFT
+LIBFT_DIR 		:= ./lib/libft
 LIBFT_ARCHIVE 	:= libft.a
 
+# GNL
+GNL_DIR 		:= ./lib/gnl
+GNL_ARCHIVE 	= libgnl.a
+
+# C FLAGS
 CC 				:= cc
 CFLAGS 			:= -Wall -Wextra -Werror
 
-INCLUDES		:= -I$(LIBFT_DIR) -I$(INCLUDES_DIR)
-EXT_LIBRARYS 	:= $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
+#DIRECTORIES TO SEARCH HEADERS FILES .H
+INCLUDES		:= -I$(LIBFT_DIR) -I$(GNL_DIR) -I$(INCLUDES_DIR)
 
+#LIBRARIES UBICATION
+EXT_LIBRARYS 	:= $(GNL_DIR)/$(GNL_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadline
+
+# SRC --------------------------------------------------------------------------------
 SRC_DIR			:= ./src
-SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c \
-				01_run_shell.c 01.1_check_syntax.c \
+SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c 01_run_shell.c) 
+OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)
+
+# PARSER --------------------------------------------------------------------------------
+
+PAR_DIR			:= ./src/parser
+PAR_FILES 		:= $(addprefix $(PAR_DIR)/,  01.1_check_syntax.c \
 				02_command_generate.c  02.2_command_builder.c \
 				03_lexical_analyzer.c 03.1_word_builder.c \
 				04_tokenizer.c 04.1_token_builder.c \
@@ -29,8 +47,46 @@ SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c \
 				10_utils_core.c 10.1_utils_strings.c 10.2_free_manager.c 10.3_utils_debug.c \
 				12_test_parser.c )
 
-OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)
+OBJ_FILES 		+= $(PAR_FILES:%.c=%.o)
+# --------------------------------------------------------------------------
 
+# EXECUTOR-----------------------------------------------------------------------------
+EXC_DIR			:= ./src/executor
+EXC_FILES		:= $(addprefix $(EXC_DIR)/, clean2.c \
+				clean.c \
+				commands_utils.c \
+				exec_builtins.c \
+				executer.c \
+				executer_command.c \
+				get_commands.c \
+				heredoc_utils.c \
+				process_redirection.c \
+				prueba.txt \
+				redirections.c \
+				signals.c )
+
+OBJ_FILES		+= $(EXC_FILES:%.c=%.o)
+# --------------------------------------------------------------------------
+
+# BUILTIN --------------------------------------------------------------------------------
+BTN_DIR			:= ./src/builtin
+BTN_FILES		:= $(addprefix $(BTN_DIR)/, 00_exec_builtins.c \
+				00_exec_builtins.c \
+				00_utils_builtins_00.c \
+				00_utils_builtins_01.c \
+				00_utils_builtins_02.c \
+				00_utils_builtins_03.c \
+				01_exec_echo.c \
+				02_exec_cd.c \
+				03_exec_pwd.c \
+				04_exec_export.c \
+				05_exec_unset.c \
+				06_exec_env.c \
+				07_exec_exit.c )
+
+OBJ_FILES		+= $(BTN_FILES:%.c=%.o)
+
+# --------------------------------------------------------------------------
 all: $(NAME)
 
 $(NAME):  $(OBJ_FILES)
@@ -42,16 +98,19 @@ $(NAME):  $(OBJ_FILES)
 library:
 	@echo "$(ORANGE)📦 Packing external libraries...$(DEF_COLOR)"
 	@make -s -C $(LIBFT_DIR)
+	@make -s -C $(GNL_DIR)
 	@echo "$(DARK_GREEN)📦 external libraries created			OK$(DEF_COLOR)"
 
 clean:
 	@rm -f $(OBJ_FILES)	
 	@make clean -s -C $(LIBFT_DIR)
+	@make clean -s -C $(GNL_DIR)
 	@echo "${MID_GRAY}Cleaning objects $(NAME)			OK$(DEF_COLOR)"
 
 fclean: clean
 	@rm -f $(NAME)
 	@make fclean -s -C $(LIBFT_DIR)
+	@make fclean -s -C $(GNL_DIR)
 	@echo "$(MID_GRAY)Cleaning $(NAME)				OK$(DEF_COLOR)"
 
 debug: CFLAGS += -g -fsanitize=address
@@ -63,4 +122,4 @@ re: fclean all
 	@echo "$(DARK_GREEN)🔁 Cleaning and recompiled -> $(NAME) 	OK$(DEF_COLOR)"	
 	@make -s clean
 
-.PHONY: all clean fclean re debug
+.PHONY: all library clean fclean re debug

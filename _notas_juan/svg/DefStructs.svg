@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="DefStructs.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.6186799"
+     inkscape:cx="391.05942"
+     inkscape:cy="564.34878"
+     inkscape:window-width="1920"
+     inkscape:window-height="2082"
+     inkscape:window-x="1920"
+     inkscape:window-y="46"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g722">
+      <g
+         id="g704">
+        <g
+           id="g625"
+           transform="translate(14.202456,50.104273)">
+          <rect
+             style="opacity:0.744464;fill:#ffffff;stroke:#000000;stroke-width:0.360451;stroke-linecap:round"
+             id="rect234"
+             width="37.970409"
+             height="37.530205"
+             x="4.9723701"
+             y="5.8942366" />
+          <text
+             xml:space="preserve"
+             style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+             x="4.7177238"
+             y="11.678986"
+             id="text605"><tspan
+               sodipodi:role="line"
+               id="tspan603"
+               style="stroke-width:0.264583"
+               x="4.7177238"
+               y="11.678986">	char	*input;</tspan><tspan
+               sodipodi:role="line"
+               style="stroke-width:0.264583"
+               x="4.7177238"
+               y="16.970648"
+               id="tspan607">	char	**env;</tspan><tspan
+               sodipodi:role="line"
+               style="stroke-width:0.264583"
+               x="4.7177238"
+               y="22.26231"
+               id="tspan609">	int		exit_status;</tspan><tspan
+               sodipodi:role="line"
+               style="stroke-width:0.264583"
+               x="4.7177238"
+               y="27.553972"
+               id="tspan611">	int		last_exit_st;</tspan><tspan
+               sodipodi:role="line"
+               style="stroke-width:0.264583"
+               x="4.7177238"
+               y="32.845634"
+               id="tspan613"><tspan
+   style="fill:#008000"
+   id="tspan677">	t_token</tspan>	*token;</tspan><tspan
+               sodipodi:role="line"
+               style="stroke-width:0.264583"
+               x="4.7177238"
+               y="38.137299"
+               id="tspan615"><tspan
+   style="fill:#008000"
+   id="tspan679">	t_cmd</tspan>	*cmd_lst;</tspan></text>
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+           x="19.455044"
+           y="52.655437"
+           id="text683"><tspan
+             sodipodi:role="line"
+             id="tspan681"
+             style="fill:#008000;stroke-width:0.264583"
+             x="19.455044"
+             y="52.655437">typedef struct s_shell</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+           x="46.253567"
+           y="97.679329"
+           id="text687"><tspan
+             sodipodi:role="line"
+             id="tspan685"
+             style="fill:#008000;stroke-width:0.264583"
+             x="46.253567"
+             y="97.679329">t_shell</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g880"
+       transform="translate(-59.926747,-10.643302)">
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="81.759651"
+         y="129.8279"
+         id="text726"><tspan
+           sodipodi:role="line"
+           id="tspan724"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="129.8279">char			**args;     </tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="135.11955"
+           id="tspan728">    char			*infile;    </tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="140.41122"
+           id="tspan730">    char			*delimiter; </tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="145.70288"
+           id="tspan732">    char			*outfile;   </tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="150.99454"
+           id="tspan734">    bool			append;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="156.28621"
+           id="tspan736">    bool			hd; </tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="161.57787"
+           id="tspan738">    bool			is_btn;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="166.86954"
+           id="tspan740">    int				exit_status; </tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="81.759651"
+           y="172.16119"
+           id="tspan742"><tspan
+   style="fill:#008000"
+   id="tspan862">    struct s_cmd</tspan>	*next; </tspan></text>
+      <rect
+         style="opacity:0.744464;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round"
+         id="rect798"
+         width="50.318333"
+         height="50.378227"
+         x="78.778847"
+         y="125.2579" />
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="88.58075"
+         y="122.58129"
+         id="text856"><tspan
+           sodipodi:role="line"
+           id="tspan854"
+           style="fill:#008000;stroke-width:0.264583"
+           x="88.58075"
+           y="122.58129">typedef struct s_cmd</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="118.49232"
+         y="180.28362"
+         id="text860"><tspan
+           sodipodi:role="line"
+           id="tspan858"
+           style="fill:#008000;stroke-width:0.264583"
+           x="118.49232"
+           y="180.28362">t_cmd</tspan></text>
+    </g>
+    <g
+       id="g918"
+       transform="translate(-13.78787,-13.087115)">
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="36.249733"
+         y="205.2467"
+         id="text884"><tspan
+           sodipodi:role="line"
+           id="tspan882"
+           style="stroke-width:0.264583"
+           x="36.249733"
+           y="205.2467">char			*tkn;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="36.249733"
+           y="210.53836"
+           id="tspan886">int				type;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="36.249733"
+           y="215.83003"
+           id="tspan888">bool			join;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="36.249733"
+           y="221.12169"
+           id="tspan890">bool			expand;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="36.249733"
+           y="226.41336"
+           id="tspan892"><tspan
+   style="fill:#008000"
+   id="tspan894">struct s_token</tspan>	*next;</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="35.333084"
+         y="196.22176"
+         id="text898"><tspan
+           sodipodi:role="line"
+           id="tspan896"
+           style="fill:#008000;stroke-width:0.264583"
+           x="35.333084"
+           y="196.22176">typedef struct s_token</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="66.046936"
+         y="235.13907"
+         id="text902"><tspan
+           sodipodi:role="line"
+           id="tspan900"
+           style="fill:#008000;stroke-width:0.264583"
+           x="66.046936"
+           y="235.13907">t_token</tspan></text>
+      <rect
+         style="opacity:0.744464;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round"
+         id="rect904"
+         width="46.041229"
+         height="30.516581"
+         x="34.242287"
+         y="199.16475" />
+    </g>
+    <g
+       id="g950"
+       transform="translate(-28.740365,14.089003)">
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="52.121193"
+         y="240.49988"
+         id="text922"><tspan
+           sodipodi:role="line"
+           id="tspan920"
+           style="stroke-width:0.264583"
+           x="52.121193"
+           y="240.49988">	int		start;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="52.121193"
+           y="245.79153"
+           id="tspan924">	int		end;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="52.121193"
+           y="251.08321"
+           id="tspan926">	char	*var;</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="52.121193"
+           y="256.37488"
+           id="tspan928">	char	*value;</tspan></text>
+      <rect
+         style="opacity:0.744464;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round"
+         id="rect930"
+         width="35.071503"
+         height="23.920904"
+         x="50.791672"
+         y="235.63126" />
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="50.951942"
+         y="232.93854"
+         id="text934"><tspan
+           sodipodi:role="line"
+           id="tspan932"
+           style="fill:#008000;stroke-width:0.264583"
+           x="50.951942"
+           y="232.93854">typedef struct s_xpnd</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-weight:bold;font-size:4.23333px;line-height:1.25;font-family:'Ubuntu Sans';-inkscape-font-specification:'Ubuntu Sans Bold Italic';letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;stroke-width:0.264583"
+         x="69.521255"
+         y="265.69733"
+         id="text938"><tspan
+           sodipodi:role="line"
+           id="tspan936"
+           style="fill:#008000;stroke-width:0.264583"
+           x="69.521255"
+           y="265.69733">t_xpand</tspan></text>
+    </g>
+  </g>
+</svg>

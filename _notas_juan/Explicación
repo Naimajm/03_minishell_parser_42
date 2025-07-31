@@ -1,0 +1,976 @@
+¡Absolutamente! Con gusto recopilaré y organizaré toda la información que hemos conversado sobre tu proyecto Minishell. No puedo generar un archivo PDF directamente, pero te proporcionaré el contenido de manera **estructurada, detallada y con un índice inicial**, de tal forma que puedas copiarlo y pegarlo fácilmente en un editor de texto (como Word, Google Docs, LibreOffice Writer) y luego exportarlo a PDF desde allí.
+
+Aquí tienes el compendio de nuestro conocimiento hasta ahora:
+
+---
+
+# Compendio de Minishell: Del Input a la Ejecución
+
+**Fecha de Inicio de Conversación:** 11/07/2025 (asumo que esta es la fecha de referencia para el "desde entonces")
+
+---
+
+## Índice
+
+**I. Filosofía General de Minishell y Proyectos 42**
+    A. La Metodología 42: Proyectos, Autonomía y Evaluación P2P
+    B. El Propósito de Minishell en el Currículo 42
+
+**II. Estructuras de Datos Principales (`minishell.h`)**
+    A. `t_shell`: El Estado Global de la Shell
+    B. `t_token`: Las Unidades Léxicas
+        1. Tipos de Tokens (WORD, SQ, DQ, PI, RR1, RR2, LR1, LR2)
+        2. La Distinción `t_token` vs `t_cmd`: Fases del Parsing
+    C. `t_cmd`: La Unidad de Ejecución de un Comando
+    D. `t_xpnd`: Auxiliar para la Expansión de Variables
+    E. `g_signal_flag`: La Variable Global para el Manejo de Señales
+    F. `LOL`: El Límite de Comandos
+
+**III. Flujo de Procesamiento y Ejecución de Comandos**
+    A. Inicialización y Bucle Principal (`main.c`)
+        1. Parámetros de `main` (argc, argv, env)
+        2. Verificación del Entorno
+        3. Inicialización de `t_shell` (`ft_init_shell`)
+        4. El Bucle Principal de la Shell (`ft_minishell`)
+    B. Lectura de Input y Manejo de Señales (`main.c`, `signals.c`)
+        1. `ft_read_input`: Lectura de Línea
+        2. `readline()`: Comportamiento y Librería
+        3. `ft_setup_signals`: Configuración Inicial de Señales
+        4. `ft_handle_sigint`: El Manejador de Ctrl+C
+        5. `ft_check_exitstat`: Traducción de Estados de Salida
+    C. Tokenización (`tokenize.c`, `tknize_quotes.c`)
+        1. `ft_tokenize`: Orquestación de la Tokenización
+        2. `ft_redir_tkn`: Identificación de Redirecciones
+        3. `ft_word_tkn`: Identificación de Palabras
+    D. Expansión de Variables (`expand_var.c`, `expand_exitstatus.c`, `expand_utils.c`)
+        1. `ft_find_dollar`: Marcado de Tokens para Expansión
+        2. `ft_getenv`: Obtención de Valores de Variables de Entorno
+        3. `ft_expand_var`: El Proceso de Expansión
+        4. `ft_expand_token`: Expansión por Token
+        5. `ft_insert_exp`: Inserción del Valor Expandido
+        6. Ejemplo de Expansión
+    E. Construcción de Comandos (Parsing) (`get_commands.c`)
+        1. `ft_get_commands`: De Tokens a Comandos
+        2. `ft_process_token`: Lógica de Despacho por Tipo de Token
+        3. `ft_fill_cmd`: Relleno de Argumentos (`args`)
+        4. `ft_cmdsize` y `ft_has_commands`: Verificaciones de Comandos
+    F. Manejo de Redirecciones (Parsing y Ejecución) (`process_redirection.c`, `redirections.c`)
+        1. La Doble Fase de Redirecciones (Parsing vs. Ejecución)
+        2. Funciones de Parsing (`ft_process_input`, `ft_process_output`, `ft_process_append`, `ft_process_heredoc`, `ft_process_redir`)
+        3. Funciones de Ejecución (`ft_redir_infile`, `ft_redir_outfile`, `ft_redir_heredoc`, `ft_redirections`)
+        4. `g_signal_flag = 2` en Here-Document
+        5. Ejemplo de Sustitución de Comando y Here-Document Literal (`$(cat << 'FIN' ... FIN)`)
+    G. Ejecución de Comandos (`executer.c`, `executer_command.c`, `exec_builtins.c`)
+        1. `ft_exec_commands`: Orquestación de la Ejecución
+        2. `ft_exec_single_cmd`: Gestión de Procesos Hijos y Pipes
+        3. `child_process`: Lógica del Proceso Hijo
+        4. `parent_process`: Lógica del Proceso Padre
+        5. `ft_wait_all_processes`: Espera de Procesos Hijos
+
+**IV. Gestión de Memoria y Limpieza (`clean.c`, `clean2.c`)**
+    A. `ft_cleanup_shell`: Limpieza por Ciclo
+    B. `ft_clean`: Limpieza Final
+    C. Funciones de Liberación Específicas (`ft_free_matrix`, `ft_free_tknlst`, `ft_free_cmdlst`, `ft_free_cmd_args`, `ft_free_cmd_files`)
+
+**V. Conceptos Adicionales y Preguntas Clave**
+    A. Comandos Built-in (cd, exit, etc.)
+    B. Variables de Entorno en Linux (Estructura y Comunes)
+    C. Diferencias Bash vs Zsh (Programación)
+    D. `cd -`
+    E. `exit(130)`
+
+---
+
+---
+
+## **I. Filosofía General de Minishell y Proyectos 42**
+
+### A. La Metodología 42: Proyectos, Autonomía y Evaluación P2P
+
+En la Escuela 42 (y sus campus asociados como 42 Málaga), la educación se basa en una filosofía disruptiva y altamente práctica, centrada en proyectos.
+
+*   **Fundamento:** Los proyectos son el corazón del aprendizaje. No hay clases tradicionales ni profesores en el sentido convencional. El conocimiento se adquiere resolviendo problemas reales a través de la codificación. Esto se alinea con el **aprendizaje peer-to-peer (P2P)**, donde los estudiantes aprenden unos de otros, se enseñan mutuamente y colaboran. La **gamificación** (niveles, puntos de experiencia) añade un incentivo para la progresión.
+*   **Autonomía:** Desde el primer día (Piscine), se fomenta la autonomía del estudiante. No hay soluciones preestablecidas; se espera que investiguen, depuren y encuentren las respuestas por sí mismos. Los proyectos están diseñados para requerir esta independencia.
+
+### B. El Propósito de Minishell en el Currículo 42
+
+Minishell es uno de los proyectos fundamentales y más complejos de la primera parte del currículo de 42. Su objetivo es:
+
+*   **Profundizar en C:** Requiere un manejo avanzado de punteros, gestión de memoria, estructuras de datos y llamadas al sistema (syscalls).
+*   **Comprender el SO:** Expone a los estudiantes a cómo interactúa una shell con el sistema operativo (creación de procesos con `fork()`, ejecución con `execve()`, manejo de pipes, redirecciones, señales).
+*   **Desarrollar un Parser:** Obliga a diseñar y construir un analizador léxico y sintáctico para interpretar las líneas de comando.
+*   **Adquirir Habilidades de Debugging:** La complejidad del proyecto asegura que los estudiantes pasen incontables horas depurando, una habilidad esencial para cualquier desarrollador.
+*   **Simular un Entorno Real:** Recrear funcionalidades de shells como Bash o Zsh es un reto que consolida el conocimiento de los entornos de desarrollo Linux.
+
+---
+
+## **II. Estructuras de Datos Principales (`minishell.h`)**
+
+Tu minishell utiliza varias estructuras de datos interconectadas para representar el estado, los tokens y los comandos, tal como se definen en `minishell.h`:
+
+### A. `t_shell`: El Estado Global de la Shell
+
+Esta estructura encapsula el estado completo de tu minishell en un momento dado.
+```c
+typedef struct s_shell
+{
+	char	*input;         // La línea de comando cruda leída del usuario (ej. por readline)
+	char	**env;          // Una copia del entorno de variables del sistema (ej. PATH, USER)
+	int		exit_status;    // El estado de salida del último comando ejecutado (0 para éxito, >0 para error)
+	int		last_exit_st;   // El estado de salida del comando anterior a la actual ejecución. Se usa para $?
+	t_token	*token;         // La cabeza de la lista enlazada de tokens (resultado del ft_tokenize)
+	t_cmd	*cmd_lst;       // La cabeza de la lista enlazada de comandos (resultado del parsing, lista para ejecutar)
+}				t_shell;
+```
+
+### B. `t_token`: Las Unidades Léxicas
+
+Esta estructura representa un fragmento individual (token) de la línea de comando después de la fase de tokenización.
+```c
+typedef struct s_token
+{
+	char			*tkn;    // La cadena de texto del token (ej. "ls", "|", ">")
+	int				type;    // El tipo de token (ver #define abajo)
+	bool			join;    // Indica si este token debe unirse al siguiente (ej. cat"file.txt" -> "catfile.txt")
+	bool			expand;  // Indica si este token contiene variables para expandir (ej. "$USER")
+	struct s_token	*next;   // Puntero al siguiente token en la lista enlazada
+}				t_token;
+```
+
+#### 1. Tipos de Tokens (Definidos por `#define`)
+Son valores enteros que clasifican la naturaleza de cada `t_token`:
+*   `#define WORD 0`: Una palabra normal (comando, argumento, nombre de archivo).
+*   `#define SQ 1`: Contenido entre comillas simples (`'...'`). El contenido se trata **literalmente**, sin expansión de variables.
+*   `#define DQ 2`: Contenido entre comillas dobles (`"..."`). El contenido permite **expansión de variables**.
+*   `#define PI 3`: Operador de tubería (`|`). Conecta la salida de un comando con la entrada del siguiente.
+*   `#define RR1 4`: Redirección de salida simple (`>`). Sobrescribe el archivo de destino.
+*   `#define RR2 5`: Redirección de salida de adición (`>>`). Añade al final del archivo de destino.
+*   `#define LR1 6`: Redirección de entrada (`<`). Toma la entrada del archivo.
+*   `#define LR2 7`: Here-document (`<<`). Toma la entrada de múltiples líneas en la propia terminal hasta un delimitador.
+
+#### 2. La Distinción `t_token` vs `t_cmd`: Fases del Parsing
+
+La presencia de `t_token *token` y `t_cmd *cmd_lst` en `t_shell` no es redundante, sino que refleja un **proceso de múltiples etapas** en la interpretación de la línea de comandos:
+
+*   **`t_token` (Análisis Léxico):** Representa la fase inicial de "escaneo". La entrada cruda (`shell->input`) se rompe en unidades léxicas básicas. En esta etapa, solo se identifica el tipo de cada fragmento (`"ls"` es un `WORD`, `|` es un `PI`). No hay información sobre la relación entre ellos (ej., si `|` conecta `ls` con `grep`). Aquí se realizan expansiones de variables (`$USER`) y se quitan las comillas.
+*   **`t_cmd` (Análisis Sintáctico / Parsing):** Representa la fase de "interpretación". La lista de `t_token`s se agrupa y se organiza en estructuras con significado gramatical. Aquí se entiende que `"ls"`, `"-l"`, `"/tmp"` son los argumentos de un *comando*, que `< input.txt` es una *redirección* asociada a ese comando, y que `|` establece una *tubería* entre dos comandos completos. Cada `t_cmd` es una "unidad ejecutables" (un comando con sus argumentos y redirecciones).
+
+Esta separación de preocupaciones hace que el proceso sea más modular, fácil de depurar y robusto.
+
+### C. `t_cmd`: La Unidad de Ejecución de un Comando
+
+Esta estructura encapsula toda la información necesaria para ejecutar un único comando, incluyendo sus argumentos, redirecciones y flags especiales.
+```c
+typedef struct s_cmd
+{
+	char			**args;       // Array de argumentos del comando (ej. {"ls", "-l", NULL})
+	char			*infile;      // Ruta del archivo para redirección de entrada (<)
+	char			*delimiter;   // String delimitador para here-document (<<)
+	char			*outfile;     // Ruta del archivo para redirección de salida (>, >>)
+	bool			append;       // true si es >> (añadir), false si es > (sobrescribir)
+	bool			hd;           // true si hay un here-document (<<)
+	bool			is_btn;       // true si el comando es un built-in de la shell (ej. "cd", "echo")
+	int				exit_status;  // Estado de salida de este comando después de ejecutarse
+	struct s_cmd	*next;        // Puntero al siguiente comando en una tubería
+}				t_cmd;
+```
+
+### D. `t_xpnd`: Auxiliar para la Expansión de Variables
+
+Estructura temporal utilizada durante la expansión de variables para gestionar los detalles de cada `$VAR` encontrado en un token.
+```c
+typedef struct s_xpnd
+{
+	int		start;   // Posición de inicio del $ en la cadena del token
+	int		end;     // Posición de fin del nombre de la variable
+	char	*var;    // El nombre de la variable extraída (ej. "USER")
+	char	*value;  // El valor de la variable expandida (ej. "juanito")
+}				t_xpnd;
+```
+
+### E. `g_signal_flag`: La Variable Global para el Manejo de Señales
+
+`extern int g_signal_flag;`
+Es una variable global entera que actúa como un **puente de comunicación** seguro entre el manejador de señales asíncrono (`ft_handle_sigint`) y el código principal de la shell. Permite que el manejador de señales informe al resto del programa sobre el contexto en el que se recibió una señal `SIGINT` (Ctrl+C).
+
+*   **`g_signal_flag = 0` (o `130`):** Modo `readline()` o estado por defecto. `Ctrl+C` limpia la línea de `readline` y sale del bucle de lectura (en tu caso, la shell principal sale).
+*   **`g_signal_flag = 1`:** Modo "ejecutando comando externo". `Ctrl+C` permite que el proceso hijo termine por la señal, y la shell principal limpia un salto de línea y actualiza `$?`.
+*   **`g_signal_flag = 2`:** Modo "leyendo here-document". `Ctrl+C` cancela el heredoc y la minishell **sale por completo**.
+
+### F. `LOL`: El Límite de Comandos
+
+`#define LOL 999`
+Esta constante define un límite máximo (999) para el número de comandos que se pueden ejecutar en una sola tubería o secuencia de comandos. Es una decisión de diseño para:
+*   **Simplificar la gestión de memoria:** Permite usar arrays de tamaño fijo (ej. para PIDs en `pid_t pids[LOL]`).
+*   **Evitar casos extremos:** Previene la ejecución de tuberías irrealmente largas que consumirían muchos recursos y serían ineficientes.
+*   **Restricciones de proyecto:** Puede ser un límite autoimpuesto o un requisito del proyecto 42 para enfocar la implementación en la lógica principal sin optimizaciones para casos extremos.
+
+---
+
+## **III. Flujo de Procesamiento y Ejecución de Comandos**
+
+La shell opera en un bucle continuo que procesa la entrada del usuario en varias etapas.
+
+### A. Inicialización y Bucle Principal (`main.c`)
+
+1.  **Parámetros de `main`:**
+    *   `int argc`: Número de argumentos pasados al programa (desde la línea de comandos).
+    *   `char **argv`: Array de cadenas con los argumentos.
+    *   `char **env`: Array de cadenas con las variables de entorno del sistema.
+
+2.  **Verificación del Entorno:**
+    *   `if (!*env) return (ft_putendl_fd("minishell: enviroment must not be empty", 2), 1);`
+    *   Comprueba si el puntero al entorno (`*env`) es `NULL` o si el entorno está vacío. Si es así, imprime un mensaje de error en la salida de error estándar (fd 2) y el programa termina con un código de salida `1`. Esto evita que la shell se ejecute sin acceso a variables de entorno esenciales (como `PATH`).
+
+3.  **Inicialización de `t_shell` (`ft_init_shell`)**:
+    ```c
+    t_shell	*ft_init_shell(char **env)
+    {
+        t_shell	*shell;
+        shell = safe_malloc(sizeof(t_shell)); // Asigna memoria para la estructura shell
+        shell->input = NULL;      // Inicializa el input a NULL
+        shell->env = env;         // Asigna la copia del entorno (ft_copy_env(env))
+        shell->exit_status = 0;   // Estado de salida actual
+        shell->last_exit_st = 0;  // Último estado de salida (para $?)
+        shell->token = NULL;      // Lista de tokens vacía
+        shell->cmd_lst = NULL;    // Lista de comandos vacía
+        return (shell);
+    }
+    // En main: shell = ft_init_shell(ft_copy_env(env));
+    ```
+    La función `ft_init_shell` asigna memoria para la estructura `t_shell` y establece sus miembros iniciales a valores seguros (NULL o 0). `ft_copy_env(env)` crea una copia independiente de las variables de entorno para que la shell pueda modificarlas (ej. con `export`, `unset`) sin afectar el entorno original del proceso padre.
+
+4.  **El Bucle Principal de la Shell (`ft_minishell`)**:
+    ```c
+    void	ft_minishell(t_shell *shell)
+    {
+        while (1) // Bucle infinito hasta que se reciba un comando de salida o señal de terminación
+        {
+            if (!ft_read_input(shell)) // Lee la entrada del usuario
+                break ; // Si ft_read_input devuelve 0 (ej. Ctrl+D o Ctrl+C en readline), sale del bucle
+            ft_tokenize(shell);        // Convierte la entrada en una lista de tokens
+            ft_check_syntax(shell);    // Verifica errores básicos de sintaxis (ej. pipes dobles)
+            if (ft_find_dollar(shell)) // Busca si hay variables para expandir
+                ft_expand_var(shell);  // Realiza la expansión de variables
+            ft_dequotize(shell);       // Elimina las comillas de los tokens
+            if (shell->token && ft_get_commands(shell)) // Si hay tokens válidos y se forman comandos
+            {
+                ft_exec_commands(shell); // Ejecuta los comandos
+            }
+            ft_cleanup_shell(shell); // Libera la memoria utilizada en esta iteración
+        }
+        ft_cleanup_shell(shell); // Limpieza final antes de salir (si se rompió el bucle)
+    }
+    ```
+    Este bucle `while(1)` representa el ciclo de "lectura-evaluación-impresión" (Read-Eval-Print Loop o REPL) de la shell. En cada iteración, la shell lee una línea, la procesa a través de varias etapas (tokenización, sintaxis, expansión, etc.), ejecuta el comando resultante y luego limpia los recursos para la siguiente iteración.
+
+### B. Lectura de Input y Manejo de Señales (`main.c`, `signals.c`)
+
+1.  **`ft_read_input`: Lectura de Línea**
+    ```c
+    int ft_read_input(t_shell *shell)
+    {
+        shell->last_exit_st = shell->exit_status; // Guarda el estado de salida actual para el próximo $?
+        ft_setup_signals(); // Configura los manejadores de señales para el estado actual
+        shell->input = readline("minishell> "); // Lee la línea de entrada del usuario
+        if (!shell->input) // Si readline devuelve NULL (ej. Ctrl+D o Ctrl+C)
+        {
+            ft_putstr_fd("exit\n", 1); // Imprime "exit" en stdout
+            return (0); // Retorna 0, lo que causa la salida de la shell en ft_minishell
+        }
+        if (g_signal_flag) // Si g_signal_flag fue modificado por un manejador de señales
+        {
+            shell->last_exit_st = g_signal_flag; // Actualiza el estado de salida para $? con el valor de la señal
+        }
+        else
+            shell->exit_status = 0; // Si no hubo señal (y se leyó input), el estado de salida es 0 (éxito)
+        if (ft_strncmp(shell->input, "", 1)) // Si la entrada no está vacía
+            add_history(shell->input); // Añade la línea al historial de readline
+        return (1); // Retorna 1, lo que permite continuar el bucle de ft_minishell
+    }
+    ```
+    Esta función es la interfaz principal para obtener la entrada del usuario. Maneja la interacción con `readline` y gestiona las señales recibidas durante la espera de la entrada.
+
+2.  **`readline()`: Comportamiento y Librería**
+    *   La función `readline("minishell> ")` muestra el prompt `"minishell> "` y se queda esperando texto del usuario.
+    *   Lee la línea completa hasta que el usuario presiona `Enter`.
+    *   Si el usuario presiona `Ctrl+D` (EOF - End Of File) en una línea vacía, `readline` devuelve `NULL`.
+    *   Si el usuario presiona `Ctrl+C` mientras `readline` está esperando, y el `SIGINT` es manejado por tu `ft_handle_sigint`, `readline` también suele devolver `NULL`.
+    *   **Librería:** `readline()` y sus funciones auxiliares (`rl_on_new_line()`, `rl_replace_line()`, `rl_redisplay()`) pertenecen a la **librería Readline** (`libreadline.so`), un estándar para interactuar con la línea de comandos en C.
+        *   `rl_on_new_line()`: Mueve lógicamente el cursor a una nueva línea en la terminal.
+        *   `rl_replace_line("", 0)`: Borra el contenido de la línea actual de `readline`.
+        *   `rl_redisplay()`: Redibuja el prompt de `readline` y el contenido de la línea (en este caso, un prompt vacío en una nueva línea).
+
+3.  **`ft_setup_signals`: Configuración Inicial de Señales**
+    ```c
+    void ft_setup_signals(void)
+    {
+        g_signal_flag = 0; // Reinicia la bandera global a 0 (modo "esperando input")
+        signal(SIGINT, ft_handle_sigint); // Asigna ft_handle_sigint para manejar Ctrl+C
+        signal(SIGQUIT, SIG_IGN); // Ignora SIGQUIT (Ctrl+\), evitando core dumps
+    }
+    ```
+    Esta función se llama al inicio de cada ciclo de `ft_read_input` para establecer los manejadores de señales adecuados al contexto de espera de input.
+
+4.  **`ft_handle_sigint`: El Manejador de Ctrl+C**
+    ```c
+    void ft_handle_sigint(int signum)
+    {
+        if (g_signal_flag == 0 || g_signal_flag == 130) // Contexto: esperando input en readline
+        {
+            g_signal_flag = 128 + signum; // Establece la bandera a 130 (SIGINT es 2)
+            write(1, "\n", 1);            // Imprime un salto de línea
+            rl_on_new_line();             // Mueve cursor a nueva línea
+            rl_replace_line("", 0);       // Limpia la línea de readline
+            rl_redisplay();               // Redibuja el prompt
+        }
+        else if (g_signal_flag == 1) // Contexto: ejecutando comando externo
+        {
+            g_signal_flag = 128 + signum; // Establece la bandera (ej. 130)
+            write(1, "\n", 1);            // Imprime un salto de línea
+            rl_replace_line("", 0);       // Limpia cualquier cosa en la línea de readline (no activa rl_redisplay)
+        }
+        else if (g_signal_flag == 2) // Contexto: leyendo here-document
+        {
+            g_signal_flag = 128 + signum; // Establece la bandera (ej. 130)
+            write(1, "\n", 1);            // Imprime un salto de línea
+            exit(130);                    // ¡La shell termina con código 130!
+        }
+    }
+    ```
+    Esta función es llamada por el sistema operativo cuando se recibe un `SIGINT`. Su comportamiento varía según el valor de `g_signal_flag`, lo que le permite adaptar la respuesta de la shell al contexto.
+
+5.  **`ft_check_exitstat`: Traducción de Estados de Salida**
+    ```c
+    void ft_check_exitstat(int status, t_shell *ms)
+    {
+        if (WIFEXITED(status)) // Si el proceso hijo terminó normalmente
+            ms->exit_status = WEXITSTATUS(status) % 256; // Obtiene su código de salida
+        else if (WIFSIGNALED(status)) // Si el proceso hijo terminó por una señal
+            ms->exit_status = (128 + WTERMSIG(status)) % 256; // Calcula el código de salida basado en la señal
+    }
+    ```
+    Esta función se utiliza después de un `waitpid()` para traducir el estado de terminación de un proceso hijo (proporcionado por `status`) al `exit_status` numérico que la shell utiliza (y que se puede consultar con `$?`). Los códigos de salida `128 + N` son un estándar POSIX para indicar la terminación por señal `N`.
+
+### C. Tokenización (`tokenize.c`, `tknize_quotes.c`)
+
+La tokenización es el proceso de dividir la cadena de entrada del usuario en unidades léxicas (`t_token`) significativas.
+
+1.  **`ft_tokenize`: Orquestación de la Tokenización**
+    ```c
+    void ft_tokenize(t_shell *shell)
+    {
+        int i;
+        i = 0;
+        while (shell->input[i]) // Recorre la cadena de input
+        {
+            if (shell->input[i] == ' ' || shell->input[i] == '\t') // Salta espacios en blanco
+                i++;
+            else if (shell->input[i] == '\'' || shell->input[i] == '"') // Si es una comilla
+            {
+                if (!ft_quotes(shell, &i)) // Delega a ft_quotes para manejar comillas
+                    break ; // Si ft_quotes falla (comilla no cerrada), rompe el bucle
+            }
+            else if (shell->input[i] == '<' || shell->input[i] == '>') // Si es una redirección
+                ft_redir_tkn(shell, &i); // Delega a ft_redir_tkn
+            else if (shell->input[i] == '|') // Si es un pipe
+            {
+                ft_addback_tkn(&shell->token, "|", 3); // Añade token PI
+                i++;
+            }
+            else // Si no es ninguno de los anteriores, es el inicio de una palabra
+                ft_word_tkn(shell, &i); // Delega a ft_word_tkn
+        }
+    }
+    ```
+    Esta es la función principal que recorre la entrada carácter por carácter y llama a funciones auxiliares según el tipo de carácter encontrado.
+
+2.  **`ft_redir_tkn`: Identificación de Redirecciones**
+    ```c
+    void ft_redir_tkn(t_shell *shell, int *i)
+    {
+        if (shell->input[*i] == '<') {
+            if (shell->input[*i + 1] == '<') {
+                ft_addback_tkn(&shell->token, "<<", 7); // << (LR2)
+                *i += 2;
+            } else {
+                ft_addback_tkn(&shell->token, "<", 6);  // < (LR1)
+                *i += 1;
+            }
+        } else if (shell->input[*i] == '>') {
+            if (shell->input[*i + 1] == '>') {
+                ft_addback_tkn(&shell->token, ">>", 5); // >> (RR2)
+                *i += 2;
+            } else {
+                ft_addback_tkn(&shell->token, ">", 4);  // > (RR1)
+                *i += 1;
+            }
+        }
+    }
+    ```
+    Identifica operadores de redirección de uno o dos caracteres y los añade como tokens.
+
+3.  **`ft_word_tkn`: Identificación de Palabras**
+    ```c
+    void ft_word_tkn(t_shell *shell, int *i)
+    {
+        char *token;
+        int j;
+        j = *i;
+        while (shell->input[j] != '"' && shell->input[j] != '\'' && // No comillas
+               shell->input[j] != '<' && shell->input[j] != '>' && // No redirecciones
+               shell->input[j] != '|' && shell->input[j] != ' ' && // No pipes o espacios
+               shell->input[j] != '\0') // No fin de cadena
+            j++;
+        token = ft_substr(shell->input, *i, (j - *i)); // Extrae la subcadena
+        ft_addback_tkn(&shell->token, token, 0); // Añade como token WORD
+        if (shell->input[j] != '\0' && shell->input[j] != '<' &&
+            shell->input[j] != '>' && shell->input[j] != '|' &&
+            shell->input[j] != ' ')
+            ft_update_join(&shell->token); // Marca para unión si no está delimitado por espacios/operadores
+        free(token);
+        *i = j; // Actualiza el índice global
+    }
+    ```
+    Extrae secuencias de caracteres que forman una "palabra" (comando, argumento, etc.) y las añade como tokens `WORD`. La lógica `ft_update_join` es para palabras que van pegadas (ej. `cat"file"`).
+
+### D. Expansión de Variables (`expand_var.c`, `expand_exitstatus.c`, `expand_utils.c`)
+
+La expansión de variables reemplaza `$NOMBRE` y `$?` con sus valores.
+
+1.  **`ft_find_dollar`: Marcado de Tokens para Expansión**
+    ```c
+    int ft_find_dollar(t_shell *shell)
+    {
+        t_token *temp;
+        int flag;
+        temp = shell->token;
+        flag = 0;
+        while (temp) {
+            // Si el token contiene '$' Y NO es de tipo comilla simple (SQ = 1)
+            if ((ft_strchr(temp->tkn, '$') != 0) && (temp->type != 1)) {
+                temp->expand = true; // Marca el token para expansión
+                flag = 1; // Indica que se encontró al menos un token a expandir
+            }
+            temp = temp->next;
+        }
+        return (flag);
+    }
+    ```
+    Recorre la lista de tokens, marcando con `temp->expand = true` aquellos que contienen un `$` y que no están protegidos por comillas simples.
+
+2.  **`ft_getenv`: Obtención de Valores de Variables de Entorno**
+    ```c
+    char *ft_getenv(char **env, char *var)
+    {
+        int i;
+        i = 0;
+        while (env[i]) {
+            // Compara la longitud de 'var' y verifica que el siguiente caracter sea '='
+            if (!ft_strncmp(env[i], var, ft_strlen(var)) && env[i][ft_strlen(var)] == '=')
+                return (ft_strdup(&env[i][ft_strlen(var) + 1])); // Retorna el valor
+            i++;
+        }
+        return (NULL); // Variable no encontrada
+    }
+    ```
+    Busca una variable por su nombre en la matriz `shell->env` y devuelve una copia de su valor.
+
+3.  **`ft_expand_var`: El Proceso de Expansión**
+    ```c
+    void ft_expand_var(t_shell *shell)
+    {
+        t_token *temp;
+        temp = shell->token;
+        while (temp) {
+            if (temp->expand == true) // Solo expande tokens marcados por ft_find_dollar
+                ft_expand_token(shell, temp); // Delega la expansión de un token individual
+            temp = temp->next;
+        }
+    }
+    ```
+    Itera sobre los tokens marcados y llama a `ft_expand_token` para cada uno.
+
+4.  **`ft_expand_token`: Expansión por Token**
+    ```c
+    void ft_expand_token(t_shell *shell, t_token *token)
+    {
+        t_xpnd *xpnd;
+        xpnd = ft_init_expand(); // Inicializa estructura temporal para la expansión
+        while (token->tkn[0] && ft_strchr(token->tkn, '$') && // Si hay $ y no es un ' ' o '"' después de $
+               token->tkn[ft_intstrchr(token->tkn, '$')] != ' ' &&
+               token->tkn[ft_intstrchr(token->tkn, '$')] != '"') {
+            xpnd->start = ft_intstrchr(token->tkn, '$'); // Posición del $
+            if (token->tkn[xpnd->start] == '?') { // Si es $?
+                ft_expand_exitstatus(shell, token); // Maneja la expansión de $?
+                continue ; // Continúa buscando más $ en el token
+            }
+            // Encuentra el fin de la variable (caracteres alfanuméricos o '_')
+            xpnd->end = xpnd->start + ft_find_end(&token->tkn[xpnd->start]);
+            // Extrae el nombre de la variable (ej. "USER" de "$USER")
+            xpnd->var = ft_substr_malloc(token->tkn, xpnd->start, (xpnd->end - xpnd->start + 1));
+            // Obtiene el valor de la variable
+            xpnd->value = ft_getenv(shell->env, xpnd->var);
+            free(xpnd->var);
+            xpnd->var = NULL;
+            if (!xpnd->value) // Si la variable no existe, su valor es una cadena vacía
+                xpnd->value = ft_strdup("");
+            ft_insert_exp(xpnd, token); // Realiza el reemplazo físico en el string del token
+        }
+        ft_free_expand(xpnd); // Libera la estructura temporal
+    }
+    ```
+    Esta función maneja la lógica de buscar múltiples `$VAR`s en un solo token y llama a `ft_getenv` y `ft_insert_exp` para realizar el trabajo. La lógica de `ft_expand_exitstatus` maneja el caso especial de `$?` (que se expande a `shell->last_exit_st`).
+
+5.  **`ft_insert_exp`: Inserción del Valor Expandido**
+    ```c
+    void ft_insert_exp(t_xpnd *xpnd, t_token *t)
+    {
+        char *res;
+        int i;
+        size_t j;
+        // Calcula tamaño necesario: original_len - $VAR_len + VALUE_len + 1 (null terminator)
+        res = safe_malloc(ft_strlen(t->tkn) - (xpnd->end - xpnd->start + 1) +
+                          ft_strlen(xpnd->value) + 1);
+
+        i = -1; j = -1;
+        // Copia el prefijo (antes de $VAR)
+        while (++i < xpnd->start - 1)
+            res[i] = t->tkn[i];
+        // Copia el valor expandido
+        while (++j < ft_strlen(xpnd->value)) {
+            res[i] = xpnd->value[j];
+            i++;
+        }
+        // Copia el sufijo (después de $VAR)
+        j = xpnd->end;
+        while (t->tkn[j])
+            res[i++] = t->tkn[j++];
+        free(xpnd->value); // Libera el valor temporal
+        xpnd->value = NULL;
+        res[i] = '\0'; // Agrega terminador nulo
+        free(t->tkn);  // Libera la cadena original del token
+        t->tkn = res;  // Asigna la nueva cadena al token
+    }
+    ```
+    Esta función construye una nueva cadena para el token, insertando el valor expandido en el lugar correcto y liberando la memoria antigua.
+
+6.  **Ejemplo de Expansión:**
+    *   **Input Token:** `"Mi usuario es $USER y el último comando salió con $?."`
+    *   **Variables de Entorno:** `USER=minishell_user`, `shell->last_exit_st = 0`
+    *   **Output Token:** `"Mi usuario es minishell_user y el último comando salió con 0."`
+
+### E. Construcción de Comandos (Parsing) (`get_commands.c`)
+
+Esta fase toma la lista de tokens (ya expandidos y desquitizados) y la transforma en una lista estructurada de comandos (`t_cmd`) listos para su ejecución.
+
+1.  **`ft_get_commands`: De Tokens a Comandos**
+    ```c
+    int ft_get_commands(t_shell *shell)
+    {
+        t_token *temp;
+        temp = shell->token;
+        ft_addback_cmd(&shell->cmd_lst); // Siempre añade un primer nodo t_cmd vacío
+        while (temp) {
+            ft_process_token(shell, &temp); // Procesa cada token y avanza 'temp'
+        }
+        // Validaciones finales:
+        if (!ft_has_commands(shell) || ft_cmdsize(shell->cmd_lst) > LOL)
+            return (0); // Falla si no hay comandos válidos o excede el límite LOL
+        return (1); // Éxito
+    }
+    ```
+    La función principal del parser. Añade un nodo `t_cmd` inicial y luego itera sobre los tokens, delegando el procesamiento a `ft_process_token`. Realiza validaciones finales sobre la lista de comandos construida.
+
+2.  **`ft_process_token`: Lógica de Despacho por Tipo de Token**
+    ```c
+    void ft_process_token(t_shell *shell, t_token **temp)
+    {
+        t_token *next; // Usado para almacenar el token siguiente después del procesamiento
+        if ((*temp)->type == PI) { // Si es un pipe (|)
+            ft_addback_cmd(&shell->cmd_lst); // Añade un nuevo t_cmd (para el siguiente comando en la tubería)
+            *temp = (*temp)->next; // Avanza el puntero de tokens
+        } else if ((*temp)->type == WORD) { // Si es una palabra (comando o argumento)
+            ft_fill_cmd(shell, *temp, &next); // Rellena los 'args' del t_cmd actual
+            *temp = next; // Avanza el puntero de tokens al final de la palabra(s) procesada(s)
+        } else if ((*temp)->type == LR1 || (*temp)->type == RR1 || // Si es una redirección
+                   (*temp)->type == LR2 || (*temp)->type == RR2) {
+            ft_process_redir(shell, *temp, &next); // Procesa la redirección
+            *temp = next; // Avanza el puntero de tokens al final de la redirección
+        } else { // Otros tipos (ej. comillas, que ya debieron ser procesadas)
+            *temp = (*temp)->next; // Simplemente avanza el puntero de tokens
+        }
+    }
+    ```
+    Esta es la función que realmente "lee" la lista de tokens y toma decisiones sobre cómo agruparlos en comandos. `temp` se pasa como `t_token **` para que `ft_process_token` pueda modificar directamente la posición en la que `ft_get_commands` continúa el bucle de tokens.
+
+3.  **`ft_fill_cmd`: Relleno de Argumentos (`args`)**
+    ```c
+    void ft_fill_cmd(t_shell *shell, t_token *token, t_token **next_token)
+    {
+        int i;
+        t_cmd *temp_cmd; // Renombrado de 'temp' para evitar confusión con el parámetro 'token'
+        i = 0;
+        temp_cmd = shell->cmd_lst;
+        while (temp_cmd->next) // Encuentra el último comando en la lista (el actual)
+            temp_cmd = temp_cmd->next;
+
+        if (!temp_cmd->args) // Si el array de argumentos aún no ha sido asignado
+            temp_cmd->args = ft_calloc((ft_count_args(token) + 2), sizeof(char *)); // Asigna memoria
+        else // Si ya hay argumentos (ej. para añadir más, aunque el patrón sugiere que no ocurre a menudo)
+            while (temp_cmd->args[i])
+                i++; // Encuentra la primera posición libre
+
+        while (token && token->type == WORD) { // Recorre los tokens de tipo WORD
+            if (token->tkn)
+                temp_cmd->args[i++] = ft_strdup(token->tkn); // Duplica y añade el argumento
+            *next_token = token->next; // Actualiza el puntero para ft_process_token
+            if (token->next && token->next->type == WORD) // Si el siguiente también es WORD, avanza
+                token = token->next;
+            else
+                break ; // Si no, termina de procesar palabras
+        }
+        if (ft_isbuiltin(temp_cmd->args[0])) // Verifica si el primer argumento es un built-in
+            temp_cmd->is_btn = 1; // Marca el flag is_btn
+    }
+    ```
+    Esta función toma los tokens `WORD` consecutivos y los agrupa en el array `args` del comando `t_cmd` actual. También detecta si el comando es un built-in.
+
+4.  **`ft_cmdsize` y `ft_has_commands`: Verificaciones de Comandos**
+    *   **`ft_cmdsize(t_cmd *lst)`:** Recorre la lista de comandos y devuelve el número total de comandos en ella. Se usa para la validación `ft_cmdsize(shell->cmd_lst) > LOL`.
+    *   **`ft_has_commands(t_shell *shell)`:** Verifica si la lista `shell->cmd_lst` contiene al menos un comando con un nombre válido (`args && args[0]`). Esto es importante para filtrar inputs vacíos o solo con operadores (`|`, `>`).
+
+### F. Manejo de Redirecciones (Parsing y Ejecución) (`process_redirection.c`, `redirections.c`)
+
+El manejo de redirecciones se divide en dos fases: el **parsing** (identificar qué redirección y a qué archivo) y la **ejecución** (abrir archivos y redirigir descriptores).
+
+#### 1. La Doble Fase de Redirecciones (Parsing vs. Ejecución)
+*   **Parsing (Funciones `ft_process_xxx`):** Ocurre durante `ft_get_commands`. Se encarga de:
+    *   Identificar el tipo de redirección (`<`, `<<`, `>`, `>>`).
+    *   Extraer el nombre del archivo o delimitador.
+    *   Almacenar esta información (`infile`, `outfile`, `delimiter`, `append`, `hd`) en la estructura `t_cmd`.
+    *   Realizar **comprobaciones tempranas** de archivos (ej. existencia para `<`) y **trunca archivos de salida (`>`) inmediatamente**.
+*   **Ejecución (Funciones `ft_redir_xxx`):** Ocurre justo antes de que un comando se ejecute (dentro de `child_process`). Se encarga de:
+    *   Abrir los archivos de redirección.
+    *   Utilizar `dup2()` para cambiar los descriptores de archivo estándar (0 para stdin, 1 para stdout) del proceso a los archivos correspondientes.
+    *   Gestionar el here-document (lectura y pipe).
+
+#### 2. Funciones de Parsing (`ft_process_redir` y sus llamadas)
+*   **`ft_process_input(t_cmd *cmd, t_token *token)`:** Para `<`. Asigna `cmd->infile` y comprueba permisos de lectura con `access()`, mostrando error si el archivo no existe o no tiene permisos.
+*   **`ft_process_output(t_cmd *cmd, t_token *token)`:** Para `>`. Asigna `cmd->outfile`, pone `cmd->append = false`, y **abre/crea/trunca el archivo en el momento del parsing**. Comprueba errores de permisos.
+*   **`ft_process_append(t_cmd *cmd, t_token *token)`:** Para `>>`. Asigna `cmd->outfile`, pone `cmd->append = true`, y **abre/crea/añade al archivo en el momento del parsing**. Comprueba errores de permisos.
+*   **`ft_process_heredoc(t_cmd *cmd, t_token *token)`:** Para `<<`. Asigna `cmd->delimiter` y pone `cmd->hd = true`. No realiza operaciones de archivo en esta fase.
+*   **`ft_process_redir(t_shell *shell, t_token *token, t_token **next_tkn)`:** Es el "despachador" para las funciones `ft_process_xxx`. Recibe el token de redirección, encuentra el `t_cmd` actual, delega el trabajo y actualiza el puntero `next_tkn` para avanzar en la lista de tokens. Propaga cualquier `exit_status = 1` al `shell->exit_status` global.
+
+#### 3. Funciones de Ejecución (`ft_redirections` y sus llamadas)
+*   **`ft_redir_infile(char *infile)`:** Abre `infile` en modo lectura (`O_RDONLY`), y si tiene éxito, redirige `STDIN_FILENO` (fd 0) a este archivo usando `dup2()`.
+*   **`ft_redir_outfile(char *outfile, int append)`:** Abre `outfile` con `O_CREAT | O_WRONLY`. Utiliza `O_APPEND` si `append` es `true` (para `>>`), o `O_TRUNC` si es `false` (para `>`). Redirige `STDOUT_FILENO` (fd 1) a este archivo usando `dup2()`.
+*   **`ft_redir_heredoc(t_shell *shell, t_cmd *cmd)`:**
+    ```c
+    int ft_redir_heredoc(t_shell *shell, t_cmd *cmd)
+    {
+        int pipefd[2];
+        char *buffer;
+        g_signal_flag = 2; // ***Importante: Establece la bandera para Ctrl+C en here-document***
+        if (pipe(pipefd) == -1)
+            return (perror("Error pipe\n"), 1); // Crea un pipe
+        while (1) {
+            buffer = readline("> "); // Lee línea por línea del usuario con prompt "> "
+            if (!buffer || !ft_strcmp(buffer, cmd->delimiter)) { // Si es NULL (Ctrl+D) o el delimitador
+                free(buffer);
+                break ; // Termina la lectura del heredoc
+            }
+            // ***Expande variables dentro de la línea del here-document***
+            buffer = ft_expand_heredoc(buffer, shell->env, shell->last_exit_st);
+            write(pipefd[1], buffer, ft_strlen(buffer)); // Escribe la línea en el pipe
+            write(pipefd[1], "\n", 1); // Añade un salto de línea
+            free(buffer);
+        }
+        close(pipefd[1]); // Cierra el extremo de escritura del pipe
+        if (dup2(pipefd[0], STDIN_FILENO) == -1) // Redirige stdin del comando al pipe
+            return (perror("Error heredoc\n"), 1);
+        return (close(pipefd[0]), 0); // Cierra el extremo de lectura original
+    }
+    ```
+    Esta función es el núcleo de la implementación del here-document. Lee la entrada del usuario línea por línea, expande variables (a menos que el delimitador inicial estuviera entre comillas), escribe el contenido en un pipe y luego redirige la entrada estándar del comando a ese pipe. El `g_signal_flag = 2` asegura que `Ctrl+C` durante la lectura del heredoc termine la shell.
+
+*   **`ft_redirections(t_shell *shell, t_cmd *cmd)`:**
+    ```c
+    int ft_redirections(t_shell *shell, t_cmd *cmd)
+    {
+        if (cmd->hd && ft_redir_heredoc(shell, cmd)) // Primero el heredoc si existe
+            return (1);
+        // Si no hay heredoc Y hay infile, redirige la entrada
+        if (!cmd->hd && cmd->infile && ft_redir_infile(cmd->infile))
+            return (1);
+        // Si hay outfile, redirige la salida
+        if (cmd->outfile && ft_redir_outfile(cmd->outfile, cmd->append))
+            return (1);
+        return (0); // Éxito en todas las redirecciones
+    }
+    ```
+    Esta función es la que se llama en el proceso hijo (o antes de ejecutar un built-in si no está en un pipe) para aplicar todas las redirecciones definidas en el `t_cmd` actual, manejando la precedencia (here-document y luego infile, luego outfile).
+
+#### 4. `g_signal_flag = 2` en Here-Document
+El uso de `g_signal_flag = 2` dentro de `ft_redir_heredoc` es una decisión de diseño para que `Ctrl+C` se comporte de forma específica en ese contexto. Cuando el usuario está introduciendo líneas para un here-document, un `Ctrl+C` típicamente cancela la operación del here-document y termina el proceso de la shell que lo está esperando. En tu caso, `ft_handle_sigint` con `g_signal_flag == 2` llama directamente a `exit(130)`.
+
+#### 5. Ejemplo de Sustitución de Comando y Here-Document Literal (`$(cat << 'FIN' ... FIN)`)
+
+*   **Sentencia:** `echo -e "Contenido literal:\n"$(cat << 'FIN'
+    Aquí $USER no se expande.
+    Ni tampoco $?.
+    FIN
+    )`
+*   **Explicación:**
+    1.  `$(...)` es la **sustitución de comandos**. La shell ejecuta lo que está dentro de los paréntesis y reemplaza `$(...)` con la salida estándar de ese comando.
+    2.  `cat << 'FIN'` es un here-document. El delimitador `'FIN'` está entre **comillas simples**. Esto es clave: las comillas en el delimitador le indican a la shell que el contenido del here-document (las líneas entre `<< 'FIN'` y `FIN`) debe ser tratado **literalmente**, sin expandir variables (`$USER`, `$?`) ni realizar otras sustituciones.
+    3.  El comando `cat` simplemente leerá esas líneas literales y las enviará a su salida estándar.
+    4.  La salida de `cat` (`Aquí $USER no se expande.\nNi tampoco $?.`) es entonces sustituida en la línea original.
+    5.  Finalmente, `echo -e` imprime la cadena `"Contenido literal:\n"` seguida de la salida literal de `cat`.
+*   **Resultado impreso:**
+    ```
+    Contenido literal:
+    Aquí $USER no se expande.
+    Ni tampoco $?.
+    ```
+
+### G. Ejecución de Comandos (`executer.c`, `executer_command.c`, `exec_builtins.c`)
+
+Esta es la fase donde los comandos, ya parseados en estructuras `t_cmd`, son ejecutados como procesos.
+
+1.  **`ft_exec_commands`: Orquestación de la Ejecución**
+    ```c
+    void ft_exec_commands(t_shell *ms)
+    {
+        int pipefd[2];
+        int prevfd;
+        t_cmd *cmd;
+        pid_t pids[LOL]; // Array de PIDs para esperar a todos los hijos
+        int i;
+
+        i = 0;
+        cmd = ms->cmd_lst;
+        prevfd = -1; // -1 indica que no hay pipe previo
+
+        // Caso especial: Built-in único y sin pipe (se ejecuta en la shell principal)
+        if (cmd->is_btn && !cmd->next && (prevfd == -1)) {
+            execute_builtin(ms, cmd, prevfd); // No se fork, para modificar el estado de la shell
+            return ;
+        }
+
+        // Bucle para ejecutar comandos (en tubería o externos)
+        while (cmd) {
+            pids[i] = ft_exec_single_cmd(cmd, &prevfd, pipefd, ms); // Forquea y gestiona un comando
+            cmd = cmd->next;
+            i++;
+        }
+        ft_wait_all_processes(pids, ms); // Espera a que todos los procesos hijos terminen
+    }
+    ```
+    Esta es la función principal que decide cómo ejecutar los comandos. Los built-ins únicos se ejecutan directamente en la shell padre. Para el resto (comandos externos o built-ins en tuberías), se usa `ft_exec_single_cmd` para forkar y gestionar los pipes, y luego `ft_wait_all_processes` para esperar por ellos.
+
+2.  **`ft_exec_single_cmd`: Gestión de Procesos Hijos y Pipes**
+    ```c
+    pid_t ft_exec_single_cmd(t_cmd *cmd, int *prevfd, int pipefd[2], t_shell *ms)
+    {
+        pid_t pid;
+        // Si hay un siguiente comando en la tubería, crea un pipe para conectarlos
+        if (cmd->next && pipe(pipefd) == -1) {
+            perror("Error creating pipe\n");
+            exit(1);
+        }
+        pid = fork(); // Crea un nuevo proceso hijo
+        if (pid == -1) {
+            perror("Error creating child process.\n");
+            exit(1);
+        }
+        if (pid == 0) // Lógica del proceso hijo
+            child_process(cmd, *prevfd, pipefd, ms);
+        else { // Lógica del proceso padre
+            parent_process(ms, prevfd, pipefd);
+            // Si es el built-in 'exit' y no está en pipe, la shell padre debe salir ya
+            if (cmd->is_btn && !ft_strncmp(cmd->args[0], "exit", 5) && (*prevfd == -1))
+                exit(ms->exit_status);
+        }
+        return (pid);
+    }
+    ```
+    Función crucial para la ejecución en paralelo y tuberías. Crea un `pipe` si es necesario, luego hace un `fork` para crear el proceso hijo. La lógica se bifurca para el hijo (`child_process`) y el padre (`parent_process`).
+
+3.  **`child_process`: Lógica del Proceso Hijo**
+    ```c
+    void child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms)
+    {
+        if (ft_redirections(ms, cmd) == 1) // Configura las redirecciones del comando
+            exit (1); // Si hay un error en redirecciones, el hijo termina
+        if (prevfd != -1) // Si hay entrada de un pipe anterior
+            dup2(prevfd, STDIN_FILENO); // Redirige stdin del hijo al pipe anterior
+        // Si no es el último comando Y no tiene su propia redirección de salida
+        if (cmd->next && !cmd->outfile)
+            dup2(pipefd[1], STDOUT_FILENO); // Redirige stdout del hijo al pipe actual
+        if (prevfd != -1)
+            close(prevfd); // Cierra el descriptor del pipe anterior (ya no es necesario)
+        if (cmd->next) { // Si hay siguiente comando, cierra ambos extremos del pipe actual
+            close(pipefd[0]);
+            close(pipefd[1]);
+        }
+        if (cmd->is_btn) { // Si es un built-in
+            execute_builtin(ms, cmd, prevfd); // Ejecuta la función del built-in
+            exit(ms->exit_status); // El hijo del built-in termina con su estado de salida
+        } else { // Si es un comando externo
+            execute_command(ms, cmd); // Busca y ejecuta el binario (llama a execve)
+        }
+        // Si execve() falla (ej. comando no encontrado o no ejecutable)
+        perror("Error executing\n");
+        exit (126); // Sale con error de comando no ejecutable
+    }
+    ```
+    El código que se ejecuta en el nuevo proceso hijo. Su principal responsabilidad es configurar sus descriptores de archivo para las redirecciones y tuberías, y luego ejecutar el comando (built-in o externo).
+
+4.  **`parent_process`: Lógica del Proceso Padre**
+    ```c
+    void parent_process(t_shell *ms, int *prevfd, int pipefd[2])
+    {
+        if (*prevfd != -1)
+            close(*prevfd); // Cierra el extremo de lectura del pipe *anterior*
+        if (ms->cmd_lst->next) { // Si hay más comandos en la tubería
+            close(pipefd[1]); // Cierra el extremo de escritura del pipe *actual* (el padre no lo usa)
+            *prevfd = pipefd[0]; // El extremo de lectura del pipe *actual* se convierte en el prevfd para el *siguiente* hijo
+        } else { // Si es el último comando
+            *prevfd = -1; // No hay pipe anterior para la siguiente iteración
+        }
+        g_signal_flag = 1; // ***Importante: Establece la bandera para Ctrl+C en modo ejecución***
+    }
+    ```
+    El código que se ejecuta en el proceso original (la shell). Su principal responsabilidad es cerrar los descriptores de archivo de los pipes que ya no necesita y actualizar `prevfd` para la siguiente iteración de la tubería. Lo más importante, actualiza `g_signal_flag` para que `ft_handle_sigint` sepa que se está ejecutando un comando.
+
+5.  **`ft_wait_all_processes`: Espera de Procesos Hijos**
+    ```c
+    void ft_wait_all_processes(pid_t *pids, t_shell *ms)
+    {
+        int status;
+        int i;
+        t_cmd *cmd;
+
+        i = 0;
+        cmd = ms->cmd_lst; // Asegura que 'cmd' apunte al inicio de la lista original
+        while (cmd) // Itera sobre los comandos para encontrar el último
+        {
+            waitpid(pids[i], &status, 0); // Espera al proceso hijo con PID pids[i]
+            i++;
+            if (!cmd->next) // Si es el ÚLTIMO comando en la tubería
+                ft_check_exitstat(status, ms); // Actualiza el ms->exit_status con su estado
+            cmd = cmd->next;
+        }
+    }
+    ```
+    Esta función es llamada después de que todos los procesos hijos de una tubería han sido forkados. Espera, uno por uno, a que terminen. Crucialmente, solo actualiza el `ms->exit_status` global (lo que se verá en `$?`) con el estado de salida del **último comando** de la tubería, que es el comportamiento estándar de una shell.
+
+---
+
+## **IV. Gestión de Memoria y Limpieza (`clean.c`, `clean2.c`)**
+
+La correcta gestión de la memoria es vital en un proyecto de C como Minishell para evitar fugas y bloqueos.
+
+### A. `ft_cleanup_shell`: Limpieza por Ciclo
+
+```c
+void ft_cleanup_shell(t_shell *shell)
+{
+    if (shell->input) {
+        free(shell->input);
+        shell->input = NULL;
+    }
+    if (shell->token) {
+        ft_free_tknlst(&shell->token); // Libera la lista de tokens
+        shell->token = NULL;
+    }
+    if (shell->cmd_lst) {
+        ft_free_cmdlst(&shell->cmd_lst); // Libera la lista de comandos
+        shell->cmd_lst = NULL;
+    }
+}
+```
+Se llama al final de cada iteración del bucle `ft_minishell` para liberar la memoria de la entrada, tokens y comandos procesados en esa iteración, preparando la shell para la siguiente línea de comando.
+
+### B. `ft_clean`: Limpieza Final
+
+```c
+void ft_clean(char **matrix, t_token *token, t_shell *shell)
+{
+    if (matrix) // Libera la copia del entorno (shell->env)
+        ft_free_matrix(matrix);
+    if (token) // Este 'token' debería ser NULL si ft_cleanup_shell se llamó correctamente
+        ft_free_tknlst(&token);
+    if (shell) { // Libera la propia estructura t_shell
+        free(shell);
+        shell = NULL;
+    }
+}
+```
+Esta función se llama una única vez al final de `main` para liberar los recursos que persisten durante toda la vida de la shell (principalmente el `shell->env` y la propia estructura `t_shell`).
+
+### C. Funciones de Liberación Específicas
+
+*   **`ft_free_matrix(char **matrix)`:** Libera un array de cadenas de caracteres (matriz), usado para `shell->env`.
+*   **`ft_free_tknlst(t_token **token)`:** Recorre y libera cada nodo y cada string `tkn` en la lista enlazada de `t_token`.
+*   **`ft_free_cmdlst(t_cmd **cmd_lst)`:** Recorre y libera cada nodo `t_cmd` en la lista enlazada, llamando a `ft_free_cmd_args` y `ft_free_cmd_files` para liberar sus sub-componentes.
+*   **`ft_free_cmd_args(t_cmd *cmd)`:** Libera el array `cmd->args` y cada uno de los strings que contiene.
+*   **`ft_free_cmd_files(t_cmd *cmd)`:** Libera los strings `cmd->infile`, `cmd->outfile`, y `cmd->delimiter` si no son `NULL`.
+
+---
+
+## **V. Conceptos Adicionales y Preguntas Clave**
+
+### A. Comandos Built-in (cd, exit, etc.)
+
+Los comandos built-in (internos) son funciones que la shell ejecuta directamente, sin necesidad de crear un nuevo proceso con `fork()` y `execve()`. Esto es crucial porque los built-ins a menudo necesitan modificar el estado interno de la shell (ej., `cd` cambia el directorio de trabajo de la shell misma; `export` modifica las variables de entorno que la shell conoce).
+
+*   **Ejemplos en tu código:** `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`.
+*   **Implementación:** Tu función `ft_isbuiltin` identifica estos comandos, y `ft_exec_commands` tiene un caso especial para ejecutarlos directamente si son el único comando (no en un pipe). Si están en un pipe, se forkeará un proceso hijo para ellos, pero seguirán siendo ejecutados por una función C en lugar de un binario externo.
+
+### B. Variables de Entorno en Linux (Estructura y Comunes)
+
+Las variables de entorno son pares clave-valor que almacenan información sobre la configuración del sistema y del usuario. La shell las hereda del sistema padre y las usa para su propio funcionamiento y para pasar información a los programas hijos.
+
+*   **Estructura:** Se representan como una matriz de cadenas (`char **env`), donde cada cadena tiene el formato `KEY=VALUE` (ej., `"PATH=/usr/bin:/bin"`). La matriz termina con un puntero `NULL`.
+*   **Principales y Comunes:**
+    *   `TERM`: Tipo de terminal (ej. `xterm`, `linux`).
+    *   `SHELL`: Ruta del shell por defecto del usuario (ej. `/bin/bash`).
+    *   `USER`: Nombre de usuario actual.
+    *   `HOME`: Ruta del directorio personal del usuario.
+    *   `PATH`: Lista de directorios separados por `:` donde la shell busca los comandos ejecutables.
+    *   `LANG`, `LC_ALL`: Configuración de idioma y localización.
+    *   `EDITOR`, `VISUAL`: Editor de texto predeterminado.
+    *   `PWD`, `OLDPWD`: Directorio de trabajo actual y anterior.
+
+### C. Diferencias Bash vs Zsh (Programación)
+
+Bash y Zsh son shells populares con similitudes, pero también diferencias relevantes para la programación:
+
+*   **Bash (Bourne-Again SHell):** Es el shell predeterminado en la mayoría de las distribuciones Linux.
+    *   **Compatibilidad:** Muy compatible con scripts POSIX `sh`.
+    *   **Features:** Historial robusto, edición de línea.
+    *   **Uso:** Ampliamente utilizado, muchos scripts se escriben para Bash.
+*   **Zsh (Z shell):** Un shell más moderno y extensible.
+    *   **Autocompletado:** Más potente y configurable (ej. autocompletado de opciones de comandos, nombres de archivo con errores, argumentos de git).
+    *   **Sustitución/Globbing:** Capacidades más avanzadas de expansión de patrones (globbing extendido), que pueden requerir cuidado en scripts para evitar comportamientos inesperados si no se esperan.
+    *   **Arrays asociativos:** Soporte nativo para arrays asociativos (hashes), a diferencia de Bash que los implementó más tarde y con sintaxis ligeramente distinta.
+    *   **Manejo de directorios:** Funciones de navegación de directorios mejoradas (ej. `cd -` para volver, o `d` para listar directorios visitados).
+    *   **Frameworks:** Muy personalizable con frameworks como Oh My Zsh.
+*   **Consideraciones de Programación:** Al escribir scripts de shell o implementar tu propia shell, debes ser consciente de qué características específicas de Bash o Zsh utilizas para asegurar la portabilidad si tu script debe ejecutarse en diferentes entornos. Minishell generalmente apunta a implementar el conjunto de características básicas del estándar POSIX `sh` y algunas extensiones comunes de Bash.
+
+### D. `cd -`
+
+*   En las shells de Unix, `cd -` es un atajo para cambiar al **directorio de trabajo anterior**.
+*   Funciona porque las shells mantienen una variable de entorno interna llamada `OLDPWD` que almacena el último directorio visitado. Cuando ejecutas `cd -`, la shell simplemente hace un `cd $OLDPWD`.
+
+### E. `exit(130)`
+
+*   En C, `exit()` es una función que termina el proceso actual y devuelve un código de estado al proceso padre (normalmente la shell que lo lanzó).
+*   El valor `130` es un código de estado de salida comúnmente utilizado en sistemas Unix para indicar que un programa fue **interrumpido por una señal**. Específicamente, los códigos de salida `128 + N` significan que el programa fue terminado por la señal `N`. Dado que `SIGINT` (Ctrl+C) tiene el número `2`, `128 + 2 = 130`.
+*   En tu minishell, usar `exit(130)` en `ft_handle_sigint` cuando `g_signal_flag == 2` (en el contexto de un here-document) significa que si el usuario presiona `Ctrl+C` mientras introduce un here-document, la minishell terminará con un código de error que indica explícitamente que fue por una interrupción.
+
+---
+
+Espero que esta organización te sea de gran utilidad para estudiar y comprender cada detalle de tu Minishell. ¡Mucho éxito con tu proyecto!
