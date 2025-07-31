@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   01_run_shell.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 12:04:12 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:11:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../inc/minishell.h"
 
 void	recover_previous_status(t_shell *shell);
 void	read_user_input(t_shell *shell, char *prompt);
@@ -89,20 +89,15 @@ void	process_input(t_shell *shell)
 		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
         return ;
     }
-
 	create_commands_structure(shell);	
-
 	lexical_analyzer(shell->commands_list);	
-
 	process_commands(shell);
-
 	build_execution_structure(shell->commands_list);		
 
 	// EJECUTAR COMANDOS 							!!! JUANJE
     // execute_commands(shell->command_list);
 	
 	print_commands_list(shell->commands_list);			// Debug
-
 	free_commands_list(&shell->commands_list);
 }
 
@@ -115,14 +110,10 @@ void	process_commands(t_shell *shell)
 	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{
-		tokenizer(current_command->words_list, shell);
-
-		variable_expander(current_command->words_list, shell->environment, shell->exit_status);
-
-		dequotize_tokens(current_command->words_list);	
-
-		generate_processed_word(&current_command->words_list);	
-		
+		tokenizer(current_command->words_list, shell);		
+		variable_expander(current_command->words_list, shell);		
+		dequotize_tokens(current_command->words_list, shell);
+		generate_processed_word(current_command->words_list, shell);			
 		current_command = current_command->next;
 	}	
 }
