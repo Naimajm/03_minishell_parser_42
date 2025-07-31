@@ -51,6 +51,8 @@ OBJ_FILES 		+= $(PAR_FILES:%.c=%.o)
 # --------------------------------------------------------------------------
 
 # EXECUTOR-----------------------------------------------------------------------------
+ifeq (0,1)
+
 EXC_DIR			:= ./src/executor
 EXC_FILES		:= $(addprefix $(EXC_DIR)/, clean2.c \
 				clean.c \
@@ -86,6 +88,7 @@ BTN_FILES		:= $(addprefix $(BTN_DIR)/, 00_exec_builtins.c \
 
 OBJ_FILES		+= $(BTN_FILES:%.c=%.o)
 
+endif
 # --------------------------------------------------------------------------
 all: $(NAME)
 

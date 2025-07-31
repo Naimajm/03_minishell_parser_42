@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   04_tokenizer.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:39 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 int		word_tokenizer(t_word *word);
 int		noquotes_tokenizer(t_word *word, int start_index);
@@ -20,11 +20,9 @@ int		operator_tokenizer(t_word *word, int start_index);
 void	tokenizer(t_word *words_list, t_shell *shell)
 {
 	t_word	*current_word;
+	
 	if (!words_list)
-	{
-		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
-		return ;
-	}			
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));			
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{

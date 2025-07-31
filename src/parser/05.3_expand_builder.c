@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   05.3_expand_builder.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:19:02 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 static t_expand *create_expand_node(char  *variable, int first_index, int expand_type);
 static t_expand	*find_expand_last_node(t_expand *token_list);

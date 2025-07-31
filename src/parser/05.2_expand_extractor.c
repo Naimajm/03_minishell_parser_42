@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   05.2_expand_extractor.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:58 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:16 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 // FUNCIIONES AUXILIARES EXTRACCION KEY Y BUSQUEDA VALUE
 char	*extract_key(char *token, int first_index);

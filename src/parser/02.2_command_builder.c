@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   02.2_command_builder.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 22:11:43 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:26 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:09:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 static t_cmd	*create_command_node(char *input);
 static t_cmd	*find_command_last_node(t_cmd *commands_list);

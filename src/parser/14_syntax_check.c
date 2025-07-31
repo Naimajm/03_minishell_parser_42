@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   14_syntax_check.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 00:15:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:20:09 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:57 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 int validate_pipe_structure(t_cmd *commands_list);
 static int validate_command_words(t_cmd *command);

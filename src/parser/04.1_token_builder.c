@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   04.1_token_builder.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:44 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:04 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 static t_token	*find_token_last_node(t_token *token_list);
 static t_token *create_token_node(char  *input, int type_token);

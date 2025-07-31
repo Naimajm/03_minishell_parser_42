@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   03.1_word_builder.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:35 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:09:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 static t_word 	*create_word_node(char  *input, char word_type);
 static t_word	*find_word_last_node(t_word *word_list);

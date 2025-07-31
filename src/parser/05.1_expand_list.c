@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   05.1_expand_list.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:53 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 // FUNCIONES AUXILIARES EXTRACCION SUBSTITUTION STRING
 int		basic_expander(t_token *token, int first_index);

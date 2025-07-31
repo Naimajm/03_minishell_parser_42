@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   07_execution_builder.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:19:21 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 void    extract_command_arguments(t_cmd *command);
 void    extract_redirections(t_cmd *command);

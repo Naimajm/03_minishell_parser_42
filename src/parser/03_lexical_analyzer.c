@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   03_lexical_analyzer.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:30 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:09:55 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 void	command_extractor(t_cmd *command);
 int		word_extractor(t_cmd *process_list, int start_index);

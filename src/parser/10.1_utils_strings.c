@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   10.1_utils_strings.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:19:31 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:33 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 char	*ft_strjoin_free(char *str1, char *str2);
 void	free_matrix(char **matrix);

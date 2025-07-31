@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:56:35 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:06:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,6 @@ void	process_commands(t_shell *shell);
 
 // END SRC----------------------------------------------
 
-
 /// PARSER -------------------------------------------
 // 01.1_check_syntax.c		# Validacion sintaxis input
 int		validate_syntax(t_shell *shell);
@@ -258,10 +257,10 @@ void	print_tokens_list(t_token *token_list);
 
 /// EXPANSIÓN DE VARIABLES -------------------------------------------
 //  05_variable_expander.c	# Expansión de variables
-void	variable_expander(t_word *words_list, char **environment, int exit_status);
-void	expand_single_token(t_token *token, char **environment, int exit_status);
+void	variable_expander(t_word *words_list, t_shell *shell);
+int		expand_single_token(t_token *token, t_shell *shell);
 void	extract_expansion_nodes(t_token *token);
-void 	resolve_expansion_values(t_token *token, char **environment, int exit_status);
+void 	resolve_expansion_values(t_token *token, t_shell *shell);
 void	insert_expansion_values(t_token *token);
 
 //  05.1_expand_list.c		# Lista de expansiones
@@ -280,13 +279,13 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 void 	print_expand_nodes_list(t_expand *expand_list);
 
 //  05.4_dequotizer.c		# Eliminación de comillas
-void	dequotize_tokens(t_word *words_list);
-void	remove_quotes(t_token *token);
+void	dequotize_tokens(t_word *words_list, t_shell *shell);
+int		remove_quotes(t_token *tokens_list);
 
 /// PROCESAMIENTO FINAL -------------------------------------------
 // 06_word_processor.c		
-void	generate_processed_word(t_word **words_list);
-void	insert_token_node(t_word *word);
+void	generate_processed_word(t_word *words_list, t_shell *shell);
+int		insert_token_node(t_word *word);
 
 // 07_execution_builder.c 
 void    build_execution_structure(t_cmd *commands_list);

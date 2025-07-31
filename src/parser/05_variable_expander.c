@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   05_variable_expander.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 11:18:48 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:10:11 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
-void	expand_single_token(t_token *token, char **environment, int exit_status);
+int		expand_single_token(t_token *token, t_shell *shell);
 void	extract_expansion_nodes(t_token *token); 
-void 	resolve_expansion_values(t_token *token, char **environment, int exit_status);
+void 	resolve_expansion_values(t_token *token, t_shell *shell);
 void	insert_expansion_values(t_token *token);
 int		insert_expand_node_value(t_token *token);
 
-void	variable_expander(t_word *words_list, char **environment, int exit_status)
+void	variable_expander(t_word *words_list, t_shell *shell)
 {
 	t_word	*current_word;
 	t_token	*current_token;
@@ -32,23 +32,26 @@ void	variable_expander(t_word *words_list, char **environment, int exit_status)
 		current_token = (t_token *) current_word->tokens_list;
 		while (current_token)
 		{
-			expand_single_token(current_token, environment, exit_status);
+			if (expand_single_token(current_token, shell) == FAILURE)
+				shell->exit_status = ERROR;	
 			current_token = current_token->next;
 		}	
 		current_word = current_word->next;
 	}		
 }
 
-void	expand_single_token(t_token *token, char **environment, int exit_status)
+int	expand_single_token(t_token *token, t_shell *shell)
 {
 	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 
 	
-	extract_expansion_nodes(token);			// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
-	resolve_expansion_values(token, environment, exit_status);	// resolver valores	
-	insert_expansion_values(token);			// INSERTAR VALORE EN TOKEN -> EXPANDED TOKEN
+	extract_expansion_nodes(token);			
+	resolve_expansion_values(token, shell);	
+	insert_expansion_values(token);			
+	return (SUCCESS);
 }
 
+// GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 void	extract_expansion_nodes(t_token *token)
 {
     int		index;
@@ -91,24 +94,25 @@ void	extract_expansion_nodes(t_token *token)
     }
 }
 
-void resolve_expansion_values(t_token *token, char **environment, int exit_status)
+// resolver valores	
+void resolve_expansion_values(t_token *token, t_shell *shell)
 {
 	t_expand	*expand_node;
 	char		*value;
 
-	if (!token || !environment)
+	if (!token || !shell->environment)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));  
 	expand_node = (t_expand *) token->expands_list;
 	while (expand_node)
 	{
 		if (expand_node->type == LAST_EXIT_STATUS)
 		{
-			value = ft_itoa(exit_status);	
+			value = ft_itoa(shell->exit_status);	
 			if (!value)
 				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}				
 		else if (expand_node->type == CURLY_BRACES)
-			value = get_environment_var(environment, expand_node->key);			
+			value = get_environment_var(shell->environment, expand_node->key);			
 		else if (expand_node->type == LITERAL)
 		{
 			value = ft_strdup(expand_node->key);
@@ -116,7 +120,7 @@ void resolve_expansion_values(t_token *token, char **environment, int exit_statu
 				return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
 		}			
 		else
-			value = get_environment_var(environment, expand_node->key);
+			value = get_environment_var(shell->environment, expand_node->key);
 		expand_node->value = value;
 		expand_node = expand_node->next;
 	}
