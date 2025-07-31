@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:07:35 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:15:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	dequotize_tokens(t_word *words_list, t_shell *shell)
 {
 	t_word	*current_word;
 
-	if (!words_list)
+	if (!words_list || !shell)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_word = (t_word *) words_list;
 	while (current_word)

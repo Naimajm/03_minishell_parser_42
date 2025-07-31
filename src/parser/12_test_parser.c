@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:49:24 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,8 +236,8 @@ char *test_cases[] = {
 	"echo \"hello|world\"",                  // Pipe dentro de comillas dobles (válido)
 
 	// 6. PIPES CON COMANDOS VACÍOS
-	"echo hello |  | echo world",    	// error		// Comando vacío entre pipes
-	"echo hello |   |   | echo world", // error      	// Múltiples comandos vacíos
+	"echo hello |  | echo world",    				// Comando vacío entre pipes
+	"echo hello |   |   | echo world",       		// Múltiples comandos vacíos
 	" | | ",                                 			// Solo pipes y espacios
 	"||",                                    			// Solo double pipe
 	"| |",                                   			// Pipes separados por espacio
@@ -249,14 +249,14 @@ char *test_cases[] = {
 	//"echo hello | << EOF",            // DISTINTO BENITEZ        // Pipe seguido de heredoc sin comando
 
 	// 8. CASOS EXTREMOS Y COMBINACIONES
-	//"echo | | | hello",      			// error        // Múltiples pipes con argumentos mezclados
-	//"| | echo hello | |",                    			// Pipes al inicio y al final
-	"echo 'hello | world' |",  		// OK = BENITEZ  // Comillas con pipe interno + pipe real al final
-	//"echo \"hello | world\" | | echo test", 	// error // Comillas con pipe interno + error de sintaxis
-	//"echo$USER|echo$HOME",            // OK = BENITEZ      // Variables pegadas a pipes
-	//"$USER|$HOME",                   	// OK = BENITEZ    // Solo variables con pipe
+	//"echo | | | hello",      					       		// Múltiples pipes con argumentos mezclados
+	//"| | echo hello | |",                    				// Pipes al inicio y al final
+	"echo 'hello | world' |",  			// OK = BENITEZ  	// Comillas con pipe interno + pipe real al final
+	"echo \"hello | world\" | | echo test", 				// Comillas con pipe interno + error de sintaxis
+	//"echo$USER|echo$HOME",            // OK = BENITEZ     // Variables pegadas a pipes
+	//"$USER|$HOME",                   	// OK = BENITEZ    	// Solo variables con pipe
 	"|$USER",                                				// Pipe + variable al inicio
-	//"$USER|",                        	// OK = BENITEZ      // Variable + pipe al final
+	"$USER|",                        	// OK = BENITEZ     // Variable + pipe al final
 
 	// 9. PIPES CON ESPACIOS ESPECIALES
 	"echo hello |		",                     // Pipe con tab al final
@@ -370,20 +370,30 @@ void test_basic_parser(t_shell *shell)
         {
             // FASE 1: Syntax analyzer (ahora solo crea estructura)
             printf("  1. Syntax analyzer...");
-            create_commands_structure(shell);
-            if (!shell->commands_list)
-            {
-                printf(" ❌ FAILED\n");
-                failed++;
-                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
-                test_passed = false;
-            }
-            else
-            {
-                printf(" ✅ OK\n");
-            }
-        }
-        
+			create_commands_structure(shell);
+			if (!shell->commands_list)
+			{
+				printf(" ❌ FAILED\n");
+				failed++;
+				failed_tests[failed_count++] = test_number;
+				test_passed = false;
+			}
+			else
+			{
+				// NUEVO: Validación de estructura de comandos
+				if (validate_command_structure(shell) == SYNTAX_ERROR)
+				{
+					printf(" ❌ FAILED (command structure)\n");
+					failed++;
+					failed_tests[failed_count++] = test_number;
+					test_passed = false;
+				}
+				else
+				{
+					printf(" ✅ OK\n");
+				}
+			}
+        }        
         // FASE 2: Lexical analyzer
         if (test_passed)
         {
@@ -407,7 +417,18 @@ void test_basic_parser(t_shell *shell)
         {
             printf("  3. Process commands...");
             process_commands(shell);
-            printf(" ✅ OK\n");
+            // NUEVO: Validación semántica post-expansión
+            if (validate_command_semantics(shell) == SYNTAX_ERROR)
+            {
+                printf(" ❌ FAILED (command semantics)\n");
+                failed++;
+                failed_tests[failed_count++] = test_number;
+                test_passed = false;
+            }
+            else
+            {
+                printf(" ✅ OK\n");
+            }
         }
         
         // FASE 4: Build execution
@@ -481,8 +502,6 @@ void test_basic_parser(t_shell *shell)
     exit(0);
 }
 
-
-
 void test_complex_parser(t_shell *shell)
 {
     int index;
@@ -545,14 +564,25 @@ void test_complex_parser(t_shell *shell)
         if (test_passed)
         {
             // FASE 1: Syntax analyzer
-            create_commands_structure(shell);
-            if (!shell->commands_list)
-            {
-                printf("❌ FAILED -> \t Syntax analyzer failed to create command structure\n");
-                failed++;
-                failed_tests[failed_count++] = test_number; // Guardar número de test fallido
-                test_passed = false;
-            }
+			create_commands_structure(shell);
+			if (!shell->commands_list)
+			{
+				printf("❌ FAILED -> \t Syntax analyzer failed to create command structure\n");
+				failed++;
+				failed_tests[failed_count++] = test_number;
+				test_passed = false;
+			}
+			else
+			{
+				// NUEVO: Validación de estructura de comandos
+				if (validate_command_structure(shell) == SYNTAX_ERROR)
+				{
+					printf("❌ FAILED -> \t Command structure invalid\n");
+					failed++;
+					failed_tests[failed_count++] = test_number;
+					test_passed = false;
+				}
+			}
         }
         
         // FASE 2: Lexical analyzer
@@ -566,14 +596,21 @@ void test_complex_parser(t_shell *shell)
                 failed_tests[failed_count++] = test_number; // Guardar número de test fallido
                 test_passed = false;
             }
-        }
-        
+        }        
         // FASE 3: Process commands  
+        if (test_passed)
         if (test_passed)
         {
             process_commands(shell);
-        }
-        
+            // NUEVO: Validación semántica post-expansión
+            if (validate_command_semantics(shell) == SYNTAX_ERROR)
+            {
+                printf("❌ FAILED -> \t Command semantics invalid\n");
+                failed++;
+                failed_tests[failed_count++] = test_number;
+                test_passed = false;
+            }
+        }        
         // FASE 4: Build execution structure
         if (test_passed)
         {
@@ -771,7 +808,9 @@ static bool is_expected_syntax_error(char *input)
         "<< EOF",                 
         "echo hola > file </<</>/>>",
 		"| cat << EOF",
-		"cat << EOF | ",		
+		"cat << EOF | ",
+		"echo \"hello | world\" | | echo test",
+		"$USER|",	
         
         // Solo operadores
         " | | ",                  

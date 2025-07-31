@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:06:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:28:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,8 +198,8 @@ t_shell *initialize_shell(void);
 int		load_environment_variables(t_shell *shell, char **environment);
 void	cleanup_minishell(t_shell *shell);
 
-// 01_run_shell.c			# loop principal Shell
-void	run_shell(t_shell *shell);
+// 01_execute_shell.c			# loop principal Shell
+void	execute_shell(t_shell *shell);
 void	recover_previous_status(t_shell *shell);
 void	read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
@@ -220,11 +220,10 @@ void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);
 char	*create_clean_command(char *input, int start_index, int final_index);
 
-// 02.1_syntax_check.c	# Validacion sintaxis input
-/* int 	validate_command_structure(t_cmd *commands_list);
-int 	validate_pipe_structure(t_cmd *commands_list);
-int 	validate_redirections_structure(t_cmd *commands_list);
-int 	validate_command_semantics(t_cmd *commands_list); */
+// 02.1_command_check.c	# Validacion sintaxis estructura comandos
+int			validate_command_structure(t_shell *shell);
+int 		validate_pipe_structure(t_cmd *commands_list);
+int 		validate_redirections_structure(t_cmd *commands_list);
 
 // 02.2_command_builder.c	# Constructor de comandos
 void	add_command_node(t_cmd **commands_list, char *input);
@@ -287,7 +286,10 @@ int		remove_quotes(t_token *tokens_list);
 void	generate_processed_word(t_word *words_list, t_shell *shell);
 int		insert_token_node(t_word *word);
 
-// 07_execution_builder.c 
+// 07_semantic_check.c
+int 		validate_command_semantics(t_shell *shell);
+
+// 08_execution_builder.c 
 void    build_execution_structure(t_cmd *commands_list);
 void    extract_command_arguments(t_cmd *command);
 void    extract_redirections(t_cmd *command);

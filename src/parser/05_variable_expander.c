@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:15:20 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	variable_expander(t_word *words_list, t_shell *shell)
 	t_word	*current_word;
 	t_token	*current_token;
 
-	if (!words_list)
+	if (!words_list || !shell)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
 	current_word = (t_word *) words_list;
 

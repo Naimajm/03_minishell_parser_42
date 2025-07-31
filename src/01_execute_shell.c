@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   01_run_shell.c                                     :+:      :+:    :+:   */
+/*   01_execute_shell.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:11:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:42:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
 
-void	run_shell(t_shell *shell)
+void	execute_shell(t_shell *shell)
 {
 	int		iteration;
 	
@@ -29,10 +29,8 @@ void	run_shell(t_shell *shell)
 		iteration++;
         printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 		
-		recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro de esta funcion
-
-		read_user_input(shell, PROMPT);
-					
+		recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro 
+		read_user_input(shell, PROMPT);					
 		process_input(shell);
 		
 		//print_config_shell(shell);		// DEBUG
@@ -85,13 +83,18 @@ void	process_input(t_shell *shell)
 		return ;
 		
 	if (validate_syntax(shell) == SYNTAX_ERROR)		
-	{
-		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
-        return ;
-    }
+		return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
+
 	create_commands_structure(shell);	
+	if (validate_command_structure(shell) == SYNTAX_ERROR)		
+        return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
+
 	lexical_analyzer(shell->commands_list);	
 	process_commands(shell);
+
+	if (validate_command_semantics(shell) == SYNTAX_ERROR)		
+		return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
+		
 	build_execution_structure(shell->commands_list);		
 
 	// EJECUTAR COMANDOS 							!!! JUANJE
@@ -117,6 +120,3 @@ void	process_commands(t_shell *shell)
 		current_command = current_command->next;
 	}	
 }
-
-
-

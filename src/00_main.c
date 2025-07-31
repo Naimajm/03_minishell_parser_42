@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:11:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:28:12 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	main(int	argc, char **argv, char **environment)
 	if (argc > 1 && ft_strncmp(argv[1], "--test", 6) == 0)
 		test_complex_parser(shell);
 	
-	run_shell(shell);	
+	execute_shell(shell);	
 
     cleanup_minishell(shell);		
 	return (SUCCESS);
@@ -69,7 +69,7 @@ t_shell *initialize_shell(void)
 	}			
 	shell->input 			= NULL;
 	shell->environment		= NULL;
-	shell->readonly_vars		= NULL;
+	shell->readonly_vars	= NULL;
 	shell->exit_status		= SUCCESS;
 	shell->last_exit_status = SUCCESS;
 	shell->commands_list	= NULL;		

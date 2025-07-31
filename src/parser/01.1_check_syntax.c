@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 23:10:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:09:47 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 17:50:04 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,10 @@ int check_pipe_syntax(char *input)
     temp_index      = 0;    
     
     while (input[index] && is_space(input[index]))      // Saltar espacios iniciales
-        index++;        
-    
+        index++;    
     if (is_pipe(input[index]))                            // ERROR: Pipe al inicio
-        return (SYNTAX_ERROR);
-    
+        return (SYNTAX_ERROR);    
+		
     while (input[index])
     {
         handle_quote_state(&inside_quotes, &quote_char, input[index]);

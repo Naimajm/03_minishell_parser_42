@@ -30,20 +30,21 @@ EXT_LIBRARYS 	:= $(GNL_DIR)/$(GNL_ARCHIVE) $(LIBFT_DIR)/$(LIBFT_ARCHIVE) -lreadl
 
 # SRC --------------------------------------------------------------------------------
 SRC_DIR			:= ./src
-SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c 01_run_shell.c) 
+SRC_FILES 		:= $(addprefix $(SRC_DIR)/, 00_main.c 01_execute_shell.c) 
 OBJ_FILES 		:= $(SRC_FILES:%.c=%.o)
 
 # PARSER --------------------------------------------------------------------------------
 
 PAR_DIR			:= ./src/parser
 PAR_FILES 		:= $(addprefix $(PAR_DIR)/,  01.1_check_syntax.c \
-				02_command_generate.c  02.2_command_builder.c \
+				02_command_generate.c  02.1_command_check.c 02.2_command_builder.c \
 				03_lexical_analyzer.c 03.1_word_builder.c \
 				04_tokenizer.c 04.1_token_builder.c \
 				05_variable_expander.c \
 				05.1_expand_list.c 05.2_expand_extractor.c 05.3_expand_builder.c 05.4_dequotizer.c \
 				06_word_processor.c \
-				07_execution_builder.c \
+				07_semantic_check.c \
+				08_execution_builder.c \
 				10_utils_core.c 10.1_utils_strings.c 10.2_free_manager.c 10.3_utils_debug.c \
 				12_test_parser.c )
 
