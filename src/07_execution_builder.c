@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 17:34:58 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 10:04:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ int count_word_arguments(t_word *words_list)
 	int args_count;
 
 	if(!words_list)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), GEN_ERROR);
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), ERROR);
 	current_word    = (t_word *) words_list;
 	args_count      = 0;
 	while (current_word)

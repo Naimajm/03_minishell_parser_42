@@ -6,45 +6,36 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 22:21:27 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 10:54:01 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
 void	recover_previous_status(t_shell *shell);
-char	*read_user_input(char *prompt);
+void	read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
 
 void	run_shell(t_shell *shell)
 {
-	char	*input;
 	int		iteration;
 	
 	if (!shell)											
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
-	iteration = 0;										// CONTADOR DEBUG
-	while (1)											// loop ppal
+	iteration = 0;										// DEBUG CONTADOR 
+	while (1)											
 	{
 		iteration++;
         printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 		
 		recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro de esta funcion
 
-		input = read_user_input(PROMPT);
-		if (!input)										// CASO EOF - TERMINAR SHELL
-			break ;	
-        if (input[0] == '\0')							// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
-            continue;  									// VOLVER AL INICIO DEL LOOP
-		shell->input = ft_strdup(input);				// PROCESAR INPUT VÁLIDO
-		if (!shell->input)
-			return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));	
-			
+		read_user_input(shell, PROMPT);
+					
 		process_input(shell);
 		
-		//print_config_shell(shell);		// DEBUG						
-		free(input);
+		//print_config_shell(shell);		// DEBUG
 		free_iteration_input(shell);
 		printf("DEBUG: Memory freed, iteration %d\n", iteration);
 	}	
@@ -66,41 +57,45 @@ void	recover_previous_status(t_shell *shell)
 		shell->exit_status = SUCCESS;	 */				// RESET A 0 SI NO HAY SEÑALES
 }	
 
-char	*read_user_input(char *prompt)
+void	read_user_input(t_shell *shell, char *prompt)
 {
-	char	*input;
+	char	*input;	
 
 	input = readline(prompt);
 	if (!input)
-		return (NULL); 		// Retornar NULL para indicar EOF	
-	if (input[0] != '\0')  	// añadir a historial si input no vacio	
-		add_history(input);
-	return (input);
+		return ;		
+	if (input[0] == '\0')					// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
+	{
+		free(input);
+		return ;
+	}					
+	add_history(input);						// añadir a historial si input no vacio	
+	shell->input = ft_strdup(input);		// PROCESAR INPUT VÁLIDO
+	if (!shell->input)
+	{
+		free(input);
+		return (ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO));
+	}
+	free(input);
 }
 
 void	process_input(t_shell *shell)
 {
 	if (!shell || !shell->input)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
+		return ;
 		
-	//printf("Check Syntax...\t\t\t OK\n");
 	if (validate_syntax(shell) == SYNTAX_ERROR)		
 	{
 		ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO);
         return ;
     }
 
-	//printf("Syntax analyzer...\t\t\t OK\n");
 	create_commands_structure(shell);	
 
-	//printf("Lexical analyzer...\t\t\t OK\n");
 	lexical_analyzer(shell->commands_list);	
-	//print_commands_list(shell->commands_list);		// Debug
 
-	//printf("Process Comands...\t\t\t OK\n");
 	process_commands(shell);
 
-	//printf("Generating execution structure...\t OK\n");
 	build_execution_structure(shell->commands_list);		
 
 	// EJECUTAR COMANDOS 							!!! JUANJE
@@ -108,9 +103,7 @@ void	process_input(t_shell *shell)
 	
 	print_commands_list(shell->commands_list);			// Debug
 
-	// LIBERAR ESTRUCTURAS COMMANDS
 	free_commands_list(&shell->commands_list);
-	shell->commands_list = NULL;
 }
 
 void	process_commands(t_shell *shell)
@@ -122,16 +115,12 @@ void	process_commands(t_shell *shell)
 	current_command = (t_cmd *) shell->commands_list;
 	while (current_command)
 	{
-		//printf("Word -> Tokenizer...				OK\n\n");
-		tokenizer(current_command->words_list);
+		tokenizer(current_command->words_list, shell);
 
-		//printf("Tokens -> Expand variables $...			OK\n\n");
 		variable_expander(current_command->words_list, shell->environment, shell->exit_status);
 
-		//printf("Tokens -> Dequotize tokens...			OK\n\n");
 		dequotize_tokens(current_command->words_list);	
 
-		//printf("Word -> Join Tokens to 'processed_word'...	OK\n\n");
 		generate_processed_word(&current_command->words_list);	
 		
 		current_command = current_command->next;

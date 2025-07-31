@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 21:41:43 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 10:32:07 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,12 @@
 // OWN LIBRARIES
 #include	"../libft/libft.h"
 
-// MACROS -----------------------------------------------
-
 // VALORES EXIT_STATUS
 # define FAILURE			-1
 # define SUCCESS			0
-# define GEN_ERROR			1
+# define ERROR				1
 # define SYNTAX_ERROR		2
+
 # define COMMAND_NOT_FOUND	127
 # define EXIT_SIGINT		130		// Ctrl+'C'
 # define EXIT_SIGQUIT       131    	// Ctrl+'\'
@@ -196,7 +195,7 @@ void	cleanup_minishell(t_shell *shell);
 // 01_run_shell.c			# loop principal Shell
 void	run_shell(t_shell *shell);
 void	recover_previous_status(t_shell *shell);
-char	*read_user_input(char *prompt);
+void	read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
 
@@ -237,8 +236,8 @@ void 	print_words_list(t_word *word_list);
 
 /// TOKENIZACIÓN -------------------------------------------
 // 04_tokenizer.c			# Tokenización
-void	tokenizer(t_word *words_list);
-void	word_tokenizer(t_word *word);
+void	tokenizer(t_word *words_list, t_shell *shell);
+int		word_tokenizer(t_word *word);
 int		noquotes_tokenizer(t_word *word, int start_index);
 int		quotes_tokenizer(t_word *word, int start_index);
 int		operator_tokenizer(t_word *word, int start_index);

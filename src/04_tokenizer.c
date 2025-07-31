@@ -6,18 +6,18 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/30 22:33:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 10:10:14 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	word_tokenizer(t_word *word);
+int		word_tokenizer(t_word *word);
 int		noquotes_tokenizer(t_word *word, int start_index);
 int		quotes_tokenizer(t_word *word, int start_index);
 int		operator_tokenizer(t_word *word, int start_index);
 
-void	tokenizer(t_word *words_list)
+void	tokenizer(t_word *words_list, t_shell *shell)
 {
 	t_word	*current_word;
 	if (!words_list)
@@ -28,22 +28,20 @@ void	tokenizer(t_word *words_list)
 	current_word = (t_word *) words_list;
 	while (current_word)
 	{
-		word_tokenizer(current_word);	
-		/* // ESTADO COMPORTAMIENTO FUNCIONES CLASIFICACION
-		if (exit_status == FAILURE)
-			// shell->exit_status = GEN_ERROR;	 */	
+		if (word_tokenizer(current_word) == FAILURE)
+			shell->exit_status = ERROR;		
 		current_word = current_word->next;
 	}		
 }
 
-void	word_tokenizer(t_word *word)
+int	word_tokenizer(t_word *word)
 {
 	char	*raw_word;
 	int		index;
 	int		token_len;
 
 	if (!word)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	 	
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	 	
 	raw_word = word->raw_word;		
 	index = 0;	
 	while (raw_word[index])
@@ -59,10 +57,14 @@ void	word_tokenizer(t_word *word)
 		else if (is_operator(raw_word[index]))
 			token_len = operator_tokenizer(word, index);		
 		else 											// 1º letra palabra simple sin inicio comillas
-			token_len = noquotes_tokenizer(word, index);		
+			token_len = noquotes_tokenizer(word, index);			
+		if (token_len == FAILURE)
+			return (FAILURE);
 		
 		index = advance_index_by_length(index, token_len);  // GESTION CASOS ESPECIALES AVANCE INDEX
+		
 	}	
+	return (SUCCESS);
 }
 
 int	noquotes_tokenizer(t_word *word, int start_index)
@@ -164,6 +166,8 @@ int	operator_tokenizer(t_word *word, int start_index)
 	char	*raw_word;
 	int		len_input;
 
+	if (!word || !word->raw_word)
+        return (FAILURE);
 	raw_word = (char *) word->raw_word;
 
 	if (raw_word[start_index] == '>') 		
@@ -171,7 +175,7 @@ int	operator_tokenizer(t_word *word, int start_index)
 		if (raw_word[start_index + 1] == '>')
 		{
 			add_token_node(&word->tokens_list, ">>", OPERATOR);
-			return (len_input = 2);
+			return (2);
 		}				
 		else
 			add_token_node(&word->tokens_list, ">", OPERATOR);		
