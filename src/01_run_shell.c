@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 10:54:01 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 10:55:56 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ void	run_shell(t_shell *shell)
         printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 		
 		recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro de esta funcion
-
-		read_user_input(shell, PROMPT);
-					
+		read_user_input(shell, PROMPT);					
 		process_input(shell);
 		
 		//print_config_shell(shell);		// DEBUG
