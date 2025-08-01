@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:49:24 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/07/31 19:57:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ char *test_cases[] = {
 	//"echo|",                          // OK = BENITEZ 	// Comando pegado a pipe al final
 	//"|hello",                     	// OK = BENITEZ    	// Pipe pegado al inicio sin espacios
 	//"ech|o hello",                    // OK = BENITEZ      // Pipe en medio de palabra
-	//"echo hel|lo",                  	// DISTINTO BENITEZ        // Pipe en medio de argumento
+	//"echo hel|lo",                  	// OK = BENITEZ        // Pipe en medio de argumento
 	"echo 'hello|world'",                    // Pipe dentro de comillas simples (válido)
 	"echo \"hello|world\"",                  // Pipe dentro de comillas dobles (válido)
 
@@ -249,8 +249,8 @@ char *test_cases[] = {
 	//"echo hello | << EOF",            // DISTINTO BENITEZ        // Pipe seguido de heredoc sin comando
 
 	// 8. CASOS EXTREMOS Y COMBINACIONES
-	//"echo | | | hello",      					       		// Múltiples pipes con argumentos mezclados
-	//"| | echo hello | |",                    				// Pipes al inicio y al final
+	"echo | | | hello",      			// OK = BENITEZ		// Múltiples pipes con argumentos mezclados
+	"| | echo hello | |",               // OK = BENITEZ		// Pipes al inicio y al final
 	"echo 'hello | world' |",  			// OK = BENITEZ  	// Comillas con pipe interno + pipe real al final
 	"echo \"hello | world\" | | echo test", 				// Comillas con pipe interno + error de sintaxis
 	//"echo$USER|echo$HOME",            // OK = BENITEZ     // Variables pegadas a pipes
@@ -260,7 +260,7 @@ char *test_cases[] = {
 
 	// 9. PIPES CON ESPACIOS ESPECIALES
 	"echo hello |		",                     // Pipe con tab al final
-	//"	|	echo hello",                       // Tabs alrededor de pipe inicial
+	"	|	echo hello",                       // Tabs alrededor de pipe inicial
 	//"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
 	//"echo hello \n| echo world",             // Pipe con caracteres especiales
 
