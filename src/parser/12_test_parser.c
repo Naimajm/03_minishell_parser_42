@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:57:25 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 11:44:53 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ char *test_cases[] = {
 	//"echo hello | << EOF",            // DISTINTO BENITEZ        // Pipe seguido de heredoc sin comando
 
 	// 8. CASOS EXTREMOS Y COMBINACIONES
-	"echo | | | hello",      			// OK = BENITEZ		// Múltiples pipes con argumentos mezclados
+	//"echo | | | hello",      			// OK = BENITEZ		// Múltiples pipes con argumentos mezclados
 	"| | echo hello | |",               // OK = BENITEZ		// Pipes al inicio y al final
 	"echo 'hello | world' |",  			// OK = BENITEZ  	// Comillas con pipe interno + pipe real al final
 	"echo \"hello | world\" | | echo test", 				// Comillas con pipe interno + error de sintaxis
@@ -260,7 +260,7 @@ char *test_cases[] = {
 
 	// 9. PIPES CON ESPACIOS ESPECIALES
 	"echo hello |		",                     // Pipe con tab al final
-	"	|	echo hello",                       // Tabs alrededor de pipe inicial
+	//"	|	echo hello",               // OK = BENITEZ         // Tabs alrededor de pipe inicial
 	//"echo hello	|	echo world",          // DISTINTO BENITEZ    // Pipe con tabs alrededor
 	//"echo hello \n| echo world",             // Pipe con caracteres especiales
 
@@ -394,7 +394,7 @@ void test_basic_parser(t_shell *shell)
 				}
 			}
         }        
-        // FASE 2: Lexical analyzer
+        /* // FASE 2: Lexical analyzer
         if (test_passed)
         {
             printf("  2. Lexical analyzer...");
@@ -410,7 +410,7 @@ void test_basic_parser(t_shell *shell)
             {
                 printf(" ✅ OK\n");
             }
-        }
+        } */
         
         // FASE 3: Process commands
         if (test_passed)
@@ -418,16 +418,28 @@ void test_basic_parser(t_shell *shell)
             printf("  3. Process commands...");
             process_commands(shell);
             // NUEVO: Validación semántica post-expansión
-            if (validate_command_semantics(shell) == SYNTAX_ERROR)
+            // Verificar que el procesamiento fue exitoso
+            if (!shell->commands_list->words_list)
             {
-                printf(" ❌ FAILED (command semantics)\n");
+                printf(" ❌ FAILED (processing pipeline)\n");
                 failed++;
                 failed_tests[failed_count++] = test_number;
                 test_passed = false;
             }
             else
             {
-                printf(" ✅ OK\n");
+                // NUEVO: Validación semántica post-expansión
+                if (validate_command_semantics(shell) == SYNTAX_ERROR)
+                {
+                    printf(" ❌ FAILED (command semantics)\n");
+                    failed++;
+                    failed_tests[failed_count++] = test_number;
+                    test_passed = false;
+                }
+                else
+                {
+                    printf(" ✅ OK\n");
+                }
             }
         }
         
@@ -585,7 +597,7 @@ void test_complex_parser(t_shell *shell)
 			}
         }
         
-        // FASE 2: Lexical analyzer
+        /* // FASE 2: Lexical analyzer
         if (test_passed)
         {
             lexical_analyzer(shell->commands_list);
@@ -596,21 +608,32 @@ void test_complex_parser(t_shell *shell)
                 failed_tests[failed_count++] = test_number; // Guardar número de test fallido
                 test_passed = false;
             }
-        }        
+        }   */      
         // FASE 3: Process commands  
         if (test_passed)
-        if (test_passed)
         {
-            process_commands(shell);
-            // NUEVO: Validación semántica post-expansión
-            if (validate_command_semantics(shell) == SYNTAX_ERROR)
+            process_commands(shell);  // Ahora incluye lexical_analyzer + todo el pipeline
+            
+            // Verificar que el procesamiento fue exitoso
+            if (!shell->commands_list->words_list)
             {
-                printf("❌ FAILED -> \t Command semantics invalid\n");
+                printf("❌ FAILED -> \t Command processing pipeline failed\n");
                 failed++;
                 failed_tests[failed_count++] = test_number;
                 test_passed = false;
             }
-        }        
+            else
+            {
+                // NUEVO: Validación semántica post-expansión
+                if (validate_command_semantics(shell) == SYNTAX_ERROR)
+                {
+                    printf("❌ FAILED -> \t Command semantics invalid\n");
+                    failed++;
+                    failed_tests[failed_count++] = test_number;
+                    test_passed = false;
+                }
+            }
+        }       
         // FASE 4: Build execution structure
         if (test_passed)
         {

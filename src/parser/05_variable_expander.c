@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:15:20 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 12:35:32 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int	insert_expand_node_value(t_token *token)
 		if (current_node->first_index > last_position) // Añadir texto antes de la variable
 		{
 			prefix	= ft_substr(token->raw_token, last_position, current_node->first_index - last_position);
-			printf("  prefix: '%s'\n", prefix);
+			//printf("  prefix: '%s'\n", prefix);
 			result	= ft_strjoin_free(result, prefix);
 			free(prefix);
 		}       

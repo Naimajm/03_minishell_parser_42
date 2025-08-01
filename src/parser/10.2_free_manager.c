@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:31:55 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:38 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 12:37:36 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_iteration_input(t_shell *shell)
 	}
 	if (shell->commands_list)		// Liberar lista comandos iteracion
 		free_commands_list(&shell->commands_list);
-	printf(FREE_ITERATION_INPUT);
+	//printf(FREE_ITERATION_INPUT);
 }
 
 void	free_commands_list(t_cmd **commands_list)

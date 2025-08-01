@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:28:12 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 12:37:49 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ int	main(int	argc, char **argv, char **environment)
 	if (argc > 1 && ft_strncmp(argv[1], "--test", 6) == 0)
 		test_complex_parser(shell);
 	
-	execute_shell(shell);	
-
+	execute_shell(shell);
     cleanup_minishell(shell);		
 	return (SUCCESS);
 }
@@ -86,8 +85,7 @@ int	load_environment_variables(t_shell *shell, char **environment)
 	env_count 	= 0;
 	index 		= 0;	
 	while (environment[env_count]) 					// calculo total elementos
-		env_count++;
-	
+		env_count++;	
 	// reserva + carga copia en shell
 	shell->environment = (char **) malloc(sizeof(char *) * (env_count + 1));
 	
@@ -114,5 +112,5 @@ void	cleanup_minishell(t_shell *shell)
 	
 	free(shell);
 	shell = NULL;
-	printf(FREE_ALL_SHELL);
+	//printf(FREE_ALL_SHELL);
 }

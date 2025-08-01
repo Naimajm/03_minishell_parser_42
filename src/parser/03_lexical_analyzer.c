@@ -6,44 +6,36 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:09:55 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 12:34:51 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void	command_extractor(t_cmd *command);
+int		command_extractor(t_cmd *command);
 int		word_extractor(t_cmd *process_list, int start_index);
 int		operator_extractor(t_cmd *process_list, int start_index);
 
-void	lexical_analyzer(t_cmd *commands_list)
-{
-	t_cmd	*current_command;
-	
-	printf("DEBUG -> lexical_analyzer()\n");
-	if (!commands_list)
-	{					
-		ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO);
-		return ;
-	}		
-		
-	current_command = (t_cmd *) commands_list;
-	while (current_command)
+void	lexical_analyzer(t_cmd *current_command, t_shell *shell)
+{	
+	if (!current_command)
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));				
+	if (command_extractor(current_command) == FAILURE)
 	{
-		command_extractor(current_command);
-		current_command = current_command->next;
-	}	
+		ft_putendl_fd(ERROR_COMMAND_INIT, STDERR_FILENO);
+        shell->exit_status = ERROR;
+		return ;
+	}
 }
 
-void	command_extractor(t_cmd *command)
+int	command_extractor(t_cmd *command)
 {
 	char	*command_input;
 	int		index;
 	int		word_len;
 
 	if (!command)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO)); 
-	
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 	
 	command_input = command->command;
 	index = 0;		
 	while (command_input[index])
@@ -51,17 +43,16 @@ void	command_extractor(t_cmd *command)
 		while (is_space(command_input[index])) 	// ignorar espacios iniciales 
 			index++;		
 		if (!command_input[index]) 				// Verificar si llegamos al final después de saltar espacios
-			break;
-		
+			break;		
 		if (is_operator(command_input[index]))	// CLASIFICACION WORD // OPERATOR
 			word_len = operator_extractor(command, index);  
 		else
-			word_len = word_extractor(command, index);			
-			
+			word_len = word_extractor(command, index);				
+		if (word_len == FAILURE)
+			return (FAILURE);			
 		index = advance_index_by_length(index, word_len);		// GESTION CASOS ESPECIALES AVANCE INDEX	
-
-		printf ("DEBUG final proceso command_extractor() \n -> %s, index -> %i, word_len -> %i, LEN COMAND_INPUT -> %i\n",command_input, index, word_len, ft_strlen(command_input));	
-	}		
+	}	
+	return (SUCCESS);		
 }
 
 int	word_extractor(t_cmd *command, int start_index)
@@ -72,8 +63,6 @@ int	word_extractor(t_cmd *command, int start_index)
 	char	current_quote;
 	bool	quote_state;  			// false = fuera, true = dentro
 	char	character;
-
-	printf("DEBUG -> word_extractor()\n");
 
 	if (!command->command)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 		 
@@ -113,9 +102,9 @@ int	word_extractor(t_cmd *command, int start_index)
 	
 	len_input = ft_strlen(command_input);
 
-	printf("Generated word: <%s>\n", command_input);		
+	//printf("Generated word: <%s>\n", command_input);		
 	add_word_node(&command->words_list, command_input, WORD);
-	printf("DEBUG: add word successfully -> word_len = %d\n\n", len_input);
+	//printf("DEBUG: add word successfully -> word_len = %d\n\n", len_input);
 	
 	free(command_input);	
 	return (len_input);

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:28:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 11:55:54 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,8 @@ void	cleanup_minishell(t_shell *shell);
 // 01_execute_shell.c			# loop principal Shell
 void	execute_shell(t_shell *shell);
 void	recover_previous_status(t_shell *shell);
-void	read_user_input(t_shell *shell, char *prompt);
+int	read_user_input(t_shell *shell, char *prompt);
+//void	read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
 
@@ -221,9 +222,9 @@ int 	generate_command(t_shell *shell, int start_index);
 char	*create_clean_command(char *input, int start_index, int final_index);
 
 // 02.1_command_check.c	# Validacion sintaxis estructura comandos
-int			validate_command_structure(t_shell *shell);
-int 		validate_pipe_structure(t_cmd *commands_list);
-int 		validate_redirections_structure(t_cmd *commands_list);
+int		validate_command_structure(t_shell *shell);
+int 	validate_pipe_structure(t_cmd *command);
+int 	validate_redirections_structure(t_cmd *command);
 
 // 02.2_command_builder.c	# Constructor de comandos
 void	add_command_node(t_cmd **commands_list, char *input);
@@ -233,13 +234,14 @@ void	print_output(char **args);
 
 /// ANÁLISIS LÉXICO -------------------------------------------
 // 03_lexical_analyzer.c	# Análisis léxico
-void	lexical_analyzer(t_cmd *commands_list);
-void	command_extractor(t_cmd *command);
+void	lexical_analyzer(t_cmd *current_command, t_shell *shell);
+int		command_extractor(t_cmd *command);
 int		word_extractor(t_cmd *command, int start_index);
 int		operator_extractor(t_cmd *command, int start_index);
 
 // 03.1_word_builder.c		# Constructor de palabras
 void	add_word_node(t_word **word_list, char  *input, char word_type);
+t_word	*find_word_last_node(t_word *word_list);
 void 	print_words_list(t_word *word_list);
 
 /// TOKENIZACIÓN -------------------------------------------
@@ -287,7 +289,7 @@ void	generate_processed_word(t_word *words_list, t_shell *shell);
 int		insert_token_node(t_word *word);
 
 // 07_semantic_check.c
-int 		validate_command_semantics(t_shell *shell);
+int 	validate_command_semantics(t_shell *shell);
 
 // 08_execution_builder.c 
 void    build_execution_structure(t_cmd *commands_list);

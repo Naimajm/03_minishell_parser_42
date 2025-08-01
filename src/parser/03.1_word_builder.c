@@ -6,14 +6,14 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:44:40 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:09:58 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 11:32:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static t_word 	*create_word_node(char  *input, char word_type);
-static t_word	*find_word_last_node(t_word *word_list);
+t_word			*find_word_last_node(t_word *word_list);
 void 			print_words_list(t_word *word_list);
 
 void	add_word_node(t_word **word_list, char  *input, char word_type)
@@ -58,7 +58,7 @@ static t_word *create_word_node(char  *input, char word_type)
 	return  (new_node);
 }
 
-static t_word	*find_word_last_node(t_word *word_list)
+t_word	*find_word_last_node(t_word *word_list)
 {    
 	if (!word_list) 					
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:09:50 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 12:33:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	create_commands_structure(t_shell *shell)
 		
 		if (is_pipe(shell->input[index]))		// Si encontramos un pipe, saltarlo para el siguiente comando
 		{
-			printf("Found pipe, creating new command structure\n");
+			//printf("Found pipe, creating new command structure\n");
 			index++; 							// Saltar el pipe			
 		}	
 	}	
@@ -107,9 +107,9 @@ int generate_command(t_shell *shell, int start_index)
 	// AÑADIR NODO COMMAND
 	if (command_len > 0)
 	{
-		printf("Generated command: <%s>\n", command_input);		
+		//printf("Generated command: <%s>\n", command_input);		
 		add_command_node(&shell->commands_list, command_input);
-		printf("DEBUG: add command successfully -> command_len = %d\n",command_len);
+		//printf("DEBUG: add command successfully -> command_len = %d\n",command_len);
 	}	
 	free(command_input);
 	//printf("DEBUG: returning \n", command_len);
