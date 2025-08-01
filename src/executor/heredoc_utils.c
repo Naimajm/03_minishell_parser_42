@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:33:31 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/30 20:41:43 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 18:50:09 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st)
 {
@@ -30,7 +30,7 @@ char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st)
 	if (start == *i)
 		return (ft_strdup("$"));
 	var = ft_substr_malloc(buffer, start, (*i) - start + 1);
-	value = ft_getenv(env, var);
+	value = get_environment_var(env, var); // Funcion de Juanma mi antigua char	*ft_getenv(char **env, char *var)
 	free(var);
 	if (!value)
 		return (ft_strdup(""));

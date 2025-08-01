@@ -6,13 +6,13 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 13:34:02 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/31 11:47:33 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 10:43:52 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
-// TODO, QUITARLO DE ESTA CARPETA
-void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd) // prev_fd sirve para verificar que no haya pipes involuctradas con prev_fd == -1, para que la ejecuciónde ciertas builtin (cd, export y exit) se ralicen en el proceso padre y no se pierdan si se hacen en el hijo
+
+void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd)// prev_fd sirve para verificar que no haya pipes involuctradas con prev_fd == -1, para que la ejecuciónde ciertas builtin (cd, export y exit) se ralicen en el proceso padre y no se pierdan si se hacen en el hijo
 {
 	if (!cmd->args[0]) // no hay comando es NULL. Ese if es una medida de seguridad, a veces llamada "cláusula de guarda"
 		cmd->args[0] = ft_strdup(""); // le metemos algo para que luego no pete en las siguientes validaciones con un segfault
@@ -34,4 +34,3 @@ void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd) // prev_fd sirve par
 	else
 		return ;
 }
-

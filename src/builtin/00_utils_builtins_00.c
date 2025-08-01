@@ -12,7 +12,7 @@
 
 #include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
 
-int	ft_matrix_size(char **mtrx)
+int	ft_mtrx_size(char **mtrx)
 {
 	int	i;
 
@@ -22,10 +22,10 @@ int	ft_matrix_size(char **mtrx)
 	return (i);
 }
 
-int ft_search_index_env(char **env, char str)
+int	ft_search_index_env(char **env, char *str)
 {
 	int	i;
-	int len;
+	int	len;
 
 	i = 0;
 	len = ft_strlen(str);
@@ -40,18 +40,18 @@ int ft_search_index_env(char **env, char str)
 	return (-1);
 }
 
-int ft_valid_env_var(char *env_var)
+int	ft_valid_env_var(char *env_var)
 {
 	int	i;
 
 	if (!env_var || (env_var[0] != '_' && !ft_isalpha(env_var[0])))
 		return (0);
-	i = 1; 
+	i = 1;
 	while (env_var[i] && env_var[i] != '=')
 	{
 		if (env_var[i] != '_' && env_var[i] != '+' && !ft_isalnum(env_var[i]))
 			return (0);
-		if (env_var[i] == '+' && env_var[i + 1] == '=' 
+		if (env_var[i] == '+' && env_var[i + 1] == '='
 			&& env_var[i - 1] && ft_isalnum(env_var[i - 1]))
 			return (2); // caso de MIVAR += "test";
 		i++;
@@ -59,17 +59,17 @@ int ft_valid_env_var(char *env_var)
 	return (1);
 }
 
-char **ft_copy_mtrx(char **mtrx)
+char	**ft_copy_mtrx(char **mtrx)
 {
-	char **new_mtrx;
-	int	i;
-	int len_mtrx;
+	char	**new_mtrx;
+	int		i;
+	int		len_mtrx;
 
 	i = 0;
 	if (!mtrx)
-		return (NULL);	
-	len_mtrx = ft_matrix_size(mtrx);
-	new_mtrx = (char**)malloc(sizeof(char*) * (len_mtrx + 1));
+		return (NULL);
+	len_mtrx = ft_mtrx_size(mtrx);
+	new_mtrx = (char **)malloc(sizeof(char *) * (len_mtrx + 1));
 	if (!new_mtrx)
 		return (NULL);
 	while (mtrx[i])
@@ -86,12 +86,11 @@ char **ft_copy_mtrx(char **mtrx)
 	return (new_mtrx);
 }
 
-void ft_swap_mtrx(char **s1, char **s2) // el cambio es permanente porque no modifica la matriz, ni las direcciones originales. modifica el contenido de la matriz a través de los punteros
+void	ft_swap_mtrx(char **s1, char **s2) // el cambio es permanente porque no modifica la matriz, ni las direcciones originales. modifica el contenido de la matriz a través de los punteros
 {
-	char *temp;
+	char	*temp;
 
 	temp = *s1;
 	*s1 = *s2;
 	*s2 = temp;
 }
-

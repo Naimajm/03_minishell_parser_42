@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_commands.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 17:52:30 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/30 20:41:39 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:15:01 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 int	ft_cmdsize(t_cmd *lst)
 {
@@ -25,65 +25,13 @@ int	ft_cmdsize(t_cmd *lst)
 	return (i);
 }
 
-void	ft_fill_cmd(t_shell *shell, t_token *token, t_token **next_token)
-{
-	int		i;
-	t_cmd	*temp;
-
-	i = 0;
-	temp = shell->cmd_lst;
-	while (temp->next)
-		temp = temp->next;
-	if (!temp->args)
-		temp->args = ft_calloc((ft_count_args(token) + 2), sizeof(char *));
-	else
-		while (temp->args[i])
-			i++;
-	while (token && token->type == WORD)
-	{
-		if (token->tkn)
-			temp->args[i++] = ft_strdup(token->tkn);
-		*next_token = token->next;
-		if (token->next && token->next->type == WORD)
-			token = token->next;
-		else
-			break ;
-	}
-	if (ft_isbuiltin(temp->args[0]))
-		temp->is_btn = 1;
-}
-
-void	ft_process_token(t_shell *shell, t_token **temp)
-{
-	t_token	*next;
-
-	if ((*temp)->type == PI)
-	{
-		ft_addback_cmd(&shell->cmd_lst);
-		*temp = (*temp)->next;
-	}
-	else if ((*temp)->type == WORD)
-	{
-		ft_fill_cmd(shell, *temp, &next);
-		*temp = next;
-	}
-	else if ((*temp)->type == LR1 || (*temp)->type == RR1
-		|| (*temp)->type == LR2 || (*temp)->type == RR2)
-	{
-		ft_process_redir(shell, *temp, &next);
-		*temp = next;
-	}
-	else
-		*temp = (*temp)->next;
-}
-
 int	ft_has_commands(t_shell *shell)
 {
 	t_cmd	*cmd;
 
-	if (!shell || !shell->cmd_lst)
+	if (!shell || !shell->commands_list)
 		return (0);
-	cmd = shell->cmd_lst;
+	cmd = shell->commands_list;
 	while (cmd)
 	{
 		if (cmd->args && cmd->args[0])
@@ -93,15 +41,3 @@ int	ft_has_commands(t_shell *shell)
 	return (0);
 }
 
-int	ft_get_commands(t_shell *shell)
-{
-	t_token	*temp;
-
-	temp = shell->token;
-	ft_addback_cmd(&shell->cmd_lst);
-	while (temp)
-		ft_process_token(shell, &temp);
-	if (!ft_has_commands(shell) || ft_cmdsize(shell->cmd_lst) > LOL)
-		return (0);
-	return (1);
-}

@@ -50,31 +50,28 @@ PAR_FILES 		:= $(addprefix $(PAR_DIR)/,  01.1_check_syntax.c \
 
 OBJ_FILES 		+= $(PAR_FILES:%.c=%.o)
 # --------------------------------------------------------------------------
-
+#ifeq (0,1)
 # EXECUTOR-----------------------------------------------------------------------------
-ifeq (0,1)
-
 EXC_DIR			:= ./src/executor
 EXC_FILES		:= $(addprefix $(EXC_DIR)/, clean2.c \
-				clean.c \
 				commands_utils.c \
-				exec_builtins.c \
 				executer.c \
 				executer_command.c \
 				get_commands.c \
 				heredoc_utils.c \
-				process_redirection.c \
-				prueba.txt \
 				redirections.c \
+				utils.c \
 				signals.c )
+# 				process_redirection.c, clean.c, heredoc_utils.c, exec_builtins.c, expand_var.c 
 
 OBJ_FILES		+= $(EXC_FILES:%.c=%.o)
 # --------------------------------------------------------------------------
+#endif
 
+#ifeq (0,1)
 # BUILTIN --------------------------------------------------------------------------------
 BTN_DIR			:= ./src/builtin
 BTN_FILES		:= $(addprefix $(BTN_DIR)/, 00_exec_builtins.c \
-				00_exec_builtins.c \
 				00_utils_builtins_00.c \
 				00_utils_builtins_01.c \
 				00_utils_builtins_02.c \
@@ -88,8 +85,7 @@ BTN_FILES		:= $(addprefix $(BTN_DIR)/, 00_exec_builtins.c \
 				07_exec_exit.c )
 
 OBJ_FILES		+= $(BTN_FILES:%.c=%.o)
-
-endif
+#endif
 # --------------------------------------------------------------------------
 all: $(NAME)
 

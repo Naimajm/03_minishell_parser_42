@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 15:23:36 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/30 20:41:35 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 16:44:54 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
-void	child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms)
+void	ft_child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms)
 {
 	if (ft_redirections(ms, cmd) == 1)
 		exit (1);
@@ -29,20 +29,20 @@ void	child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms)
 	}
 	if (cmd->is_btn)
 	{
-		execute_builtin(ms, cmd, prevfd);
+		exec_builtins(ms, cmd, prevfd);
 		exit(ms->exit_status);
 	}
 	else
-		execute_command(ms, cmd);
+		ft_execute_command(ms, cmd);
 	perror("Error executing\n");
 	exit (126);
 }
 
-void	parent_process(t_shell *ms, int *prevfd, int pipefd[2])
+void	ft_parent_process(t_shell *ms, int *prevfd, int pipefd[2])
 {
 	if (*prevfd != -1)
 		close(*prevfd);
-	if (ms->cmd_lst->next)
+	if (ms->commands_list->next)
 	{
 		close(pipefd[1]);
 		*prevfd = pipefd[0];
@@ -59,7 +59,7 @@ void	ft_wait_all_processes(pid_t *pids, t_shell *ms)
 	t_cmd	*cmd;
 
 	i = 0;
-	cmd = ms->cmd_lst;
+	cmd = ms->commands_list;
 	while (cmd)
 	{
 		waitpid(pids[i], &status, 0);
@@ -86,10 +86,10 @@ pid_t	ft_exec_single_cmd(t_cmd *cmd, int *prevfd, int *pipefd, t_shell *ms)
 		exit(1);
 	}
 	if (pid == 0)
-		child_process(cmd, *prevfd, pipefd, ms);
+		ft_child_process(cmd, *prevfd, pipefd, ms);
 	else
 	{
-		parent_process(ms, prevfd, pipefd);
+		ft_parent_process(ms, prevfd, pipefd);
 		if (cmd->is_btn && !ft_strncmp(cmd->args[0], "exit", 5)
 			&& (*prevfd == -1))
 			exit(ms->exit_status);
@@ -106,11 +106,11 @@ void	ft_exec_commands(t_shell *ms)
 	int		i;
 
 	i = 0;
-	cmd = ms->cmd_lst;
+	cmd = ms->commands_list;
 	prevfd = -1;
 	if (cmd->is_btn && !cmd->next && (prevfd == -1))
 	{
-		execute_builtin(ms, cmd, prevfd);
+		exec_builtins(ms, cmd, prevfd);
 		return ;
 	}
 	while (cmd)

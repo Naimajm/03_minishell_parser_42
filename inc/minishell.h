@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 11:55:54 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 19:04:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@
 # include "../lib/gnl/get_next_line.h"
 
 // EXTERNAL LIBRARIES PARSER
-#include <unistd.h>		// write getcwd chdir
-#include <stdio.h>  	// printf aux
-#include <fcntl.h>		// open
-#include <stdbool.h>	// bool
+# include <unistd.h>		// write getcwd chdir
+# include <stdio.h>  	// printf aux
+# include <fcntl.h>		// open
+# include <stdbool.h>	// bool
 
-#include <readline/readline.h> 	// readline
-#include <readline/history.h>	// readline
+# include <readline/readline.h> 	// readline
+# include <readline/history.h>	// readline
 
 // EXTERNAL LIBRARIES BUILTINS
-#include <stdlib.h>	// exit 
+# include <stdlib.h>	// exit 
 
 // EXTERNAL LIBRARIES EXECUTOR
 # include <sys/wait.h>
@@ -188,6 +188,8 @@ typedef struct	s_shell
 	t_cmd		*commands_list;
 }				t_shell;
 
+// ---------------------------- Parte JuanMa -----------------------------------
+
 // FUNCTIONS -----------------------------------------------------
 
 //SRC------------------------------------------------
@@ -253,7 +255,8 @@ int		quotes_tokenizer(t_word *word, int start_index);
 int		operator_tokenizer(t_word *word, int start_index);
 
 // 04.1_token_builder.c		# Constructor de tokens
-void	add_token_node(t_token **token_list, char  *input, int token_type);
+int		create_and_add_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type);
+//void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_tokens_list(t_token *token_list);
 
 /// EXPANSIÓN DE VARIABLES -------------------------------------------
@@ -300,16 +303,16 @@ bool 	is_builtin_command(char *command);
 
 /// UTILIDADES Y TESTING -------------------------------------------
 // 10_utils_core.c			 # Utilidades básicas
-int 	find_index_char(const char *str, char character);
+int		get_operator_length(char *input, int index);
 int 	is_pipe(char character);
 int		is_quote(char character);
-int		is_operator(char character);
-int		is_space(char character);
+int 	is_redirection(char character);
 
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);
 char	*ft_strjoin_free(char *str1, char *str2);
 void	free_matrix(char **matrix);
+int		is_space(char character);
 	
 // 10.2_free_manager.c		# Gestión de memoria
 void	free_iteration_input(t_shell *shell);
@@ -328,17 +331,11 @@ void 	test_basic_parser(t_shell *shell);
 void 	test_complex_parser(t_shell *shell);
 
 // ------------------------------------------------------
-// END PARSER-----------------------------------------
+
+// END PARSER------ Parte JuanMa ------------------------
 
 
-// EXECUTOR------------------------------------------------------------
-// CLEAN.C // TODO, ESTAS FUNCIONES YA ESTAN EN LA PARTE DE PARSEO , AUNQUE CON MODIFICACION DE LOS NOMBRES. HABRIA QUE ADAPTAR LAS LLAMADAS A ELLAS EN LA PARTE DE EXECUTOR
-
-void	ft_free_matrix(char **matrix);
-void	ft_free_tknlst(t_token **token);
-void	ft_free_cmdlst(t_cmd **cmd_lst);
-void	ft_cleanup_shell(t_shell *shell);
-void	ft_clean(char **matrix, t_token *token, t_shell *shell);
+// EXECUTOR ------------------- Juan Jesus ------------
 
 // CLEAN2.C
 
@@ -347,14 +344,9 @@ void	ft_free_cmd_files(t_cmd *cmd);
 
 // COMMANDS_UTILS.C
 
-int		ft_strcmp(char *s1, char *s2);
-int		ft_count_args(t_token *token);
 int		ft_isbuiltin(char *str);
 int		ft_has_commands(t_shell *shell);
-
-// EXEC_BUILTINS.C
-
-void	execute_builtin(t_shell *ms, t_cmd *cmd, int prevfd);
+char	*ft_substr_malloc(const char *input, int start, int len);
 
 // EXECUTER_COMMAND.C
 
@@ -362,39 +354,49 @@ void	free_paths(char **paths, int i);
 char	*ft_search_in_paths(char **paths, char *comm);
 char	*ft_path(char *path, char **comm);
 void	ft_handle_command_execution(t_shell *shell, t_cmd *cmd, char *path);
-void	execute_command(t_shell *shell, t_cmd *cmd);
+void	ft_execute_command(t_shell *shell, t_cmd *cmd);
 
 // EXECUTER.C
 
-void	child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms);
-void	parent_process(t_shell *ms, int *prevfd, int pipefd[2]);
+void	ft_child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms);
+void	ft_parent_process(t_shell *ms, int *prevfd, int pipefd[2]);
 void	ft_wait_all_processes(pid_t *pids, t_shell *ms);
 pid_t	ft_exec_single_cmd(t_cmd *cmd, int *prevfd, int *pipefd, t_shell *ms);
 void	ft_exec_commands(t_shell *ms);
 
+// EXPAND_EXITSTATUS.C
+
+char	*ft_middle_case(char *token, char *dollar_pos, char *status_str);
+void	ft_replace_start(char **token, char *status_str, char *dollar_pos);
+void	ft_process_dollarquest(t_token *token, char *dollar_pos, char *sts_str);
+void	ft_expand_exitstatus(t_shell *shell, t_token *token);
+
+// EXPAND_UTILS.C //
+
+int		ft_intstrchr(const char *s, int c);
+int		ft_find_end(char *tkn);
+t_expand	*ft_init_expand(void);
+char	*ft_substr_malloc(const char *input, int start, int len);
+void	ft_free_expand(t_expand *xpnd);
+
+// EXPAND_VAR.C //
+
+char	*ft_getenv(char **env, char *var); // quitar
+int		ft_find_dollar(t_shell *shell);
+void	ft_insert_exp(t_expand *xpnd, t_token *t);
+void	ft_expand_token(t_shell *shell, t_token *token);
+void	ft_expand_var(t_shell *shell);
 
 // GET_COMMANDS.C //
 
 int		ft_cmdsize(t_cmd *lst);
-void	ft_fill_cmd(t_shell *shell, t_token *token, t_token **next_token);
-void	ft_process_token(t_shell *shell, t_token **temp);
 int		ft_has_commands(t_shell *shell);
-int		ft_get_commands(t_shell *shell);
 
 // HEREDOC_UTILS.C
 
-char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st);
+char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st); 
 char	*ft_not_expand(int *i, char *buffer);
 char	*ft_expand_heredoc(char *buffer, char **env, int exit_st);
-
-
-// PROCESS_REDIRECTION.C //
-
-void	ft_process_redir(t_shell *shell, t_token *token, t_token **next_token);
-void	ft_process_input(t_cmd *cmd, t_token *token);
-void	ft_process_output(t_cmd *cmd, t_token *token);
-void	ft_process_append(t_cmd *cmd, t_token *token);
-void	ft_process_heredoc(t_cmd *cmd, t_token *token);
 
 // REDIRECTIONS.C
 
@@ -410,23 +412,33 @@ void	ft_handle_backslash(int signum);
 void	ft_handle_sigint(int signum);
 void	ft_setup_signals(void);
 
-// ------------------------------------------------------
-// END EXECUTOR-----------------------------------------
+// ULTIS.C
+
+void	ft_exit_error(char *error);
+void	*safe_malloc(size_t bytes);
+// void	ft_print_tokens(t_token *token);
+char	**ft_copy_env(char **env);
+// void	ft_print_cmdlst(t_cmd *cmd_lst);
+
+// ---------------END Juan Jesus ---------------------------------
 
 
+// --------------------- Parte de Emilia -------------------------
 
 // BUILTINS-------------------------------------------------------
 //00_utils_builtins_00.c
-int		ft_matrix_size(char **mtrx); // unset, export
-int		ft_search_index_env(char **env, char str); // export, unset
+int		ft_mtrx_size(char **mtrx); // unset, export
+int		ft_search_index_env(char **env, char *str); // export, unset 
 int		ft_valid_env_var(char *env_var); // export, unset
 char	**ft_copy_mtrx(char **mtrx); // export,
 void	ft_swap_mtrx(char **s1, char **s2); // export
 //00_utils_builtins_01.c
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_find_plus_pos(char *var); // export
+void	sort_alphabetic_mtrx(char **mtrx); // export
+char	*ft_get_keyvar(char *var); // export
 //00_utils_builtins_02.c
-char 	**ft_create_new_env(char **env, char *var); // export
+char	**ft_create_new_env(char **env, char *var); // export
 //00_utils_builtins_03.c
 char	**ft_append_env_var_value(char **env, char *var, int index); //export
 //00_exec_builtins.c
@@ -441,9 +453,6 @@ int		exec_env(t_shell *shell);
 void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd);
 // END BUILTINS-------------------------------------------------------
 
-
-
-
-
+// -----------------END parte de Emilia ------------------------------
 
 #endif

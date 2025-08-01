@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 11:35:42 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/30 20:40:18 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 12:58:44 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ int			exec_echo(t_cmd *cmd);
 static void	ft_print_echo(char **args);
 static int	check_option_echo(char *str);
 static int	stdout_to_outfile(char *outfile, int append);
-
 // TODO Comportamiento con señales: El comando echo debería manejar apropiadamente las señales del sistema, aunque esto generalmente se maneja a nivel del shell principal.
-
 
 int	exec_echo(t_cmd *cmd)
 {
@@ -35,7 +33,7 @@ int	exec_echo(t_cmd *cmd)
 	{
 		if (stdout_to_outfile(cmd->outfile, cmd->append) != 0) // STDOUT ahora apunta al archivo outfile
 			return (1); // manejar errores de redireccion
-	}		
+	}
 	ft_print_echo(cmd->args);// si lo anterior, el echo se mandará al archivo, si no a la salida standar. 
 	// guardarlo en una variable facilita añadir mas codigos de error en un futuro
 	// VIP en un shell los comandos deber retornar su estado de ejecución, 0 exito, otros valores distintos tipos de error.

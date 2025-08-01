@@ -6,24 +6,28 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:30 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 17:20:55 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int find_index_char(const char *str, char character)
+int	get_operator_length(char *input, int index)
 {
-	int index;    
+	int	len;
 
-	index = 0;
-	while (str[index])
-	{
-		if (character == str[index])
-			return (index);
-		index++; 
-	}
-	return (0);
+	if (!input || !input[index])
+        return (0);		
+	len = 0;
+    if (input[index] == '>' && input[index + 1] == '>')
+		return (len = 2); 				// >>
+    if (input[index] == '<' && input[index + 1] == '<')
+		return (len = 2); 				// <<
+    if (input[index] == '>' || input[index] == '<')
+		return (len = 1); 				// > o < 
+	if (input[index] == '|')
+        return (len = 1);
+    return (len);
 }
 
 int is_pipe(char character)
@@ -48,22 +52,12 @@ int	is_quote(char character)
 	return (quote);
 }
 
-int is_operator(char character)
+int is_redirection(char character)
 {
 	int	operator;
 
 	operator = 0;
-	if (character == '>' || character == '<' || character == '|')
+	if (character == '>' || character == '<')
 		operator = 1;
 	return (operator);
-}
-
-int	is_space(char character)
-{
-	int	space;
-
-	space = 0;
-	if (character == ' ' || (character >= '\t' && character <= '\r'))
-		space = 1;
-	return (space);
 }

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 17:52:12 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/30 20:42:08 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/11 12:28:12 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 int	g_signal_flag; // Variables globales?
 

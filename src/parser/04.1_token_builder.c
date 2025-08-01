@@ -6,17 +6,33 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 19:12:18 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+static void		add_token_node(t_token **token_list, char  *word, int token_type);
 static t_token	*find_token_last_node(t_token *token_list);
-static t_token *create_token_node(char  *input, int type_token);
-void print_tokens_list(t_token *token_list);
+static t_token	*create_token_node(char  *input, int type_token);
+void			print_tokens_list(t_token *token_list);
 
-void	add_token_node(t_token **token_list, char  *word, int token_type)
+int		create_and_add_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type)
+{
+	char	*token_input;
+
+	if (!token_list || start_index < 0 || token_len <= 0)
+		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);
+	
+	token_input = ft_substr(raw_word, start_index, token_len);
+	if (!token_input)
+		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);		
+	add_token_node(token_list, token_input, token_type);
+	free(token_input);
+	return(token_len);
+}
+
+static void	add_token_node(t_token **token_list, char  *word, int token_type)
 {
 	t_token *new_node;
 	t_token *last_node;

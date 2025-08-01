@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:31:52 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/31 10:38:17 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 13:12:56 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,70 +30,48 @@ Un nombre de variable válido no puede contener el signo =
 
 int			exec_unset(t_shell *shell, t_cmd *cmd);
 static char	**ft_change_env(char **env, char *str);
-static int	ft_is_readonly(t_shell *shell, char *var_name);
-static void check_error_unset(t_shell *shell, t_cmd *cmd);
+static int	ft_is_readonly(char **readonly_vars, char *var_name);
+static void	print_invalid_errors(t_shell *shell, char *arg);
+static void	print_readonly_errors(t_shell *shell, char *arg);
 
 int	exec_unset(t_shell *shell, t_cmd *cmd)
 {
-	
+	int	i;
+
+	i = 1; //  El bucle while debería empezar a procesar desde el primer argumento de unset, no desde el propio comando. cmd->args[0] es "unset", por lo que deberías empezar en i = 1.	
 	if (!shell || !cmd || !shell->environment || !cmd->args)
 		return (1);
-	shell->exit_status = 0; // inicializamos
-	check_error_unset(shell, cmd);
-	if (shell->exit_status = GEN_ERROR)
-		return (shell->exit_status);
-	//else
-		
-/* 	static void check_error_unset(t_shell *shell, t_cmd *cmd)
+	while (cmd->args[i])
 	{
-		int i;
-
-		i = 1; //  El bucle while debería empezar a procesar desde el primer argumento de unset, no desde el propio comando. cmd->args[0] es "unset", por lo que deberías empezar en i = 1.
-		while (cmd->args[i]) 
+		if (!ft_valid_env_var(cmd->args[i]) || ft_strchr(cmd->args[i], '=')) // para chequear nombre invalido de variable. y verificacion de que no haya signo = // VER NOTA SOBRE IMPRESION DE ERRORES Construir el mensaje de error completo en STDERR
+			print_invalid_errors(shell, cmd->args[i]);
+		else if (ft_is_readonly(shell->readonly_vars, cmd->args[i])) // readonly
+			print_readonly_errors(shell, cmd->args[i]);
+		else
 		{
-			
-			
-			if (!ft_valid_env_var(cmd->args[i]) || ft_strchr(cmd->args[i], '=')) // para chequear nombre invalido de variable. y verificacion de que no haya signo =
-			{	// VER NOTA SOBRE IMPRESION DE ERRORES Construir el mensaje de error completo en STDERR
-				ft_putstr_fd("minishell: unset: `", STDERR_FILENO); // sin salto de linea
-				ft_putstr_fd(cmd->args[i], STDERR_FILENO); // sin salto de linea
-				ft_putendl_fd("': not a valid identifier", STDERR_FILENO); // con salto de linea
-				shell->exit_status = GEN_ERROR;
-			}
-			else if (ft_is_readonly(shell, cmd->args[i])) // readonly
-			{
-				ft_putstr_fd("minishell: unset: `", STDERR_FILENO); 
-				ft_putstr_fd(cmd->args[i], STDERR_FILENO);
-				ft_putendl_fd("': readonly variable", STDERR_FILENO);
-				shell->exit_status = GEN_ERROR;
-			}
-			else
-			{
-				shell->environment = ft_change_env(shell->environment, cmd->args[i]);
-				if (!shell->environment)
-					return (1); // error de memoria
-			}
-			i++;
+			shell->environment = ft_change_env(shell->environment,
+					cmd->args[i]);
+			if (!shell->environment)
+				return (1); // error de memoria
 		}
-	} */
+		i++;
+	}
 	return (shell->exit_status); // en funcion del valor de shell->exit_status, ya sea cero o uno // unset puede recibir múltiples variables para eliminar, por eso retornamos el error ahora y no durante el ciclo while
 }
 
 static char	**ft_change_env(char **env, char *str)
 {
-	int index_env;
-	int i;
-	int j;
-	int size_env;
-	char **new_env;
+	int		index_env;
+	int		i;
+	int		j;
+	char	**new_env;
 
 	i = 0;
 	j = 0;
 	index_env = ft_search_index_env(env, str);
 	if (index_env == -1)
 		return (env);
-	size_env = ft_matrix_size(env);
-	new_env = (char **)ft_calloc(size_env, sizeof(char*)); // Usar ft_calloc en lugar de malloc para inicializar todo a NULL automáticamente
+	new_env = (char **)ft_calloc(ft_mtrx_size(env), sizeof(char *)); // Usar ft_calloc en lugar de malloc para inicializar todo a NULL automáticamente
 	if (!new_env)
 		return (NULL);
 	while (env[i])
@@ -102,71 +80,48 @@ static char	**ft_change_env(char **env, char *str)
 		{
 			new_env[j] = ft_strdup(env[i]);
 			if (!new_env[j]) // comprobar quue lo anterior fue exitoso y si no liberar todo
-			{
-				while (j > 0)
-					free(new_env[--j]);
-				free(new_env);
-				return (NULL);
-			}
+				return (free_matrix(new_env), NULL);
 			j++;
 		}
 		i++;
 	}
-	// new_env[j] = NULL; // tenemos sitio para cerrar el nuevo enviroment ya que al quitar una queda el sitio para el null sin tener que sumar uno  mas en el malloc.  // No es necesario añadir new_env[j] = NULL ya que ft_calloc ya inicializó todo a NULL
-	free_matrix(env);
-	return (new_env);
+	return (free_matrix(env), new_env); // new_env[j] = NULL; // tenemos sitio para cerrar el nuevo enviroment ya que al quitar una queda el sitio para el null sin tener que sumar uno  mas en el malloc.  // No es necesario añadir new_env[j] = NULL ya que ft_calloc ya inicializó todo a NULL
 }
 
-static int	ft_is_readonly(t_shell *shell, char *var_name)
+static int	ft_is_readonly(char **readonly_vars, char *var_name)
 {
-	int	i;
-	int	size_var;
+	int				i;
+	unsigned int	size_var;
 
 	size_var = ft_strlen(var_name);
 	i = 0;
-	if (!var_name || !shell->readonly_vars)
-	return (0);
-	while (shell->readonly_vars[i])
+	if (!var_name || !readonly_vars)
+		return (0);
+	while (readonly_vars[i])
 	{
-		if ((size_var == ft_strlen(shell->readonly_vars[i]))
-			&& ft_strncmp(var_name, shell->readonly_vars[i], size_var) == 0)
+		if ((size_var == ft_strlen(readonly_vars[i]))
+			&& ft_strncmp(var_name, readonly_vars[i], size_var) == 0)
 			return (1); // la variable es readonly
 		i++;
 	}
 	return (0); // la variable no es readonly
 }
 
-static void check_error_unset(t_shell *shell, t_cmd *cmd)
+static void	print_invalid_errors(t_shell *shell, char *arg)
 {
-	int i;
-
-	i = 1; //  El bucle while debería empezar a procesar desde el primer argumento de unset, no desde el propio comando. cmd->args[0] es "unset", por lo que deberías empezar en i = 1.
-	while (cmd->args[i]) 
-	{
-		if (!ft_valid_env_var(cmd->args[i]) || ft_strchr(cmd->args[i], '=')) // para chequear nombre invalido de variable. y verificacion de que no haya signo =
-		{	// VER NOTA SOBRE IMPRESION DE ERRORES Construir el mensaje de error completo en STDERR
-			ft_putstr_fd("minishell: unset: `", STDERR_FILENO); // sin salto de linea
-			ft_putstr_fd(cmd->args[i], STDERR_FILENO); // sin salto de linea
-			ft_putendl_fd("': not a valid identifier", STDERR_FILENO); // con salto de linea
-			shell->exit_status = GEN_ERROR;
-		}
-		else if (ft_is_readonly(shell, cmd->args[i])) // readonly
-		{
-			ft_putstr_fd("minishell: unset: `", STDERR_FILENO); 
-			ft_putstr_fd(cmd->args[i], STDERR_FILENO);
-			ft_putendl_fd("': readonly variable", STDERR_FILENO);
-			shell->exit_status = GEN_ERROR;
-		}
-		else
-		{
-			shell->environment = ft_change_env(shell->environment, cmd->args[i]);
-			if (!shell->environment)
-				return (1); // error de memoria
-		}
-		i++;
-	}
+	ft_putstr_fd("minishell: unset: `", STDERR_FILENO); // sin salto de linea
+	ft_putstr_fd(arg, STDERR_FILENO); // sin salto de linea
+	ft_putendl_fd("': not a valid identifier", STDERR_FILENO); // con salto de linea
+	shell->exit_status = ERROR;
 }
 
+static void	print_readonly_errors(t_shell *shell, char *arg)
+{
+	ft_putstr_fd("minishell: unset: `", STDERR_FILENO); // sin salto de linea
+	ft_putstr_fd(arg, STDERR_FILENO); // sin salto de linea
+	ft_putendl_fd("': readonly variable", STDERR_FILENO);
+	shell->exit_status = ERROR;
+}
 // NOTAS:
 
 /* ft_putstr_fd("minishell: unset: ", STDERR_FILENO); 

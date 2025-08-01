@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:16 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 14:35:24 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ char	*extract_key(char *token, int first_index)
 	index  = first_index;
 
 	// calcular index final variable -> limites > < | " " '"' /0		
-	while (!is_space(token[index]) 
-		&& !is_operator(token[index]) 
+	while (!is_space(token[index])
+		&& !is_redirection(token[index])
+		&& !is_pipe(token[index]) 
 		&& token[index] != '\"' 
 		&& token[index] != '\''					
 		&& token[index] != '$'

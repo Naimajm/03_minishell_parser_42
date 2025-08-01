@@ -6,16 +6,14 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:41:46 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/30 20:40:07 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 17:25:15 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
 
-
 char		**ft_append_env_var_value(char **env, char *var, int index);
 static char	*ft_create_appended_var(char *new_val, char *old_val, char *plus_pos);
-
 
 char	**ft_append_env_var_value(char **env, char *var, int index)
 {
@@ -39,24 +37,24 @@ char	**ft_append_env_var_value(char **env, char *var, int index)
 
 static char	*ft_create_appended_var(char *var, char *old_val, char *plus_pos)
 {
-	char	*result;
+	char	*res;
 	char	*temp;
 	int		key_len;
 	int		i;
 
 	key_len = plus_pos - var;
 	temp = ft_strjoin(old_val, plus_pos + 2);
-	result = (char*)malloc(sizeof(char) * (key_len + 1 + ft_strlen(temp) + 1)); // el primer uno es para el '= ' y el segunto para el terminador nulo
-	if (!result)
+	res = (char *)malloc(sizeof(char) * (key_len + 1 + ft_strlen(temp) + 1));// el primer uno es para el '= ' y el segunto para el terminador nulo
+	if (!res)
 		return (NULL);
 	i = 0;
 	while (i < key_len)
 	{
-		result[i] = var[i];
+		res[i] = var[i];
 		i++;
 	}
-	result[key_len] = '=';
-	ft_strlcpy(result + key_len + 1, temp, ft_strlen(temp) + 1);
+	res[key_len] = '=';
+	ft_strlcpy(res + key_len + 1, temp, ft_strlen(temp) + 1);
 	free (temp);
-	return (result);
+	return (res);
 }

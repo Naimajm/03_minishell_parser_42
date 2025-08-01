@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 12:35:32 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 19:17:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ void	variable_expander(t_word *words_list, t_shell *shell)
 int	expand_single_token(t_token *token, t_shell *shell)
 {
 	if (!token)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 
-	
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 	
 	extract_expansion_nodes(token);			
 	resolve_expansion_values(token, shell);	
 	insert_expansion_values(token);			

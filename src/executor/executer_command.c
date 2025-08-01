@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executer_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 14:42:31 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/30 20:41:29 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:22:44 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 void	free_paths(char **paths, int i)
 {
@@ -75,7 +75,7 @@ void	ft_handle_command_execution(t_shell *shell, t_cmd *cmd, char *path)
 		free(cmd->args);
 		exit(127);
 	}
-	execve(path, cmd->args, shell->env);
+	execve(path, cmd->args, shell->environment);
 	perror("Error executing.\n");
 	while (cmd->args && cmd->args[i])
 		free(cmd->args[i++]);
@@ -84,14 +84,14 @@ void	ft_handle_command_execution(t_shell *shell, t_cmd *cmd, char *path)
 	exit(126);
 }
 
-void	execute_command(t_shell *shell, t_cmd *cmd)
+void	ft_execute_command(t_shell *shell, t_cmd *cmd)
 {
 	int		i;
 	char	*path;
 	char	**env;
 
 	i = 0;
-	env = shell->env;
+	env = shell->environment;
 	if (!cmd->args || !cmd->args[0])
 	{
 		ft_putstr_fd("Error: empty command\n", 2);

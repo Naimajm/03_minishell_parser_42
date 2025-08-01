@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 12:34:51 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 17:19:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	command_extractor(t_cmd *command)
 			index++;		
 		if (!command_input[index]) 				// Verificar si llegamos al final después de saltar espacios
 			break;		
-		if (is_operator(command_input[index]))	// CLASIFICACION WORD // OPERATOR
+		if (is_redirection(command_input[index]) || is_pipe(command_input[index]))  // CLASIFICACION WORD // OPERATOR
 			word_len = operator_extractor(command, index);  
 		else
 			word_len = word_extractor(command, index);				
@@ -90,12 +90,11 @@ int	word_extractor(t_cmd *command, int start_index)
 				index++; 				// Se trata como carácter literal
 		}
 		// caso FUERA DE COMILLAS -> espacios y operadores terminan la palabra
-		else if (quote_state == false && (is_space(character) || is_operator(character)))            
+		else if (quote_state == false && (is_space(character) || is_redirection(character) || is_pipe(character)))  
 			break;		 	
 		else    			// Carácter normal o carácter dentro de comillas           
 			index++;      
-	}
-	
+	}	
 	command_input = ft_substr(command->command, start_index, (index - start_index));
 	if (!command_input)
 		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
@@ -112,29 +111,25 @@ int	word_extractor(t_cmd *command, int start_index)
 
 int	operator_extractor(t_cmd *command, int start_index)
 {
-	int		len_input;
+	char	*input;
+	int		operator_len;	
 
-	if (command->command[start_index] == '>') // operadores especiales -> OUTFILE o APPEND
-	{
-		if (command->command[start_index + 1] == '>')
-		{
-			add_word_node(&command->words_list, ">>", APPEND);
-			return (len_input = 2);
-		}				
-		else
-			add_word_node(&command->words_list, ">", OUTFILE);		
-	}		
-	else if (command->command[start_index] == '<') // operadores especiales -> INFILE o HERE_DOC
-	{
-		if (command->command[start_index + 1] == '<')
-		{
-			add_word_node(&command->words_list, "<<", HERE_DOC);
-			return (len_input = 2);
-		}			
-		else
-			add_word_node(&command->words_list, "<", INFILE);							
-	}		
-	else if (command->command[start_index] == '|') // operadores especiales -> PIPE
-		add_word_node(&command->words_list, "|", PIPE);	
-	return (len_input = 1);
+	if (!command || start_index < 0)
+		return (FAILURE);
+	input = command->command;
+	operator_len = get_operator_length(command->command, start_index);
+
+	if (operator_len == 2 && input[start_index] == '>')		
+        add_word_node(&command->words_list, ">>", APPEND);  
+    else if (operator_len == 2 && input[start_index] == '<')	
+        add_word_node(&command->words_list, "<<", HERE_DOC);
+    else if (operator_len == 1 && input[start_index] == '>')
+        add_word_node(&command->words_list, ">", OUTFILE);
+    else if (operator_len == 1 && input[start_index] == '<')
+        add_word_node(&command->words_list, "<", INFILE);
+    else if (operator_len == 1 && is_pipe(input[start_index]))
+        add_word_node(&command->words_list, "|", PIPE);
+	else
+		return (FAILURE); 
+	return (operator_len);
 }

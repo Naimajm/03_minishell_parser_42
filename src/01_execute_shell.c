@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   01_execute_shell.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 12:34:18 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 13:15:28 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,17 @@ void	execute_shell(t_shell *shell)
 }
 
 // GESTION SIGNALS + COPIA EXIT_STATUS de la iteracion anterior a Shell
+// Modificado por Juan Jesus <-----------------------------------------------------
 void	recover_previous_status(t_shell *shell)
 {
-	(void)	shell;			// TEMPORAL
+	//(void)	shell;			// TEMPORAL
 	// CASO EOF (Ctrl+D o fin de pipe)
-	/* shell->last_exit_status = shell->exit_status;		//  guarda estado anterior
-	
-	//ft_setup_signals();					----> JUANJE 
-
+	shell->last_exit_status = shell->exit_status;		//  guarda estado anterior	
+	ft_setup_signals();
 	if (g_signal_flag)
 		shell->last_exit_status = g_signal_flag;		// SEÑALES (Ctrl+C = 130)
 	else
-		shell->exit_status = SUCCESS;	 */				// RESET A 0 SI NO HAY SEÑALES
+		shell->exit_status = SUCCESS;	 				// RESET A 0 SI NO HAY SEÑALES
 }	
 
 int	read_user_input(t_shell *shell, char *prompt)
@@ -66,7 +65,6 @@ int	read_user_input(t_shell *shell, char *prompt)
 	input = readline(prompt);
 	if (!input)
 		return (ft_putendl_fd("exit\n", STDOUT_FILENO), FAILURE);
-
 	if (input[0] == '\0')					// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
 	{
 		free(input);
@@ -102,8 +100,12 @@ void	process_input(t_shell *shell)
 		
 	build_execution_structure(shell->commands_list);		
 
-	// EJECUTAR COMANDOS 							!!! JUANJE
-    // execute_commands(shell->command_list);
+	// EJECUTAR COMANDOS 	-------------------------->	!!! JUANJE
+
+	if (shell->commands_list)
+		ft_exec_commands(shell);
+	
+    // execute_commands(shell->command_list); --------> !!! JUANJE
 	
 	//print_commands_list(shell->commands_list);			// Debug
 	free_commands_list(&shell->commands_list);

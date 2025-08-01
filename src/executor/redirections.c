@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:34:27 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/30 20:41:53 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:14:32 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+#include "../../inc/minishell.h"
 
 int	ft_redir_heredoc(t_shell *shell, t_cmd *cmd)
 {
@@ -28,7 +28,7 @@ int	ft_redir_heredoc(t_shell *shell, t_cmd *cmd)
 			free(buffer);
 			break ;
 		}
-		buffer = ft_expand_heredoc(buffer, shell->env, shell->last_exit_st);
+		buffer = ft_expand_heredoc(buffer, shell->environment, shell->last_exit_status);
 		write(pipefd[1], buffer, ft_strlen(buffer));
 		write(pipefd[1], "\n", 1);
 		free(buffer);

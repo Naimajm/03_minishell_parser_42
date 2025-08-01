@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:32:48 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/30 20:40:55 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 13:19:40 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,23 @@ Usar la variable global o estructura donde guardas el estado del último comando
 void		exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd);
 static int	ft_valid_arg_exit(char *arg);
 
-void		exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd)
+void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd)
 {
 	if (cmd->args[1])
 	{
 		if (!ft_valid_arg_exit(cmd->args[1]))
 		{
-			ft_putendl_fd("exit\nminishell: exit: ", STDERR_FILENO);
-			ft_putendl_fd(cmd->args[1], STDERR_FILENO);
+			//ft_putendl_fd("exit\nminishell: ", STDERR_FILENO); // comentados al pasar el testeo y ver lo que se imprime en bash
+			//ft_putendl_fd(cmd->args[1], STDERR_FILENO); // comentados al pasar el testeo y ver lo que se imprime en bash
 			ft_putendl_fd(" numeric argument required", STDERR_FILENO);
 			cleanup_minishell(shell);
 			exit(SYNTAX_ERROR);
 		}
 		else if (cmd->args[2])
 		{
-			ft_putendl_fd("exit\nminishell: exit: too many arguments", STDERR_FILENO);
-			shell->last_exit_status = GEN_ERROR;
+			// ft_putendl_fd("exit\nminishell: exit: too many arguments", STDERR_FILENO); // comentados al pasar el testeo y ver lo que se imprime en bash
+			ft_putendl_fd(" too many arguments", STDERR_FILENO);
+			shell->last_exit_status = ERROR;
 			return ;
 		}
 		else

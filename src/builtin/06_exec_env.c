@@ -6,11 +6,12 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:32:43 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/30 20:40:45 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 17:52:59 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
+// TODO REDIRECCIONAR COMO EN ECHO ??????
 
 int	exec_env(t_shell *shell) // subject : with no options or arguments
 {
@@ -24,12 +25,13 @@ int	exec_env(t_shell *shell) // subject : with no options or arguments
 		{
 			free(shell->environment[i]); // liberamos la variable de entorno que contenía la ruta del comando anterior, ya que la variable especial _ en shell Unix almacena la ruta completa del ultimo comando ejejcutado
 			shell->environment[i] = ft_strdup("_=/usr/bin/env"); // actualizamos al comando env que qes el que estamos ejecutando, para que haya coherencia con la salida de env en bash.
+			if (!shell->environment[i])
+				return (1);
 		}
 		i++;
 	}
-	// mostramos las variables
 	i = 0;
-	while (shell->environment[i])
+	while (shell->environment[i]) // mostramos las variables
 	{
 		if (ft_strchr(shell->environment[i], '='))
 			printf("%s\n", shell->environment[i]);
@@ -37,8 +39,3 @@ int	exec_env(t_shell *shell) // subject : with no options or arguments
 	}
 	return (0);
 }
-
-
-
-
-

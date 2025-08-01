@@ -3,43 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   commands_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 13:02:27 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/31 12:19:28 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/07/31 18:55:10 by jumarque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h" //  ../.. segun los niveles de carpetas
-
-int	ft_strcmp(char *s1, char *s2)
-{
-	int	i;
-
-	i = 0;
-	if (!s1 || !s2)
-		return (1);
-	if (ft_strlen(s1) != ft_strlen(s2))
-		return (1);
-	while (s1[i])
-	{
-		if (s1[i] != s2[i])
-			return (1);
-		i++;
-	}
-	return (0);
-}
+#include "../../inc/minishell.h"
 
 int	ft_count_args(t_token *token)
 {
 	int	i;
 
 	i = 0;
-	while (token && (token->type == 0 || token->type == SQ || token->type == LR1
-			|| token->type == RR1 || token->type == RR2 || token->type == LR2))
+	while (token && (token->type == 0 || token->type == SINGLE_QUOTES || token->type == INFILE
+			|| token->type == OUTFILE || token->type == APPEND || token->type == HERE_DOC))
 	{
-		if (token->type == LR1 || token->type == RR1 || token->type == RR2
-			|| token->type == LR2)
+		if (token->type == INFILE || token->type == OUTFILE || token->type == APPEND
+			|| token->type == HERE_DOC)
 			token = token->next->next;
 		else
 		{
@@ -68,4 +50,15 @@ int	ft_isbuiltin(char *str)
 		return (1);
 	else
 		return (0);
+}
+
+char	*ft_substr_malloc(const char *input, int start, int len)
+{
+	char	*substr;
+
+	if (!input || start < 0 || len < 0)
+		return (NULL);
+	substr = safe_malloc(sizeof(char) * (len + 1)); // buscar donde está 
+	ft_strlcpy(substr, &input[start], len);
+	return (substr);
 }
