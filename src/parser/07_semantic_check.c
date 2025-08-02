@@ -6,14 +6,13 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 00:15:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:24:41 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:59:33 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 //  VALIDACION SEMANTICA ----------------------------------
-
 static bool has_executable_word(t_cmd *command);
 static int validate_multiple_redirections(t_cmd *command);
 

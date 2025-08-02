@@ -6,14 +6,14 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 18:46:05 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:15:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:58:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 // FUNCIONES PARA QUITAR COMILLAS + UNIR TOKENS
-int	remove_quotes(t_token *tokens_list);
+static int	remove_quotes(t_token *tokens_list);
 
 void	dequotize_tokens(t_word *words_list, t_shell *shell)
 {
@@ -31,7 +31,7 @@ void	dequotize_tokens(t_word *words_list, t_shell *shell)
 }
 
 // funcion para quitar comillas de 'expanded_token' a 'final_token'
-int	remove_quotes(t_token *tokens_list)
+static int	remove_quotes(t_token *tokens_list)
 {
 	t_token *current_token;
 

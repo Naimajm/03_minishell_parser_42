@@ -6,16 +6,15 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:42:58 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 14:58:16 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:48:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 //  VALIDACION SOBRE ESTRUCTURA COMANDOS ----------------------------------
-
-int			validate_pipe_structure(t_cmd *command);
-int 		validate_redirections_structure(t_cmd *command);
+static int	validate_pipe_structure(t_cmd *command);
+static int 	validate_redirections_structure(t_cmd *command);
 static int	count_commands_nodes(t_cmd *command_list);
 
 int	validate_command_structure(t_shell *shell)
@@ -46,7 +45,7 @@ int	validate_command_structure(t_shell *shell)
 }
 
 /// VALIDACION PIPE ---------------------------------------------
-int validate_pipe_structure(t_cmd *command)
+static int validate_pipe_structure(t_cmd *command)
 {
 	t_word	*first_word;
 	t_word	*last_word;
@@ -65,7 +64,7 @@ int validate_pipe_structure(t_cmd *command)
 }
 
 /// VALIDACION REDIRECTIONS ---------------------------------------------
-int validate_redirections_structure(t_cmd *command)
+static int validate_redirections_structure(t_cmd *command)
 {
     t_word *current_word;
     

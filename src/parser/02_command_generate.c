@@ -6,15 +6,15 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:27:48 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:43:11 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 // 	ANALISIS SINTACTICO PARA GENERACION LISTA DE COMANDOS
-int 	generate_command(t_shell *shell, int start_index);
-int 	create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len);
+static int 	generate_command(t_shell *shell, int start_index);
+static int 	create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len);
 
 // AGRUPAR INPUT NO PROCESADOS PARA DIFERENTES JOBS EN EL CASO DE PIPES
 void	create_commands_structure(t_shell *shell)
@@ -45,7 +45,7 @@ void	create_commands_structure(t_shell *shell)
 	}	
 }
 
-int generate_command(t_shell *shell, int start_index)
+static int generate_command(t_shell *shell, int start_index)
 {
 	int		index;
 	int		command_len;
@@ -86,7 +86,7 @@ int generate_command(t_shell *shell, int start_index)
 	return (command_len);
 }
 
-int create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len)
+static int create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len)
 {
     char *command_input;
     char *clean_command;    

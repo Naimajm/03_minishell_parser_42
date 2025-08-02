@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:24:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:06:49 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ t_shell *initialize_shell(void);
 int		load_environment_variables(t_shell *shell, char **environment);
 void	cleanup_minishell(t_shell *shell);
 
-// 01_execute_shell.c			# loop principal Shell
+// 01_execute_shell.c		# loop principal Shell
 void	execute_shell(t_shell *shell);
 //void	recover_previous_status(t_shell *shell);
 int		read_user_input(t_shell *shell, char *prompt);
@@ -209,33 +209,20 @@ void	process_commands(t_shell *shell);
 /// PARSER -------------------------------------------
 // 01.1_check_syntax.c		# Validacion sintaxis input
 int		validate_syntax(t_shell *shell);
-int		check_pipe_syntax(char *input);
-int		check_balanced_quotes(char *input);
-int		check_redirection_syntax(char *input);
 
 /// ANÁLISIS SINTÁCTICO -------------------------------------------
 // 02_command_generate.c	# Análisis sintáctico inicial
 void	create_commands_structure(t_shell *shell);
-int 	generate_command(t_shell *shell, int start_index);
-int 	create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len);
 
-// 02.1_command_check.c	# Validacion sintaxis estructura comandos
+// 02.1_command_check.c		# Validacion sintaxis estructura comandos
 int		validate_command_structure(t_shell *shell);
-int 	validate_pipe_structure(t_cmd *command);
-int 	validate_redirections_structure(t_cmd *command);
 
 // 02.2_command_builder.c	# Constructor de comandos
 void	add_command_node(t_cmd **commands_list, char *input);
-void	print_commands_list(t_cmd *commands_list);
-void	print_command_arguments(char **args);
-void	print_output(char **args);
 
 /// ANÁLISIS LÉXICO -------------------------------------------
 // 03_lexical_analyzer.c	# Análisis léxico
 void	lexical_analyzer(t_cmd *current_command, t_shell *shell);
-int		command_extractor(t_cmd *command);
-int		word_extractor(t_cmd *command, int start_index);
-int		operator_extractor(t_cmd *command, int start_index);
 
 // 03.1_word_builder.c		# Constructor de palabras
 void 	print_words_list(t_word *word_list);
@@ -245,10 +232,6 @@ t_word	*find_word_last_node(t_word *word_list);
 /// TOKENIZACIÓN -------------------------------------------
 // 04_tokenizer.c			# Tokenización
 void	tokenizer(t_word *words_list, t_shell *shell);
-int		word_tokenizer(t_word *word);
-int		noquotes_tokenizer(t_word *word, int start_index);
-int		quotes_tokenizer(t_word *word, int start_index);
-int		operator_tokenizer(t_word *word, int start_index);
 
 // 04.1_token_builder.c		# Constructor de tokens
 int		create_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type);
@@ -257,10 +240,6 @@ void	print_tokens_list(t_token *token_list);
 /// EXPANSIÓN DE VARIABLES -------------------------------------------
 //  05_variable_expander.c	# Expansión de variables
 void	variable_expander(t_word *words_list, t_shell *shell);
-int		expand_single_token(t_token *token, t_shell *shell);
-void	extract_expansion_nodes(t_token *token);
-void 	resolve_expansion_values(t_token *token, t_shell *shell);
-void	insert_expansion_values(t_token *token);
 
 //  05.1_expand_list.c		# Lista de expansiones
 int		basic_expander(t_token *token, int first_index);
@@ -273,27 +252,22 @@ char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
 
 //	05.3_expand_builder.c	 # Constructor de expansiones
+void 		print_expand_nodes_list(t_expand *expand_list);
+int			insert_expand_node_value(t_token *token);
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);
-void 	print_expand_nodes_list(t_expand *expand_list);
 
 //  05.4_dequotizer.c		# Eliminación de comillas
 void	dequotize_tokens(t_word *words_list, t_shell *shell);
-int		remove_quotes(t_token *tokens_list);
 
 /// PROCESAMIENTO FINAL -------------------------------------------
 // 06_word_processor.c		
 void	generate_processed_word(t_word *words_list, t_shell *shell);
-int		insert_token_node(t_word *word);
 
 // 07_semantic_check.c
 int 	validate_command_semantics(t_shell *shell);
 
 // 08_execution_builder.c 
 void    build_execution_structure(t_cmd *commands_list);
-void    extract_command_arguments(t_cmd *command);
-void    extract_redirections(t_cmd *command);
-int     count_word_arguments(t_word *words_list);
-bool 	is_builtin_command(char *command);
 
 /// UTILIDADES Y TESTING -------------------------------------------
 // 10_utils_core.c			 # Utilidades básicas
@@ -316,7 +290,7 @@ void	free_tokens_list(t_token **token_list);
 void	free_expands_list(t_expand **expands_list);
 
 // 10.3_utils_debug.c 		# Utilidades de debug
-void	print_text_file(const char *filename);
+void	print_commands_list(t_cmd *commands_list);
 void	print_config_shell(t_shell *shell);
 void	print_strings_array(char **array);
 
@@ -326,10 +300,10 @@ void 	test_complex_parser(t_shell *shell);
 
 // ------------------------------------------------------
 
-// END PARSER------ Parte JuanMa ------------------------
+// END PARSER------------------------------
 
 
-// EXECUTOR ------------------- Juan Jesus ------------
+// EXECUTOR -------------------------------
 
 // CLEAN2.C
 void	ft_free_cmd_args(t_cmd *cmd);

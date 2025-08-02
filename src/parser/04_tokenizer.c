@@ -6,16 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 11:38:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:52:00 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int		word_tokenizer(t_word *word);
-int		noquotes_tokenizer(t_word *word, int start_index);
-int		quotes_tokenizer(t_word *word, int start_index);
-int		operator_tokenizer(t_word *word, int start_index);
+static int	word_tokenizer(t_word *word);
+static int	noquotes_tokenizer(t_word *word, int start_index);
+static int	quotes_tokenizer(t_word *word, int start_index);
+static int	operator_tokenizer(t_word *word, int start_index);
 
 void	tokenizer(t_word *words_list, t_shell *shell)
 {
@@ -32,7 +32,7 @@ void	tokenizer(t_word *words_list, t_shell *shell)
 	}		
 }
 
-int	word_tokenizer(t_word *word)
+static int	word_tokenizer(t_word *word)
 {
 	char	*raw_word;
 	int		index;
@@ -64,7 +64,7 @@ int	word_tokenizer(t_word *word)
 	return (SUCCESS);
 }
 
-int	noquotes_tokenizer(t_word *word, int start_index)
+static int	noquotes_tokenizer(t_word *word, int start_index)
 {
 	char	*raw_word;
 	int		index;
@@ -106,7 +106,7 @@ int	noquotes_tokenizer(t_word *word, int start_index)
 	return (len_input);
 }
 
-int	quotes_tokenizer(t_word *word, int start_index)
+static int	quotes_tokenizer(t_word *word, int start_index)
 {
 	char	*raw_word;	
 	int		index;	
@@ -139,7 +139,7 @@ int	quotes_tokenizer(t_word *word, int start_index)
 	return (len_input);
 }
 
-int	operator_tokenizer(t_word *word, int start_index)
+static int	operator_tokenizer(t_word *word, int start_index)
 {
 	char	*raw_word;
 	int		operator_len;

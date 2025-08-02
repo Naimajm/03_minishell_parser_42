@@ -6,16 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:00:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:01:15 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void    extract_command_arguments(t_cmd *command);
-void    extract_redirections(t_cmd *command);
-int     count_word_arguments(t_word *words_list);
-bool 	is_builtin_command(char *command);
+static void	extract_command_arguments(t_cmd *command);
+static void	extract_redirections(t_cmd *command);
+static int	count_word_arguments(t_word *words_list);
+static bool	is_builtin_command(char *command);
 
 void    build_execution_structure(t_cmd *commands_list)
 {
@@ -32,7 +32,7 @@ void    build_execution_structure(t_cmd *commands_list)
 	}    
 }
 
-void    extract_command_arguments(t_cmd *command)
+static void    extract_command_arguments(t_cmd *command)
 {
 	int index;
 	int args_count;
@@ -67,7 +67,7 @@ void    extract_command_arguments(t_cmd *command)
         command->is_btn = is_builtin_command(command->args[0]);
 }
 
-void    extract_redirections(t_cmd *command)
+static void    extract_redirections(t_cmd *command)
 {
     t_word *current_word;
 
@@ -107,29 +107,8 @@ void    extract_redirections(t_cmd *command)
     }    
 }
 
-// FUNCIONES AUXILIARES
-// Verificar si commando es builtin
-bool is_builtin_command(char *command)
-{
-    char	*builtins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
-    int 	index;
-	bool	is_builtin;
-	
-	if (!command)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), false);
-	index 		= 0;
-	is_builtin 	= false;        
-    while (builtins[index])
-    {
-		if (ft_strncmp(command, builtins[index], ft_strlen(command)) == 0)
-            is_builtin = true;
-        index++;
-    }
-    return (is_builtin);
-}
-
 // calculo total argumentos -> WORD (no operadores)
-int count_word_arguments(t_word *words_list)
+static int count_word_arguments(t_word *words_list)
 {
 	t_word    *current_word;
 	int args_count;
@@ -147,4 +126,22 @@ int count_word_arguments(t_word *words_list)
 	return (args_count);
 }
 
-
+// Verificar si commando es builtin
+static bool is_builtin_command(char *command)
+{
+    char	*builtins[] = {"echo", "cd", "pwd", "export", "unset", "env", "exit", NULL};
+    int 	index;
+	bool	is_builtin;
+	
+	if (!command)
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), false);
+	index 		= 0;
+	is_builtin 	= false;        
+    while (builtins[index])
+    {
+		if (ft_strncmp(command, builtins[index], ft_strlen(command)) == 0)
+            is_builtin = true;
+        index++;
+    }
+    return (is_builtin);
+}

@@ -6,14 +6,14 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 16:14:13 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 19:15:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:59:10 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 /// UNIR TODOS LOS 'NOQUOTES_TOKEN' de los nodos Token EN 'processed_word' word
-int	insert_token_node(t_word *word);
+static int	insert_token_node(t_word *word);
 
 // INSERTAR VALOR EN TOKEN -> FINAL TOKEN
 void	generate_processed_word(t_word *words_list, t_shell *shell)
@@ -32,7 +32,7 @@ void	generate_processed_word(t_word *words_list, t_shell *shell)
 	}	
 }
  
-int	insert_token_node(t_word *word)
+static int	insert_token_node(t_word *word)
 {
 	t_token	*current_token;
 	char	*result;

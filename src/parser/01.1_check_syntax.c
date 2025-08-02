@@ -6,16 +6,16 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 23:10:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 15:33:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:49:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int		check_pipe_syntax(char *input);
-int		check_balanced_quotes(char *input);
-int		check_redirection_syntax(char *input);
-void	handle_quote_state(bool *inside_quotes, char *quote_char, char current_char);
+static int	check_pipe_syntax(char *input);
+static int	check_balanced_quotes(char *input);
+static int	check_redirection_syntax(char *input);
+void		handle_quote_state(bool *inside_quotes, char *quote_char, char current_char);
 static int	validate_redirection_at_position(char *input, int pos);
 
 int	validate_syntax(t_shell *shell)
@@ -45,7 +45,7 @@ int	validate_syntax(t_shell *shell)
 	return (SUCCESS);
 }
 
-int check_pipe_syntax(char *input)
+static int check_pipe_syntax(char *input)
 {
     int     index;
     bool    inside_quotes;
@@ -91,7 +91,7 @@ int check_pipe_syntax(char *input)
     return (SUCCESS);
 }
 
-int	check_balanced_quotes(char *input)
+static int	check_balanced_quotes(char *input)
 {
     int		index;
     bool	inside_quotes;
@@ -112,7 +112,7 @@ int	check_balanced_quotes(char *input)
     return (SUCCESS);
 }
 
-int	check_redirection_syntax(char *input)
+static int	check_redirection_syntax(char *input)
 {
     int		index;
     bool	inside_quotes;

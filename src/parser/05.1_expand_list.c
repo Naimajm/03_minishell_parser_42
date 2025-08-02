@@ -6,19 +6,17 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:14 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:07:26 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 // FUNCIONES AUXILIARES EXTRACCION SUBSTITUTION STRING
-int		basic_expander(t_token *token, int first_index);
-int		last_exit_status_expander(t_token *token, int first_index);
-int		curly_braces_expander(t_token *token, int first_index);
-int		literal_expander(t_token *token, int first_index);
-
 static int	extract_single_variable(char *raw_token, int start_index);
+int	last_exit_status_expander(t_token *token, int first_index);
+int	curly_braces_expander(t_token *token, int first_index);
+int	literal_expander(t_token *token, int first_index);
 
 int	basic_expander(t_token *token, int index)
 {
@@ -77,8 +75,7 @@ static int	extract_single_variable(char *raw_token, int start_index)
     int	index;
     
     if (!raw_token || raw_token[start_index] != '$')
-        return (0);	
-        
+        return (0);	        
     index = start_index + 1;		// Saltar el $
 
 	// CASO $ UNICO " $  " 
@@ -86,14 +83,10 @@ static int	extract_single_variable(char *raw_token, int start_index)
 		return (1);				// Solo el carácter $  
     
     if (raw_token[index] == '?')	// Caso $?
-    {
         return (2); 				// $?
-    }    
     // Verificar que empiece con letra o _
     if (!ft_isalpha(raw_token[index]) && raw_token[index] != '_')
-    {
-        return (1); // Solo el $ (inválido)
-    }    
+        return (1); // Solo el $ (inválido) 
     // Extraer nombre de variable válido
     while ((ft_isalnum(raw_token[index]) || raw_token[index] == '_') 
         && raw_token[index])
