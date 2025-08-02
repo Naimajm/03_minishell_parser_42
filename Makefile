@@ -46,7 +46,7 @@ PAR_FILES 		:= $(addprefix $(PAR_DIR)/,  01.1_check_syntax.c \
 				07_semantic_check.c \
 				08_execution_builder.c \
 				10_utils_core.c 10.1_utils_strings.c 10.2_free_manager.c 10.3_utils_debug.c \
-				12_test_parser.c )
+				11_test_parser.c )
 
 OBJ_FILES 		+= $(PAR_FILES:%.c=%.o)
 # --------------------------------------------------------------------------
@@ -116,7 +116,6 @@ fclean: clean
 debug: CFLAGS += -g -fsanitize=address
 debug: EXT_LIBRARYS += -fsanitize=address
 debug: re
-# ignore external leaks: ASAN_OPTIONS=detect_leaks=0 make debug
 
 re: fclean all
 	@echo "$(DARK_GREEN)🔁 Cleaning and recompiled -> $(NAME) 	OK$(DEF_COLOR)"	
