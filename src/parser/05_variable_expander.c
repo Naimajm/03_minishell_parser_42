@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 16:08:21 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:43:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,43 @@ static int	expand_single_token(t_token *token, t_shell *shell)
 {
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 	
+
+	// Solo expandir si no es comilla simple
+    /* if (token->type == SINGLE_QUOTES)
+		return (SUCCESS);  */ 
+		
 	extract_expansion_nodes(token);			
 	resolve_expansion_values(token, shell);	
 	insert_expansion_values(token);			
 	return (SUCCESS);
 }
+
+/* static void extract_expansion_nodes(t_token *token)
+{
+    int index = 0;
+    int expansion_position;
+    int expansion_length;
+    
+    if (!token || !token->raw_token)
+        return;
+    
+    // UNA LÍNEA - Buscar expansiones fuera de comillas simples
+    while ((expansion_position = find_next_expansion_outside_single_quotes(token->raw_token, index)) != FAILURE)
+    {
+        // Determinar tipo de expansión
+        if (token->raw_token[expansion_position + 1] == '?')
+            expansion_length = last_exit_status_expander(token, expansion_position);
+        else if (token->raw_token[expansion_position + 1] == '{')
+            expansion_length = curly_braces_expander(token, expansion_position);
+        else
+            expansion_length = basic_expander(token, expansion_position);
+            
+        if (expansion_length == FAILURE)
+            return;
+            
+        index = expansion_position + expansion_length;
+    }
+} */
 
 // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 static void	extract_expansion_nodes(t_token *token)

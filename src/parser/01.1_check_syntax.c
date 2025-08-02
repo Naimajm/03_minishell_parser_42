@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 23:10:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:49:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:38:41 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,34 @@ int	validate_syntax(t_shell *shell)
 	}
 	return (SUCCESS);
 }
+
+/* static int check_pipe_syntax(char *input)
+{
+    int index = 0;
+    int pipe_position;
+    
+    while (input[index])
+    {
+        pipe_position = find_pipe_outside_quotes(input, index);
+        
+        if (pipe_position !=  (int)ft_strlen(input))  // Encontró pipe
+        {
+            // Verificar que no sea doble pipe
+            if (input[pipe_position + 1] == '|')
+                return (SYNTAX_ERROR);
+            
+            // Verificar que hay contenido antes y después
+            if (pipe_position == index || !input[pipe_position + 1])
+                return (SYNTAX_ERROR);
+                
+            index = pipe_position + 1;
+        }
+        else
+            break;
+    }
+    
+    return (SUCCESS);
+} */
 
 static int check_pipe_syntax(char *input)
 {

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:50:48 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:33:06 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,48 +57,22 @@ static int	command_extractor(t_cmd *command)
 
 static int	word_extractor(t_cmd *command, int start_index)
 {
-	int		index;
-	int		len_input;
-	char	current_quote;
-	bool	quote_state;  			// false = fuera, true = dentro
-	char	character;
+	int	word_end_position;
+	int	word_len;
 
 	if (!command->command)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 		 
-	index 			= start_index;    
-	current_quote 	= 0;
-	quote_state 	= false;	
-	while (command->command[index])
-	{
-		character = command->command[index];  		
-		if (is_quote(character))		// caso DENTRO DE COMILLAS -> ignorar espacios y operadores
-		{
-			if (quote_state == 0) 		// Entrando en comillas
-			{                
-				current_quote = character;
-				quote_state = true;
-				index++;
-			}
-			else if (character == current_quote) // Saliendo de comillas del mismo tipo
-			{                
-				quote_state = false;
-				current_quote = 0;
-				index++;
-			}
-			else 						// Comilla diferente dentro de comillas actuales                     
-				index++; 				// Se trata como carácter literal
-		}
-		// caso FUERA DE COMILLAS -> espacios y operadores terminan la palabra
-		else if (quote_state == false && (is_space(character) || is_redirection(character) || is_pipe(character)))  
-			break;		 	
-		else    			// Carácter normal o carácter dentro de comillas           
-			index++;      
-	}	
-	len_input = index - start_index;
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 	
 	
-	// CREAR NODO TOKEN ------------------------------------------------------
-	create_word(&command->words_list, command->command, start_index, len_input, WORD);
-	return (len_input);
+	// DELIMITADOR LIMITES CARACTERES WORD -------------------------------------------
+	word_end_position = find_word_end_outside_quotes(command->command, start_index);
+	if (word_end_position == FAILURE)
+		return (ft_putendl_fd(ERROR_COMMAND_INIT, STDERR_FILENO), FAILURE); 
+		
+	word_len = word_end_position - start_index;
+	if (word_len > 0)
+		// CREAR NODO TOKEN ------------------------------------------------------
+		create_word(&command->words_list, command->command, start_index, word_len, WORD);	
+	return (word_len);
 }
 
 static int	operator_extractor(t_cmd *command, int start_index)

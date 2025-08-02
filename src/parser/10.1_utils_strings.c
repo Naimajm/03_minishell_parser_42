@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:36:29 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 17:21:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:00:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 char	*ft_strjoin_free(char *str1, char *str2);
 void	free_matrix(char **matrix);
+int		is_expansion_char(char character);
 int		is_space(char character);
 
 // Función auxiliar para avanzar index segun la longitud del string
@@ -69,6 +70,16 @@ void	free_matrix(char **matrix)
 	}
 	free(matrix);
 	matrix = NULL;
+}
+
+int	is_expansion_char(char character)
+{
+	int	expansion;
+
+	expansion = 0;
+	if (character == '$')
+		expansion = 1;
+	return (expansion);
 }
 
 int	is_space(char character)

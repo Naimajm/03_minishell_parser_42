@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 16:06:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:02:03 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,17 +270,26 @@ int 	validate_command_semantics(t_shell *shell);
 void    build_execution_structure(t_cmd *commands_list);
 
 /// UTILIDADES Y TESTING -------------------------------------------
-// 10_utils_core.c			 # Utilidades básicas
-int		get_operator_length(char *input, int index);
-int 	is_pipe(char character);
-int		is_quote(char character);
-int 	is_redirection(char character);
+// 10_utils_core.c		 # Utilidades gestion comillas
+int	find_pipe_outside_quotes(char *input, int start_index);
+int	find_word_end_outside_quotes(char *input, int start_index);
+int find_next_expansion_outside_single_quotes(const char *input, int start_index);
+int find_matching_quote_position(const char *input, int quote_start_index);
+int	is_quotes_balanced(const char *input);
 
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);
 char	*ft_strjoin_free(char *str1, char *str2);
 void	free_matrix(char **matrix);
+int		is_expansion_char(char character);
 int		is_space(char character);
+
+// 10.2_utils_basic.c		# Utilidades básicas
+int		get_operator_length(char *input, int index);
+int 	is_word_delimiter(char character);
+int 	is_redirection(char character);
+int 	is_pipe(char character);
+int		is_quote(char character);
 	
 // 10.2_free_manager.c		# Gestión de memoria
 void	free_iteration_input(t_shell *shell);

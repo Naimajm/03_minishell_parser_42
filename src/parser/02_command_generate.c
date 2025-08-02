@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:43:11 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:32:11 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,42 +47,19 @@ void	create_commands_structure(t_shell *shell)
 
 static int generate_command(t_shell *shell, int start_index)
 {
-	int		index;
-	int		command_len;
-	bool	inside_quotes;
-	char	active_quote_char;
-	char 	character;
+	int	pipe_position;
+	int	command_len;
 
-	if (!shell)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);	
-	index 				= start_index;
-	inside_quotes 		= false;
-	active_quote_char 	= 0;	
+	if (!shell || start_index < 0)
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
 
-	// DELIMITADOR LIMITES CARACTERES TOKEN -------------------------------------------
-	while (shell->input[index])		// Procesar hasta encontrar pipe fuera de comillas
-	{
-		character = shell->input[index];		
-		if (is_quote(character))							// Manejar comillas
-		{
-			if (inside_quotes == false) 					// Entrando en comillas
-			{				
-				active_quote_char = character;
-				inside_quotes = true;
-			}
-			else if (character == active_quote_char) 		// Saliendo de comillas
-			{	
-				active_quote_char = 0;			
-				inside_quotes = false;				
-			}
-		}		
-		else if (inside_quotes == false && is_pipe(character))	// Solo terminar si encontramos pipe fuera de comillas
-			break;    
-		index++;
-	}	
-	command_len = index - start_index;
-	// CREAR NODO COMMAND ------------------------------------------------------
-	create_clean_command(&shell->commands_list, shell->input, start_index, command_len);
+	// DELIMITADOR LIMITES CARACTERES COMMAND -------------------------------------------
+	pipe_position = find_pipe_outside_quotes(shell->input, start_index);
+	command_len = pipe_position - start_index;
+
+	if (command_len > 0)
+		// CREAR NODO COMMAND ------------------------------------------------------
+		create_clean_command(&shell->commands_list, shell->input, start_index, command_len);	
 	return (command_len);
 }
 

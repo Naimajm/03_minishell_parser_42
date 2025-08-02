@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:52:00 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 21:21:34 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static int	noquotes_tokenizer(t_word *word, int start_index)
 
 	// DELIMITADOR LIMITES CARACTERES TOKEN -------------------------------------------
 	// CASO VARIABLES EXPANDIDAS	Si empezamos con $, procesamos solo esa variable
-    if (raw_word[index] == '$')
+    if (is_expansion_char(raw_word[index]))
     {
         index++;                       // Saltar el $        
         if (raw_word[index] == '?')     // Caso $?
@@ -95,7 +95,7 @@ static int	noquotes_tokenizer(t_word *word, int start_index)
 			&& !is_redirection(raw_word[index])
 			&& !is_pipe(raw_word[index])
             && !is_quote(raw_word[index]) 
-            && raw_word[index] != '$'           	// ¡CLAVE! Parar en $
+            && !is_expansion_char(raw_word[index])         // ¡CLAVE! Parar en $
             && raw_word[index])
             index++;
     }	
@@ -109,14 +109,16 @@ static int	noquotes_tokenizer(t_word *word, int start_index)
 static int	quotes_tokenizer(t_word *word, int start_index)
 {
 	char	*raw_word;	
-	int		index;	
 	char	delimiter;	
 	int		token_type;
 	int		len_input;
+	int 	end_position;
 
+	if (!word || !word->raw_word || start_index < 0)
+		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE);
 	raw_word 		= (char *) word->raw_word;	
-	index 			= start_index + 1;  		// Empezar después de la comilla
-	delimiter		= raw_word[start_index];	// Comilla de apertura
+	delimiter		= raw_word[start_index];		// Comilla de apertura
+
 	// CLASIFICAR TIPO TOKEN 
 	if (delimiter == '\"')
 		token_type = DOUBLE_QUOTES;
@@ -126,13 +128,10 @@ static int	quotes_tokenizer(t_word *word, int start_index)
 		token_type = NO_QUOTES;
 
 	// DELIMITADOR LIMITES CARACTERES TOKEN -------------------------------------------
-	while (raw_word[index] && raw_word[index] != delimiter)		// Buscar comilla de cierre
-		index++;
-	if (raw_word[index] == delimiter)							// validacion falta de comilla de cierre
-		index++;
-	else		
-		return (ft_putendl_fd(ERROR_QUOTE_SYNTAX, STDERR_FILENO), FAILURE);	
-	len_input =  index - start_index;
+	end_position = find_matching_quote_position(raw_word, start_index);
+	if (end_position == FAILURE)
+        return (ft_putendl_fd(ERROR_QUOTE_SYNTAX, STDERR_FILENO), FAILURE);
+	len_input =  end_position - start_index;
 
 	// CREAR NODO TOKEN ------------------------------------------------------
 	create_token(&word->tokens_list, raw_word, start_index, len_input, token_type);

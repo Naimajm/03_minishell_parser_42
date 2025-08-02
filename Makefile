@@ -45,7 +45,8 @@ PAR_FILES 		:= $(addprefix $(PAR_DIR)/,  01.1_check_syntax.c \
 				06_word_processor.c \
 				07_semantic_check.c \
 				08_execution_builder.c \
-				10_utils_core.c 10.1_utils_strings.c 10.2_free_manager.c 10.3_utils_debug.c \
+				09_free_manager.c \
+				10_utils_core.c 10.1_utils_strings.c 10.2_utils_basic.c 10.3_utils_debug.c \
 				11_test_parser.c )
 
 OBJ_FILES 		+= $(PAR_FILES:%.c=%.o)
