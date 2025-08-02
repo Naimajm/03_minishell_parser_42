@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   01_execute_shell.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 13:15:28 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/02 11:37:05 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	recover_previous_status(t_shell *shell);
+//void	recover_previous_status(t_shell *shell);
 int	read_user_input(t_shell *shell, char *prompt);
 //void	read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
@@ -30,22 +30,30 @@ void	execute_shell(t_shell *shell)
 		//iteration++;
         //printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 		
-		recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro 
+		//recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro 
+
+		/* printf("ANTES read_user_input -> last_exit_status -> %i\n", shell->last_exit_status);
+		printf("exit_status -> %i\n", shell->exit_status); */
 		
 		if (read_user_input(shell, PROMPT) == FAILURE)
 			break ;
-					
+		/* printf("ANTES process_input -> last_exit_status -> %i\n", shell->last_exit_status);
+		printf("exit_status -> %i\n", shell->exit_status); */
+
 		process_input(shell);
 		
 		//print_config_shell(shell);		// DEBUG
 		free_iteration_input(shell);
 		//printf("DEBUG: Memory freed, iteration %d\n", iteration);
+
+		/* printf("DESPUES  process_input-> last_exit_status -> %i\n", shell->last_exit_status);
+		printf("exit_status -> %i\n", shell->exit_status); */
 	}	
 	free_iteration_input(shell);
 }
 
 // GESTION SIGNALS + COPIA EXIT_STATUS de la iteracion anterior a Shell
-// Modificado por Juan Jesus <-----------------------------------------------------
+/* // Modificado por Juan Jesus <-----------------------------------------------------
 void	recover_previous_status(t_shell *shell)
 {
 	//(void)	shell;			// TEMPORAL
@@ -56,15 +64,29 @@ void	recover_previous_status(t_shell *shell)
 		shell->last_exit_status = g_signal_flag;		// SEÑALES (Ctrl+C = 130)
 	else
 		shell->exit_status = SUCCESS;	 				// RESET A 0 SI NO HAY SEÑALES
-}	
+}	 */
 
 int	read_user_input(t_shell *shell, char *prompt)
 {
 	char	*input;	
 
+	shell->last_exit_status = shell->exit_status;		// 1. GUARDAR estado anterior ANTES de signals	
+	ft_setup_signals();
+
 	input = readline(prompt);
 	if (!input)
 		return (ft_putendl_fd("exit\n", STDOUT_FILENO), FAILURE);
+
+	if (g_signal_flag)
+	{
+		shell->exit_status 			= g_signal_flag;
+		shell->last_exit_status 	= g_signal_flag; // SEÑALES (Ctrl+C = 130)
+		g_signal_flag 				= 0; 					// Reset después de procesar
+		
+	}				
+	/* else
+		shell->exit_status = SUCCESS; */	
+		
 	if (input[0] == '\0')					// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
 	{
 		free(input);
@@ -75,6 +97,7 @@ int	read_user_input(t_shell *shell, char *prompt)
 	if (!shell->input)
 	{
 		free(input);
+		shell->exit_status = ERROR;
 		return (ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO), FAILURE);
 	}
 	free(input);

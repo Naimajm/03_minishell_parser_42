@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 12:55:56 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:24:04 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 
 // EXTERNAL LIBRARIES EXECUTOR
 # include <sys/wait.h>
-# include <unistd.h>
 # include <signal.h>
 
 // MACROS EXECUTOR -------------------------------------------------
@@ -45,8 +44,6 @@
 // # define LR1 6
 // # define LR2 7
 # define LOL 999
-
-// extern int	g_signal_flag; // TODO, DEFINIDOS EN MACROS PARSER
 
 // MACROS PARSER-----------------------------------------------------
 // VALORES EXIT_STATUS
@@ -93,8 +90,8 @@
 # define FREE_EXPANDS_LIST		"Free\n Expands List...\t\t\t OK\n"
 # define FREE_MATRIX			"Free\n Cleaning matrix...\t\t\t OK\n"
 
-// categorizacion TIPOS WORD_TOKEN
-# define WORD					'W'		// W -> palabra generica no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
+// categorizacion WORDS
+# define WORD					'W'		// W -> palabra no expandido (NO_QUOTES, SINGLE_QUOTES, DOUBLE_QUOTES)
 # define OUTFILE				'O'		// 1 -> operador > OUTFILE
 # define APPEND					'A'		// 2 -> operador >> APPEND
 # define INFILE					'I'		// 3 -> operador < INFILE
@@ -183,7 +180,7 @@ typedef struct	s_shell
 	int			exit_status;
 	int			last_exit_status;
 
-	char		**readonly_vars; // AÑADIDO POR EMI PARA LA GESTION DE VARIABLE DE SOLO LECTURA DE LA BUILTIN UNSET
+	char		**readonly_vars; // EMI -> GESTION DE VARIABLE DE SOLO LECTURA DE LA BUILTIN UNSET
 
 	t_cmd		*commands_list;
 }				t_shell;
@@ -202,7 +199,7 @@ void	cleanup_minishell(t_shell *shell);
 
 // 01_execute_shell.c			# loop principal Shell
 void	execute_shell(t_shell *shell);
-void	recover_previous_status(t_shell *shell);
+//void	recover_previous_status(t_shell *shell);
 int		read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
@@ -255,7 +252,6 @@ int		operator_tokenizer(t_word *word, int start_index);
 
 // 04.1_token_builder.c		# Constructor de tokens
 int		create_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type);
-//void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_tokens_list(t_token *token_list);
 
 /// EXPANSIÓN DE VARIABLES -------------------------------------------
@@ -324,7 +320,7 @@ void	print_text_file(const char *filename);
 void	print_config_shell(t_shell *shell);
 void	print_strings_array(char **array);
 
-// 12_test_parser.c			# Testing y debugging
+// 11_test_parser.c			# Testing y debugging
 void 	test_basic_parser(t_shell *shell);
 void 	test_complex_parser(t_shell *shell);
 
@@ -336,18 +332,15 @@ void 	test_complex_parser(t_shell *shell);
 // EXECUTOR ------------------- Juan Jesus ------------
 
 // CLEAN2.C
-
 void	ft_free_cmd_args(t_cmd *cmd);
 void	ft_free_cmd_files(t_cmd *cmd);
 
 // COMMANDS_UTILS.C
-
 int		ft_isbuiltin(char *str);
 int		ft_has_commands(t_shell *shell);
 char	*ft_substr_malloc(const char *input, int start, int len);
 
 // EXECUTER_COMMAND.C
-
 void	free_paths(char **paths, int i);
 char	*ft_search_in_paths(char **paths, char *comm);
 char	*ft_path(char *path, char **comm);
@@ -355,7 +348,6 @@ void	ft_handle_command_execution(t_shell *shell, t_cmd *cmd, char *path);
 void	ft_execute_command(t_shell *shell, t_cmd *cmd);
 
 // EXECUTER.C
-
 void	ft_child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms);
 void	ft_parent_process(t_shell *ms, int *prevfd, int pipefd[2]);
 void	ft_wait_all_processes(pid_t *pids, t_shell *ms);
@@ -363,14 +355,12 @@ pid_t	ft_exec_single_cmd(t_cmd *cmd, int *prevfd, int *pipefd, t_shell *ms);
 void	ft_exec_commands(t_shell *ms);
 
 // EXPAND_EXITSTATUS.C
-
 char	*ft_middle_case(char *token, char *dollar_pos, char *status_str);
 void	ft_replace_start(char **token, char *status_str, char *dollar_pos);
 void	ft_process_dollarquest(t_token *token, char *dollar_pos, char *sts_str);
 void	ft_expand_exitstatus(t_shell *shell, t_token *token);
 
 // EXPAND_UTILS.C //
-
 int		ft_intstrchr(const char *s, int c);
 int		ft_find_end(char *tkn);
 t_expand	*ft_init_expand(void);
@@ -378,7 +368,6 @@ char	*ft_substr_malloc(const char *input, int start, int len);
 void	ft_free_expand(t_expand *xpnd);
 
 // EXPAND_VAR.C //
-
 char	*ft_getenv(char **env, char *var); // quitar
 int		ft_find_dollar(t_shell *shell);
 void	ft_insert_exp(t_expand *xpnd, t_token *t);
@@ -386,37 +375,30 @@ void	ft_expand_token(t_shell *shell, t_token *token);
 void	ft_expand_var(t_shell *shell);
 
 // GET_COMMANDS.C //
-
 int		ft_cmdsize(t_cmd *lst);
 int		ft_has_commands(t_shell *shell);
 
 // HEREDOC_UTILS.C
-
 char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st); 
 char	*ft_not_expand(int *i, char *buffer);
 char	*ft_expand_heredoc(char *buffer, char **env, int exit_st);
 
 // REDIRECTIONS.C
-
 int		ft_redir_heredoc(t_shell *shell, t_cmd *cmd);
 int		ft_redir_infile(char *infile);
 int		ft_redir_outfile(char *outfile, int append);
 int		ft_redirections(t_shell *shell, t_cmd *cmd);
 
 // SIGNALS.C
-
 void	ft_check_exitstat(int status, t_shell *ms);
 void	ft_handle_backslash(int signum);
 void	ft_handle_sigint(int signum);
 void	ft_setup_signals(void);
 
 // ULTIS.C
-
 void	ft_exit_error(char *error);
 void	*safe_malloc(size_t bytes);
-// void	ft_print_tokens(t_token *token);
 char	**ft_copy_env(char **env);
-// void	ft_print_cmdlst(t_cmd *cmd_lst);
 
 // ---------------END Juan Jesus ---------------------------------
 
@@ -424,23 +406,29 @@ char	**ft_copy_env(char **env);
 // --------------------- Parte de Emilia -------------------------
 
 // BUILTINS-------------------------------------------------------
+
 //00_utils_builtins_00.c
 int		ft_mtrx_size(char **mtrx); // unset, export
 int		ft_search_index_env(char **env, char *str); // export, unset 
 int		ft_valid_env_var(char *env_var); // export, unset
 char	**ft_copy_mtrx(char **mtrx); // export,
 void	ft_swap_mtrx(char **s1, char **s2); // export
+
 //00_utils_builtins_01.c
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_find_plus_pos(char *var); // export
 void	sort_alphabetic_mtrx(char **mtrx); // export
 char	*ft_get_keyvar(char *var); // export
+
 //00_utils_builtins_02.c
 char	**ft_create_new_env(char **env, char *var); // export
+
 //00_utils_builtins_03.c
 char	**ft_append_env_var_value(char **env, char *var, int index); //export
+
 //00_exec_builtins.c
 void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd);
+
 //btn----one file por each one------------------------------------
 int		exec_echo(t_cmd *cmd);
 int		exec_cd(t_cmd *cmd, t_shell *shell);
@@ -449,6 +437,7 @@ int		exec_export(t_cmd *cmd, t_shell *shell);
 int		exec_unset(t_shell *shell, t_cmd *cmd);
 int		exec_env(t_shell *shell);
 void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd);
+
 // END BUILTINS-------------------------------------------------------
 
 // -----------------END parte de Emilia ------------------------------

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 12:56:41 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:27:48 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	create_commands_structure(t_shell *shell)
 		input_len = generate_command(shell, index);	// CLASIFICACION LISTA PROCESOS		
         if (input_len <= 0)						// Verificar que se generó un comando válido
         {            
-            index++;							// Si no se pudo generar comando válido, avanzar un carácter
+            index++;							// Si no se pudo generar comando válido
             continue;
         }
 		index = advance_index_by_length(index, input_len);		
@@ -47,7 +47,6 @@ void	create_commands_structure(t_shell *shell)
 
 int generate_command(t_shell *shell, int start_index)
 {
-	//char	*command_input;
 	int		index;
 	int		command_len;
 	bool	inside_quotes;
@@ -99,10 +98,10 @@ int create_clean_command(t_cmd **commands_list, char *raw_input, int start_index
     if (!command_input)
         return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);    
 
-    clean_command = ft_strtrim(command_input, " \t\n\r");	     // Limpiar espacios al inicio y final
+    clean_command = ft_strtrim(command_input, " \t\n\r");	// Limpiar espacios al inicio y final
 	if (!clean_command)
-        return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);     
-    if (ft_strlen(clean_command) > 0)			// Verificar que no esté vacío
+        return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);    
+    if (ft_strlen(clean_command) > 0)			
         add_command_node(commands_list, clean_command);
     else
     {
