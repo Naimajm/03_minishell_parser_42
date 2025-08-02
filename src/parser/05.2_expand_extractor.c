@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 14:35:24 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:44:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 // FUNCIIONES AUXILIARES EXTRACCION KEY Y BUSQUEDA VALUE
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
-char	*extract_substitution_segment(char *raw_token, int first_index);
 
 // EXTRAER KEY DE SUBSTITUTION_STR
 char	*extract_key(char *token, int first_index)
@@ -66,19 +65,5 @@ char	*get_environment_var(char **env, char *variable)
 		index++;
 	}	
 	return (NULL);	
-}
-
-char	*extract_substitution_segment(char *raw_token, int first_index)
-{
-    char	*substitution_str;
-
-	(void)first_index;
-    if (!raw_token)
-        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);    
-    // Como el tokenizer ya separó correctamente, solo devolvemos todo el token
-    substitution_str = ft_strdup(raw_token);
-    if (!substitution_str)
-        return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);    
-    return (substitution_str);
 }
 

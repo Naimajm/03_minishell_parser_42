@@ -6,13 +6,13 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:10:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/01 19:33:19 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static t_expand *create_expand_node(char  *variable, int first_index, int expand_type);
+static t_expand *init_expand_node(char  *variable, int first_index, int expand_type);
 static t_expand	*find_expand_last_node(t_expand *token_list);
 void print_expand_nodes_list(t_expand *expand_list);
 
@@ -24,7 +24,7 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 	if (!expand_list || !substitution_variable)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);   
 
-	new_node = create_expand_node(substitution_variable, first_index, expand_type);
+	new_node = init_expand_node(substitution_variable, first_index, expand_type);
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_EXPAND_INIT, STDERR_FILENO), NULL);
 	last_node = find_expand_last_node(*expand_list);	
@@ -35,7 +35,7 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 	return (new_node);
 }
 
-static t_expand *create_expand_node(char  *substitution_variable, int first_index, int expand_type)
+static t_expand *init_expand_node(char  *substitution_variable, int first_index, int expand_type)
 {
 	t_expand *new_node;
 	

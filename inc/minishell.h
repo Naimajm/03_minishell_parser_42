@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 19:04:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:55:56 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,8 +203,7 @@ void	cleanup_minishell(t_shell *shell);
 // 01_execute_shell.c			# loop principal Shell
 void	execute_shell(t_shell *shell);
 void	recover_previous_status(t_shell *shell);
-int	read_user_input(t_shell *shell, char *prompt);
-//void	read_user_input(t_shell *shell, char *prompt);
+int		read_user_input(t_shell *shell, char *prompt);
 void	process_input(t_shell *shell);
 void	process_commands(t_shell *shell);
 
@@ -221,7 +220,7 @@ int		check_redirection_syntax(char *input);
 // 02_command_generate.c	# Análisis sintáctico inicial
 void	create_commands_structure(t_shell *shell);
 int 	generate_command(t_shell *shell, int start_index);
-char	*create_clean_command(char *input, int start_index, int final_index);
+int 	create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len);
 
 // 02.1_command_check.c	# Validacion sintaxis estructura comandos
 int		validate_command_structure(t_shell *shell);
@@ -242,9 +241,9 @@ int		word_extractor(t_cmd *command, int start_index);
 int		operator_extractor(t_cmd *command, int start_index);
 
 // 03.1_word_builder.c		# Constructor de palabras
-void	add_word_node(t_word **word_list, char  *input, char word_type);
-t_word	*find_word_last_node(t_word *word_list);
 void 	print_words_list(t_word *word_list);
+int		create_word(t_word **word_list, char *command_input, int start_index, int word_len, int word_type);
+t_word	*find_word_last_node(t_word *word_list);
 
 /// TOKENIZACIÓN -------------------------------------------
 // 04_tokenizer.c			# Tokenización
@@ -255,7 +254,7 @@ int		quotes_tokenizer(t_word *word, int start_index);
 int		operator_tokenizer(t_word *word, int start_index);
 
 // 04.1_token_builder.c		# Constructor de tokens
-int		create_and_add_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type);
+int		create_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type);
 //void	add_token_node(t_token **token_list, char  *input, int token_type);
 void	print_tokens_list(t_token *token_list);
 
@@ -276,7 +275,6 @@ int		literal_expander(t_token *token, int first_index);
 //  05.2_expand_extractor.c	# Extractor de variables
 char	*extract_key(char *token, int first_index);
 char	*get_environment_var(char **env, char *variable);
-char	*extract_substitution_segment(char *input, int start_index);
 
 //	05.3_expand_builder.c	 # Constructor de expansiones
 t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type);

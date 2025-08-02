@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 17:19:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:14:58 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ int	command_extractor(t_cmd *command)
 
 int	word_extractor(t_cmd *command, int start_index)
 {
-	char	*command_input;
 	int		index;
 	int		len_input;
 	char	current_quote;
@@ -95,17 +94,10 @@ int	word_extractor(t_cmd *command, int start_index)
 		else    			// Carácter normal o carácter dentro de comillas           
 			index++;      
 	}	
-	command_input = ft_substr(command->command, start_index, (index - start_index));
-	if (!command_input)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), FAILURE);
+	len_input = index - start_index;
 	
-	len_input = ft_strlen(command_input);
-
-	//printf("Generated word: <%s>\n", command_input);		
-	add_word_node(&command->words_list, command_input, WORD);
-	//printf("DEBUG: add word successfully -> word_len = %d\n\n", len_input);
-	
-	free(command_input);	
+	// CREAR NODO TOKEN ------------------------------------------------------
+	create_word(&command->words_list, command->command, start_index, len_input, WORD);
 	return (len_input);
 }
 
@@ -119,16 +111,16 @@ int	operator_extractor(t_cmd *command, int start_index)
 	input = command->command;
 	operator_len = get_operator_length(command->command, start_index);
 
-	if (operator_len == 2 && input[start_index] == '>')		
-        add_word_node(&command->words_list, ">>", APPEND);  
-    else if (operator_len == 2 && input[start_index] == '<')	
-        add_word_node(&command->words_list, "<<", HERE_DOC);
+	if (operator_len == 2 && input[start_index] == '>')
+		create_word(&command->words_list, ">>", start_index, operator_len, APPEND);	
+    else if (operator_len == 2 && input[start_index] == '<')
+		create_word(&command->words_list, "<<", start_index, operator_len, HERE_DOC);
     else if (operator_len == 1 && input[start_index] == '>')
-        add_word_node(&command->words_list, ">", OUTFILE);
+		create_word(&command->words_list, ">", start_index, operator_len, OUTFILE);	
     else if (operator_len == 1 && input[start_index] == '<')
-        add_word_node(&command->words_list, "<", INFILE);
+		create_word(&command->words_list, "<", start_index, operator_len, INFILE);	
     else if (operator_len == 1 && is_pipe(input[start_index]))
-        add_word_node(&command->words_list, "|", PIPE);
+		create_word(&command->words_list, "|", start_index, operator_len, PIPE);
 	else
 		return (FAILURE); 
 	return (operator_len);

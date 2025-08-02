@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:01:32 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 19:00:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:56:41 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // 	ANALISIS SINTACTICO PARA GENERACION LISTA DE COMANDOS
 int 	generate_command(t_shell *shell, int start_index);
-char	*create_clean_command(char *input, int start_index, int final_index);
+int 	create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len);
 
 // AGRUPAR INPUT NO PROCESADOS PARA DIFERENTES JOBS EN EL CASO DE PIPES
 void	create_commands_structure(t_shell *shell)
@@ -47,7 +47,7 @@ void	create_commands_structure(t_shell *shell)
 
 int generate_command(t_shell *shell, int start_index)
 {
-	char	*command_input;
+	//char	*command_input;
 	int		index;
 	int		command_len;
 	bool	inside_quotes;
@@ -81,44 +81,35 @@ int generate_command(t_shell *shell, int start_index)
 			break;    
 		index++;
 	}	
-
-	// CREAR NODO TOKEN ------------------------------------------------------
-	command_input = create_clean_command(shell->input, start_index, index);		// Extraer el comando (sin incluir el pipe)
-	if (!command_input)
-		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);				
-	command_len = ft_strlen(command_input);	
-	if (command_len > 0)			
-		add_command_node(&shell->commands_list, command_input);					// AÑADIR NODO COMMAND
-	free(command_input);
+	command_len = index - start_index;
+	// CREAR NODO COMMAND ------------------------------------------------------
+	create_clean_command(&shell->commands_list, shell->input, start_index, command_len);
 	return (command_len);
 }
 
-char	*create_clean_command(char *input, int start_index, int final_index)
+int create_clean_command(t_cmd **commands_list, char *raw_input, int start_index, int command_len)
 {
-	char	*raw_command;
-	char	*clean_command;
-	int		len;
+    char *command_input;
+    char *clean_command;    
 
-	if (!input || start_index >= final_index)
-		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);	
+    if (!commands_list || !raw_input || start_index < 0 || command_len <= 0)
+        return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);
+    
+    command_input = ft_substr(raw_input, start_index, command_len);
+    if (!command_input)
+        return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);    
 
-	raw_command = ft_substr(input, start_index, (final_index - start_index));
-	if (!raw_command)
-		return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);	
-
-	len = ft_strlen(raw_command);
-	while (len > 0 && is_space(raw_command[len - 1]))			// eliminar espacios al final
-	{
-		raw_command[len - 1] = '\0';
-		len--;
-	}	
-	clean_command = ft_strtrim(raw_command, " \t\n\r");			// Crear copia limpia
+    clean_command = ft_strtrim(command_input, " \t\n\r");	     // Limpiar espacios al inicio y final
 	if (!clean_command)
-	{
-    	free(raw_command);
-    	return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO), NULL);
-	}
-	free(raw_command);
-	return (clean_command);
+        return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);     
+    if (ft_strlen(clean_command) > 0)			// Verificar que no esté vacío
+        add_command_node(commands_list, clean_command);
+    else
+    {
+        free(clean_command);
+        return (ft_putendl_fd(ERROR_COMMAND_EMPTY, STDERR_FILENO), FAILURE);
+    }    
+	free(command_input);
+    free(clean_command);    
+    return (command_len);
 }
-

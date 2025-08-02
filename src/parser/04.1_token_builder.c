@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:26:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 19:12:18 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 11:40:36 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,15 @@
 
 static void		add_token_node(t_token **token_list, char  *word, int token_type);
 static t_token	*find_token_last_node(t_token *token_list);
-static t_token	*create_token_node(char  *input, int type_token);
+static t_token	*init_token_node(char  *input, int type_token);
 void			print_tokens_list(t_token *token_list);
 
-int		create_and_add_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type)
+int		create_token(t_token **token_list, char *raw_word, int start_index, int token_len, int token_type)
 {
 	char	*token_input;
 
 	if (!token_list || start_index < 0 || token_len <= 0)
-		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);
-	
+		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);	
 	token_input = ft_substr(raw_word, start_index, token_len);
 	if (!token_input)
 		return (ft_putendl_fd(ERROR_INIT, STDERR_FILENO), FAILURE);		
@@ -39,7 +38,7 @@ static void	add_token_node(t_token **token_list, char  *word, int token_type)
 	
 	if (!token_list || !word)                       
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));      
-	new_node = create_token_node(word, token_type); 
+	new_node = init_token_node(word, token_type); 
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_TOKEN_INIT, STDERR_FILENO));
 	last_node = find_token_last_node(*token_list);  	
@@ -49,7 +48,7 @@ static void	add_token_node(t_token **token_list, char  *word, int token_type)
 		last_node->next = new_node;
 }
 
-static t_token *create_token_node(char  *word, int token_type)
+static t_token *init_token_node(char  *word, int token_type)
 {
 	t_token *new_node;
 

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 19:23:55 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/02 11:38:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	noquotes_tokenizer(t_word *word, int start_index)
 	len_input = index - start_index;
 	
 	// CREAR NODO TOKEN ------------------------------------------------------
-	create_and_add_token(&word->tokens_list, raw_word, start_index, len_input, NO_QUOTES);
+	create_token(&word->tokens_list, raw_word, start_index, len_input, NO_QUOTES);
 	return (len_input);
 }
 
@@ -135,7 +135,7 @@ int	quotes_tokenizer(t_word *word, int start_index)
 	len_input =  index - start_index;
 
 	// CREAR NODO TOKEN ------------------------------------------------------
-	create_and_add_token(&word->tokens_list, raw_word, start_index, len_input, token_type);
+	create_token(&word->tokens_list, raw_word, start_index, len_input, token_type);
 	return (len_input);
 }
 
@@ -165,7 +165,7 @@ int	operator_tokenizer(t_word *word, int start_index)
 	else
 		return (FAILURE); 
 	// CREAR NODO TOKEN ------------------------------------------------------
-	create_and_add_token(&word->tokens_list, operator, start_index, operator_len, OPERATOR);
+	create_token(&word->tokens_list, operator, start_index, operator_len, OPERATOR);
 	return (operator_len);
 }
 
