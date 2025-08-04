@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 11:37:05 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 13:37:08 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ void	execute_shell(t_shell *shell)
 }
 
 // GESTION SIGNALS + COPIA EXIT_STATUS de la iteracion anterior a Shell
-/* // Modificado por Juan Jesus <-----------------------------------------------------
-void	recover_previous_status(t_shell *shell)
+// Modificado por Juan Jesus <-----------------------------------------------------
+/* void	recover_previous_status(t_shell *shell)
 {
 	//(void)	shell;			// TEMPORAL
 	// CASO EOF (Ctrl+D o fin de pipe)
@@ -63,8 +63,8 @@ void	recover_previous_status(t_shell *shell)
 	if (g_signal_flag)
 		shell->last_exit_status = g_signal_flag;		// SEÑALES (Ctrl+C = 130)
 	else
-		shell->exit_status = SUCCESS;	 				// RESET A 0 SI NO HAY SEÑALES
-}	 */
+		shell->exit_status = SUCCESS; 	 				// RESET A 0 SI NO HAY SEÑALES
+} */
 
 int	read_user_input(t_shell *shell, char *prompt)
 {
@@ -77,15 +77,19 @@ int	read_user_input(t_shell *shell, char *prompt)
 	if (!input)
 		return (ft_putendl_fd("exit\n", STDOUT_FILENO), FAILURE);
 
+	//printf("g_signal_flag -> %i\n", g_signal_flag);
+	//printf("shell->exit_status -> %i\n", shell->exit_status);
+	//printf("shell->last_exit_status -> %i\n", shell->last_exit_status);
+
 	if (g_signal_flag)
 	{
 		shell->exit_status 			= g_signal_flag;
-		shell->last_exit_status 	= g_signal_flag; // SEÑALES (Ctrl+C = 130)
+		shell->last_exit_status 	= g_signal_flag; 		// SEÑALES (Ctrl+C = 130)
 		g_signal_flag 				= 0; 					// Reset después de procesar
 		
-	}				
-	/* else
-		shell->exit_status = SUCCESS; */	
+	}			
+	else if (!g_signal_flag && shell->last_exit_status == 0) // RESET A 0 SI NO HAY SEÑALES  // TODO : MODIFICADO POR EMILIA PARA QUE EL TEST DE BUILTIN Y SYNTAX DE CORRECTO Y SI EL LAST EXIT ESTATUS TAMBIEN ES CERO
+		shell->exit_status = SUCCESS;
 		
 	if (input[0] == '\0')					// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
 	{
