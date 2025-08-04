@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 13:47:19 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 18:04:28 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,7 @@ char *test_cases[] = {
 	// ERROR SINTAXIS
 	//"'$\"' '$",					// error	
 	//"export GHOST= 123 | env | grep GHOST",
+	//"$EMPTY echo hi",
 	NULL
 };
 

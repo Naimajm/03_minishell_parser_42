@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 14:10:25 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 21:21:34 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 14:03:37 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static int	word_tokenizer(t_word *word)
 	return (SUCCESS);
 }
 
+// ORIGINAL
 static int	noquotes_tokenizer(t_word *word, int start_index)
 {
 	char	*raw_word;
@@ -105,6 +106,8 @@ static int	noquotes_tokenizer(t_word *word, int start_index)
 	create_token(&word->tokens_list, raw_word, start_index, len_input, NO_QUOTES);
 	return (len_input);
 }
+
+
 
 static int	quotes_tokenizer(t_word *word, int start_index)
 {

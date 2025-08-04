@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 13:37:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 18:00:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void	process_input(t_shell *shell)
 	
     // execute_commands(shell->command_list); --------> !!! JUANJE
 	
-	//print_commands_list(shell->commands_list);			// Debug
+	print_commands_list(shell->commands_list);			// Debug
 	free_commands_list(&shell->commands_list);
 }
 
