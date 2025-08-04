@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:37:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 21:33:06 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 19:30:50 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static int	command_extractor(t_cmd *command)
 			word_len = word_extractor(command, index);				
 		if (word_len == FAILURE)
 			return (FAILURE);			
-		index = advance_index_by_length(index, word_len);		// GESTION CASOS ESPECIALES AVANCE INDEX	
+		index = advance_index_by_length(index, word_len);		// GESTION CASOS ESPECIALES AVANCE INDEX
 	}	
 	return (SUCCESS);		
 }
@@ -83,19 +83,19 @@ static int	operator_extractor(t_cmd *command, int start_index)
 	if (!command || start_index < 0)
 		return (FAILURE);
 	input = command->command;
-	operator_len = get_operator_length(command->command, start_index);
+	operator_len = get_operator_length(input, start_index);
 
 	if (operator_len == 2 && input[start_index] == '>')
-		create_word(&command->words_list, ">>", start_index, operator_len, APPEND);	
+		create_word(&command->words_list, input, start_index, operator_len, APPEND);	
     else if (operator_len == 2 && input[start_index] == '<')
-		create_word(&command->words_list, "<<", start_index, operator_len, HERE_DOC);
+		create_word(&command->words_list, input, start_index, operator_len, HERE_DOC);
     else if (operator_len == 1 && input[start_index] == '>')
-		create_word(&command->words_list, ">", start_index, operator_len, OUTFILE);	
+		create_word(&command->words_list, input, start_index, operator_len, OUTFILE);	
     else if (operator_len == 1 && input[start_index] == '<')
-		create_word(&command->words_list, "<", start_index, operator_len, INFILE);	
+		create_word(&command->words_list, input, start_index, operator_len, INFILE);	
     else if (operator_len == 1 && is_pipe(input[start_index]))
-		create_word(&command->words_list, "|", start_index, operator_len, PIPE);
+		create_word(&command->words_list, input, start_index, operator_len, PIPE);
 	else
-		return (FAILURE); 
+		return (FAILURE); 	
 	return (operator_len);
 }

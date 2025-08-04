@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 16:01:15 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 19:10:25 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,11 @@ static void    extract_redirections(t_cmd *command)
     t_word *current_word;
 
     if (!command)
-        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));	
-        
+        return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));        
     current_word = command->words_list;
     while (current_word)
     {
+		//printf("debug extract_redirections() commando-.> %s / tipo %c\n", current_word->processed_word, current_word->word_type);
         if (current_word->word_type == OUTFILE)
         {            
             if (current_word->next && current_word->next->word_type == WORD)
@@ -93,7 +93,7 @@ static void    extract_redirections(t_cmd *command)
         else if (current_word->word_type == INFILE)
         {
             if (current_word->next && current_word->next->word_type == WORD)
-                command->infile = ft_strdup(current_word->next->processed_word);
+				command->infile = ft_strdup(current_word->next->processed_word);
         }
         else if (current_word->word_type == HERE_DOC)
         {

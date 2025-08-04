@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 14:08:31 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 18:43:24 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,65 +54,6 @@ static int	expand_single_token(t_token *token, t_shell *shell)
 	return (SUCCESS);
 }
 
-/* static void extract_expansion_nodes(t_token *token)
-{
-    int index = 0;
-    int expansion_position;
-    int expansion_length;
-    
-    if (!token || !token->raw_token)
-        return;
-    
-    // UNA LÍNEA - Buscar expansiones fuera de comillas simples
-    while ((expansion_position = find_next_expansion_outside_single_quotes(token->raw_token, index)) != FAILURE)
-    {
-        // Determinar tipo de expansión
-        if (token->raw_token[expansion_position + 1] == '?')
-            expansion_length = last_exit_status_expander(token, expansion_position);
-        else if (token->raw_token[expansion_position + 1] == '{')
-            expansion_length = curly_braces_expander(token, expansion_position);
-        else
-            expansion_length = basic_expander(token, expansion_position);
-            
-        if (expansion_length == FAILURE)
-            return;
-            
-        index = expansion_position + expansion_length;
-    }
-} */
-
-/* // ✅ REFACTORIZACIÓN USANDO find_next_expansion_outside_single_quotes()
-static void extract_expansion_nodes(t_token *token)
-{
-    int index = 0;
-    int expansion_position;
-    int expansion_length;
-    
-    if (!token || !token->raw_token)
-        return;
-    
-    // Solo procesar si no es comilla simple
-    if (token->type == SINGLE_QUOTES)
-        return;
-    
-    // ✅ USAR FUNCIÓN HELPER - Buscar expansiones fuera de comillas simples
-    while ((expansion_position = find_next_expansion_outside_single_quotes(token->raw_token, index)) != FAILURE)
-    {
-        // Determinar tipo de expansión según carácter siguiente
-        if (token->raw_token[expansion_position + 1] == '?')
-            expansion_length = last_exit_status_expander(token, expansion_position);
-        else if (token->raw_token[expansion_position + 1] == '{')
-            expansion_length = curly_braces_expander(token, expansion_position);
-        else
-            expansion_length = basic_expander(token, expansion_position);
-            
-        if (expansion_length == FAILURE)
-            return;
-            
-        index = expansion_position + expansion_length;
-    }
-} */
-
 // GENERAR LISTAS NODOS EXPAND, KEY, VALUE
 static void	extract_expansion_nodes(t_token *token)
 {
@@ -151,39 +92,6 @@ static void	extract_expansion_nodes(t_token *token)
             index++;							 // resto caracteres
     }
 }
-
-// ✅ REFACTORIZACIÓN USANDO find_next_expansion_outside_single_quotes()
-/* static void extract_expansion_nodes(t_token *token)
-{
-    int index = 0;
-    int expansion_position;
-    int expansion_length;
-    
-    if (!token || !token->raw_token)
-        return;
-    
-    // Solo procesar si no es comilla simple
-    if (token->type == SINGLE_QUOTES)
-        return;
-    
-    // ✅ USAR FUNCIÓN HELPER - Buscar expansiones fuera de comillas simples
-    while ((expansion_position = find_next_expansion_outside_single_quotes(token->raw_token, index)) != FAILURE)
-    {
-        // Determinar tipo de expansión según carácter siguiente
-        if (token->raw_token[expansion_position + 1] == '?')
-            expansion_length = last_exit_status_expander(token, expansion_position);
-        else if (token->raw_token[expansion_position + 1] == '{')
-            expansion_length = curly_braces_expander(token, expansion_position);
-        else
-            expansion_length = basic_expander(token, expansion_position);
-            
-        if (expansion_length == FAILURE)
-            return;
-            
-        index = expansion_position + expansion_length;
-    }
-} */
-
 
 // resolver valores	
 static void resolve_expansion_values(t_token *token, t_shell *shell)
