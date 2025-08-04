@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:24:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 13:11:39 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 13:45:31 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	find_word_end_outside_quotes(char *input, int start_index)
 
 int find_next_expansion_outside_single_quotes(const char *input, int start_index)
 {
-    	int		index;
+    int		index;
 	bool	in_single_quotes;
 	bool	in_double_quotes;
 
@@ -96,7 +96,7 @@ int find_next_expansion_outside_single_quotes(const char *input, int start_index
 	in_double_quotes = false;
 	while (input[index])
 	{
-		update_quote_state(input[index], &in_single_quotes, &in_double_quotes);
+		update_quote_state(input[index], &in_single_quotes, &in_double_quotes); // Actualizar estado de comillas
 		if (is_expansion_char(input[index]) && in_single_quotes == false) // Verificar delimitador
 			return (index);
 		index++;
