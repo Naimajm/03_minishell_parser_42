@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 18:43:24 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 19:46:59 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,6 @@ static int	expand_single_token(t_token *token, t_shell *shell)
 	if (!token)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), FAILURE); 	
 
-	// Solo expandir si no es comilla simple
-    /* if (token->type == SINGLE_QUOTES)
-		return (SUCCESS);  */ 
-		
 	extract_expansion_nodes(token);			
 	resolve_expansion_values(token, shell);	
 	insert_expansion_values(token);			

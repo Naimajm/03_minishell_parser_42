@@ -44,7 +44,7 @@ PAR_FILES 		:= $(addprefix $(PAR_DIR)/,  01.1_check_syntax.c \
 				05.1_expand_list.c 05.2_expand_extractor.c 05.3_expand_builder.c 05.4_dequotizer.c \
 				06_word_processor.c \
 				07_semantic_check.c \
-				08_execution_builder.c \
+				08_execution_builder.c 08.1_execution_redict.c \
 				09_free_manager.c \
 				10_utils_core.c 10.1_utils_strings.c 10.2_utils_basic.c 10.3_utils_debug.c \
 				11_test_parser.c )

@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 12:39:40 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 23:06:47 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,11 @@
 // ERRORES DE VALIDACIÓN
 # define ERROR_INVALID_INPUT			"Error\n Invalid input parameter\n"
 # define ERROR_MEMORY_ALLOC				"Error\n Memory allocation failed\n"
+
 # define ERROR_COMMAND_EMPTY			"Error\n Empty command detected\n"
+# define ERROR_FILE_NOT_FOUND			": No such file or directory\n"
+# define ERROR_PERMISSION_DENIED		": Permission denied\n"
+# define ERROR_CLOSING_FILE				"Error\n Closing file\n"
 
 # define PROMPT					"minishell$ "
 
@@ -257,15 +261,21 @@ void	generate_processed_word(t_word *words_list, t_shell *shell);
 int 	validate_command_semantics(t_shell *shell);
 
 // 08_execution_builder.c 
-void    build_execution_structure(t_cmd *commands_list);
+void    build_execution_structure(t_cmd *commands_list, t_shell *shell);
+
+// 08.1_execution_redict.c
+void	process_infile(t_cmd *command, t_word *word);
+void	process_outfile(t_cmd *command, t_word *word);
+void	process_append(t_cmd *command, t_word *word);
+void	process_heredoc(t_cmd *command, t_word *word);
 
 /// UTILIDADES Y TESTING -------------------------------------------
 // 10_utils_core.c		 # Utilidades gestion comillas
-int	find_pipe_outside_quotes(char *input, int start_index);
-int find_redirection_outside_quotes(char *input, int start_index);
-int	find_word_end_outside_quotes(char *input, int start_index);
-int find_next_expansion_outside_single_quotes(const char *input, int start_index);
-int find_matching_quote_position(const char *input, int quote_start_index);
+int		find_pipe_outside_quotes(char *input, int start_index);
+int 	find_redirection_outside_quotes(char *input, int start_index);
+int		find_word_end_outside_quotes(char *input, int start_index);
+int 	find_next_expansion_outside_single_quotes(const char *input, int start_index);
+int 	find_matching_quote_position(const char *input, int quote_start_index);
 
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);

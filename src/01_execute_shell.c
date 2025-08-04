@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 19:38:02 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/05 00:07:38 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,11 +121,10 @@ void	process_input(t_shell *shell)
         return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
 
 	process_commands(shell);
-
 	if (validate_command_semantics(shell) == SYNTAX_ERROR)		
 		return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
 		
-	build_execution_structure(shell->commands_list);		
+	build_execution_structure(shell->commands_list, shell);		
 
 	// EJECUTAR COMANDOS 	-------------------------->	!!! JUANJE
 

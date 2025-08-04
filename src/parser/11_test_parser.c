@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 12:28:30 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 18:04:28 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/05 00:02:44 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,7 +409,7 @@ void test_basic_parser(t_shell *shell)
         if (test_passed)
         {
             printf("  4. Build execution...");
-            build_execution_structure(shell->commands_list);
+            build_execution_structure(shell->commands_list, shell);
             if (!shell->commands_list->args)
             {
                 printf(" ❌ FAILED\n");
@@ -560,7 +560,7 @@ void test_complex_parser(t_shell *shell)
         }        
         if (test_passed)	// FASE 4: Build execution structure
         {
-            build_execution_structure(shell->commands_list);
+            build_execution_structure(shell->commands_list, shell);
             if (!shell->commands_list->args)
             {
                 printf("❌ FAILED -> \t Build execution failed\n");
