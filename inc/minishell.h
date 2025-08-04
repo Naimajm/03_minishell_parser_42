@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 21:02:03 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 12:39:40 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,10 +133,8 @@ typedef struct s_token
 	int			type;
 	char		*raw_token;	
 	char		*expanded_token;	
-	char		*noquotes_token;
-	
-	t_expand	*expands_list; 			
-	
+	char		*noquotes_token;	
+	t_expand	*expands_list; 	
 	struct		s_token	*next;	
 }				t_token;
 
@@ -146,9 +144,7 @@ typedef struct s_word
 	char		word_type;
 	char		*raw_word;
 	char		*processed_word;
-
-	t_token		*tokens_list;  			
-	
+	t_token		*tokens_list;	
 	struct		s_word *next;	
 }				t_word;
 
@@ -156,18 +152,14 @@ typedef	struct 	s_cmd
 {
 	char		*command;			// NUEVO -> trozo input perteneciente a este proceso
 	char		**args;				// Array de argumentos
-
 	char		*infile;			// Archivo de entrada	
 	char		*outfile;			// Archivo de salida
 	char		*delimiter;			// heredoc_delimiter
-
 	bool		append;				// modo append
 	bool		hd;					// modo heredoc
 	bool		is_btn;				// flag si el comando es builtin
 	int			exit_status;
-
 	t_word 		*words_list;		// NUEVO LISTA ASOCIADA DE PALABRAS + OPERADORES30.
-
 	struct 		s_cmd	*next;
 }				t_cmd; 
 
@@ -176,12 +168,9 @@ typedef struct	s_shell
 {
 	char		*input;
 	char		**environment;
-
 	int			exit_status;
 	int			last_exit_status;
-
 	char		**readonly_vars; // EMI -> GESTION DE VARIABLE DE SOLO LECTURA DE LA BUILTIN UNSET
-
 	t_cmd		*commands_list;
 }				t_shell;
 
@@ -258,6 +247,7 @@ t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, 
 
 //  05.4_dequotizer.c		# Eliminación de comillas
 void	dequotize_tokens(t_word *words_list, t_shell *shell);
+void 	update_quote_state(char character, bool *in_single_quotes, bool *in_double_quotes);
 
 /// PROCESAMIENTO FINAL -------------------------------------------
 // 06_word_processor.c		
@@ -272,10 +262,10 @@ void    build_execution_structure(t_cmd *commands_list);
 /// UTILIDADES Y TESTING -------------------------------------------
 // 10_utils_core.c		 # Utilidades gestion comillas
 int	find_pipe_outside_quotes(char *input, int start_index);
+int find_redirection_outside_quotes(char *input, int start_index);
 int	find_word_end_outside_quotes(char *input, int start_index);
 int find_next_expansion_outside_single_quotes(const char *input, int start_index);
 int find_matching_quote_position(const char *input, int quote_start_index);
-int	is_quotes_balanced(const char *input);
 
 // 10.1_utils_strings.c
 int		advance_index_by_length(int current_index, int length);

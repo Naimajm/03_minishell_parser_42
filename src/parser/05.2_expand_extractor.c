@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:29:59 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 12:44:08 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 11:36:09 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ char	*extract_key(char *token, int first_index)
 	while (!is_space(token[index])
 		&& !is_redirection(token[index])
 		&& !is_pipe(token[index]) 
-		&& token[index] != '\"' 
-		&& token[index] != '\''					
-		&& token[index] != '$'
+		&& !is_quote(token[index])
+		&& !is_expansion_char(token[index])	
 		&& token[index])
 		index++;
 	
@@ -54,7 +53,7 @@ char	*get_environment_var(char **env, char *variable)
 	value = NULL;
 	index = 0;
 	match = 0;
-	while (env[index]) // busqueda por key en lista env
+	while (env[index]) // busqueda por key en lista e nv
 	{		
 		match = ft_strncmp(env[index], variable, ft_strlen(variable));
 		if (!match && env[index][ft_strlen(variable)] == '=')			// coincidencia exacta

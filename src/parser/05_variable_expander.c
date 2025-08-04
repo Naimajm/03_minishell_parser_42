@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 19:21:41 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 21:43:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 11:04:22 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static void	extract_expansion_nodes(t_token *token)
 	index = 0;   
     while (token->raw_token[index]) // CATEGORIZACION EXPAND NODOS
     {
-        if (token->raw_token[index] == '$')
+        if (is_expansion_char(token->raw_token[index]))
         {
             // Caso $ sin nada después O $ seguido de espacio -> NO ES EXPANSIÓN, saltar
             if (!token->raw_token[index + 1] || is_space(token->raw_token[index + 1]) || token->raw_token[index + 1] == '"')

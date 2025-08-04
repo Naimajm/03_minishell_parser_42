@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:20:15 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 16:07:26 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/04 11:05:04 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static int	extract_single_variable(char *raw_token, int start_index)
 {
     int	index;
     
-    if (!raw_token || raw_token[start_index] != '$')
+    if (!raw_token || !is_expansion_char(raw_token[start_index]))
         return (0);	        
     index = start_index + 1;		// Saltar el $
 
