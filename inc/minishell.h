@@ -6,7 +6,7 @@
 /*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 23:06:47 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/05 00:34:52 by juagomez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@
 # define ERROR_MEMORY_ALLOC				"Error\n Memory allocation failed\n"
 
 # define ERROR_COMMAND_EMPTY			"Error\n Empty command detected\n"
-# define ERROR_FILE_NOT_FOUND			": No such file or directory\n"
-# define ERROR_PERMISSION_DENIED		": Permission denied\n"
-# define ERROR_CLOSING_FILE				"Error\n Closing file\n"
+# define ERROR_FILE_NOT_FOUND			": No such file or directory"
+# define ERROR_PERMISSION_DENIED		": Permission denied"
+# define ERROR_CLOSING_FILE				": Closing file"
 
 # define PROMPT					"minishell$ "
 
