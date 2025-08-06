@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:32:43 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/31 17:52:59 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 17:51:47 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	exec_env(t_shell *shell) // subject : with no options or arguments
 			free(shell->environment[i]); // liberamos la variable de entorno que contenía la ruta del comando anterior, ya que la variable especial _ en shell Unix almacena la ruta completa del ultimo comando ejejcutado
 			shell->environment[i] = ft_strdup("_=/usr/bin/env"); // actualizamos al comando env que qes el que estamos ejecutando, para que haya coherencia con la salida de env en bash.
 			if (!shell->environment[i])
-				return (1);
+				return (ERROR);
 		}
 		i++;
 	}
@@ -37,5 +37,5 @@ int	exec_env(t_shell *shell) // subject : with no options or arguments
 			printf("%s\n", shell->environment[i]);
 		i++;
 	}
-	return (0);
+	return (SUCCESS);
 }

@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   01_execute_shell.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/05 00:07:38 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/05 20:19:15 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-//void	recover_previous_status(t_shell *shell);
-int	read_user_input(t_shell *shell, char *prompt);
-//void	read_user_input(t_shell *shell, char *prompt);
-void	process_input(t_shell *shell);
-void	process_commands(t_shell *shell);
+static int		read_user_input(t_shell *shell, char *prompt);
+static void		process_input(t_shell *shell);
+void			process_commands(t_shell *shell); //11_test_parser.c 
 
 void	execute_shell(t_shell *shell)
 {
@@ -52,26 +50,27 @@ void	execute_shell(t_shell *shell)
 	free_iteration_input(shell);
 }
 
-// GESTION SIGNALS + COPIA EXIT_STATUS de la iteracion anterior a Shell
-// Modificado por Juan Jesus <-----------------------------------------------------
-/* void	recover_previous_status(t_shell *shell)
-{
-	//(void)	shell;			// TEMPORAL
-	// CASO EOF (Ctrl+D o fin de pipe)
-	shell->last_exit_status = shell->exit_status;		//  guarda estado anterior	
-	ft_setup_signals();
-	if (g_signal_flag)
-		shell->last_exit_status = g_signal_flag;		// SEÑALES (Ctrl+C = 130)
-	else
-		shell->exit_status = SUCCESS; 	 				// RESET A 0 SI NO HAY SEÑALES
-} */
 
-int	read_user_input(t_shell *shell, char *prompt)
+// TODO: OJO, LA FUNCION READLINE DA LEAKS DE MEMORIA, Y EL SUBJEC LOS SABE Y DICE QUE NO HAY QU E LIBERARLOS
+/*solo aparecen bloques de memoria marcados como "still reachable" (aún alcanzables), lo que no se considera una pérdida real de memoria. Estos bloques son:
+
+Principalmente de la biblioteca readline (aproximadamente 208,283 bytes en 228 bloques)
+No hay pérdidas definitivas o indirectas ("definitely lost" o "indirectly lost")
+No hay errores de acceso a memoria inválida
+
+ ==7342== LEAK SUMMARY:
+==7342==    definitely lost: 0 bytes in 0 blocks
+==7342==    indirectly lost: 0 bytes in 0 blocks
+==7342==      possibly lost: 0 bytes in 0 blocks
+==7342==    still reachable: 208,283 bytes in 228 blocks
+==7342==         suppressed: 0 bytes in 0 blocks */
+
+static int	read_user_input(t_shell *shell, char *prompt)
 {
 	char	*input;	
 
 	shell->last_exit_status = shell->exit_status;		// 1. GUARDAR estado anterior ANTES de signals	
-	ft_setup_signals();
+	setup_signals();
 
 	input = readline(prompt);
 	if (!input)
@@ -108,7 +107,7 @@ int	read_user_input(t_shell *shell, char *prompt)
 	return (SUCCESS);
 }
 
-void	process_input(t_shell *shell)
+static void	process_input(t_shell *shell)
 {
 	if (!shell || !shell->input)
 		return ;
@@ -129,7 +128,7 @@ void	process_input(t_shell *shell)
 	// EJECUTAR COMANDOS 	-------------------------->	!!! JUANJE
 
 	if (shell->commands_list)
-		ft_exec_commands(shell);
+		exec_commands(shell);
 	
     // execute_commands(shell->command_list); --------> !!! JUANJEeho
 	

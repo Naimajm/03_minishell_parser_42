@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   00_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 18:32:54 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/01 12:37:49 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/05 18:21:15 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-int		validate_environment(char **environment);
-t_shell	*initialize_shell(void);
-int		load_environment_variables(t_shell *shell, char **environment);
-void	cleanup_minishell(t_shell *shell);
+//TODO HACER ESTATICAS LAS QUE LO SEAN
+static int		validate_environment(char **environment);
+static t_shell	*initialize_shell(void);
+static int		load_environment_variables(t_shell *shell, char **environment); //TODO ESTATICA ????
+void	cleanup_minishell(t_shell *shell); //11_test_parser.c 
 
 // MAIN -----------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ int	main(int	argc, char **argv, char **environment)
 	(void) argc;
 	(void) argv; 
 	if (validate_environment(environment) == FAILURE)	
-		return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), FAILURE);
+		return (ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO), FAILURE); // TODO ELIMINAR EL PUTENDL AQUÍ
 
 	shell = initialize_shell();	
 	if (load_environment_variables(shell, environment) == FAILURE)		
@@ -35,7 +35,10 @@ int	main(int	argc, char **argv, char **environment)
 		ft_putendl_fd(ERROR_ENVIRONMENT, STDERR_FILENO);
         return (FAILURE);
     }
-	// test parser
+	// TODO:YA HE PUESTO LA NUEVA FUNCION 
+	//Actualizamos la variable de entorno SHLVL en el valor que tiene mas uno
+	ft_shellevel(shell);
+	// test parser // TODO, ESTO HABRIA QUE QUITARLO ?????
 	if (argc > 1 && ft_strncmp(argv[1], "--test_basic", 12) == 0)
 		test_basic_parser(shell);
 	if (argc > 1 && ft_strncmp(argv[1], "--test", 6) == 0)
@@ -46,7 +49,7 @@ int	main(int	argc, char **argv, char **environment)
 	return (SUCCESS);
 }
 
-int	validate_environment(char **environment)
+static int	validate_environment(char **environment)
 {
 	if (!environment | !*environment)
 	{
@@ -56,7 +59,7 @@ int	validate_environment(char **environment)
 	return (SUCCESS);
 }
 
-t_shell *initialize_shell(void)
+static t_shell *initialize_shell(void)
 {
 	t_shell	*shell;
 
@@ -75,7 +78,7 @@ t_shell *initialize_shell(void)
 	return (shell);
 }
 
-int	load_environment_variables(t_shell *shell, char **environment)
+static int	load_environment_variables(t_shell *shell, char **environment)
 {
 	int	env_count;
 	int	index;

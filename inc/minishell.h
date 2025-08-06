@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:56:38 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/05 00:34:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/05 20:20:45 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@
 
 // EXTERNAL LIBRARIES EXECUTOR
 # include <sys/wait.h>
-# include <signal.h>
+# include <unistd.h>
+# include <signal.h> // SIGINT
 
 // MACROS EXECUTOR -------------------------------------------------
 
@@ -43,7 +44,7 @@
 // # define RR2 5
 // # define LR1 6
 // # define LR2 7
-# define LOL 999
+# define LOL 999 // TODO CAMBIAR NOMBRE VARIABLE
 
 // MACROS PARSER-----------------------------------------------------
 // VALORES EXIT_STATUS
@@ -185,17 +186,11 @@ typedef struct	s_shell
 //SRC------------------------------------------------
 // 00_main.c 				# Función main 
 int		main(int	argc, char **argv, char **environment);
-int		validate_environment(char **environment);
-t_shell *initialize_shell(void);
-int		load_environment_variables(t_shell *shell, char **environment);
-void	cleanup_minishell(t_shell *shell);
+void	cleanup_minishell(t_shell *shell);  //11_test_parser.c 
 
 // 01_execute_shell.c		# loop principal Shell
 void	execute_shell(t_shell *shell);
-//void	recover_previous_status(t_shell *shell);
-int		read_user_input(t_shell *shell, char *prompt);
-void	process_input(t_shell *shell);
-void	process_commands(t_shell *shell);
+void	process_commands(t_shell *shell); //11_test_parser.c 
 
 // END SRC----------------------------------------------
 
@@ -309,79 +304,41 @@ void 	test_complex_parser(t_shell *shell);
 
 // ------------------------------------------------------
 
-// END PARSER------------------------------
+
+// END PARSER------ Parte JuanMa ------------------------
 
 
-// EXECUTOR -------------------------------
+// EXECUTOR ------------------- Juan Jesus ------------
 
-// CLEAN2.C
+// 00_utils_clean.c
+
 void	ft_free_cmd_args(t_cmd *cmd);
 void	ft_free_cmd_files(t_cmd *cmd);
 
-// COMMANDS_UTILS.C
-int		ft_isbuiltin(char *str);
-int		ft_has_commands(t_shell *shell);
-char	*ft_substr_malloc(const char *input, int start, int len);
+// 00_utils.c
 
-// EXECUTER_COMMAND.C
-void	free_paths(char **paths, int i);
-char	*ft_search_in_paths(char **paths, char *comm);
-char	*ft_path(char *path, char **comm);
-void	ft_handle_command_execution(t_shell *shell, t_cmd *cmd, char *path);
-void	ft_execute_command(t_shell *shell, t_cmd *cmd);
-
-// EXECUTER.C
-void	ft_child_process(t_cmd *cmd, int prevfd, int pipefd[2], t_shell *ms);
-void	ft_parent_process(t_shell *ms, int *prevfd, int pipefd[2]);
-void	ft_wait_all_processes(pid_t *pids, t_shell *ms);
-pid_t	ft_exec_single_cmd(t_cmd *cmd, int *prevfd, int *pipefd, t_shell *ms);
-void	ft_exec_commands(t_shell *ms);
-
-// EXPAND_EXITSTATUS.C
-char	*ft_middle_case(char *token, char *dollar_pos, char *status_str);
-void	ft_replace_start(char **token, char *status_str, char *dollar_pos);
-void	ft_process_dollarquest(t_token *token, char *dollar_pos, char *sts_str);
-void	ft_expand_exitstatus(t_shell *shell, t_token *token);
-
-// EXPAND_UTILS.C //
-int		ft_intstrchr(const char *s, int c);
-int		ft_find_end(char *tkn);
-t_expand	*ft_init_expand(void);
-char	*ft_substr_malloc(const char *input, int start, int len);
-void	ft_free_expand(t_expand *xpnd);
-
-// EXPAND_VAR.C //
-char	*ft_getenv(char **env, char *var); // quitar
-int		ft_find_dollar(t_shell *shell);
-void	ft_insert_exp(t_expand *xpnd, t_token *t);
-void	ft_expand_token(t_shell *shell, t_token *token);
-void	ft_expand_var(t_shell *shell);
-
-// GET_COMMANDS.C //
-int		ft_cmdsize(t_cmd *lst);
-int		ft_has_commands(t_shell *shell);
-
-// HEREDOC_UTILS.C
-char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st); 
-char	*ft_not_expand(int *i, char *buffer);
-char	*ft_expand_heredoc(char *buffer, char **env, int exit_st);
-
-// REDIRECTIONS.C
-int		ft_redir_heredoc(t_shell *shell, t_cmd *cmd);
-int		ft_redir_infile(char *infile);
-int		ft_redir_outfile(char *outfile, int append);
-int		ft_redirections(t_shell *shell, t_cmd *cmd);
-
-// SIGNALS.C
-void	ft_check_exitstat(int status, t_shell *ms);
-void	ft_handle_backslash(int signum);
-void	ft_handle_sigint(int signum);
-void	ft_setup_signals(void);
-
-// ULTIS.C
 void	ft_exit_error(char *error);
 void	*safe_malloc(size_t bytes);
 char	**ft_copy_env(char **env);
+char	*ft_substr_malloc(const char *input, int start, int len);
+void	ft_shellevel(t_shell *shell); //TODO: YA HE PUESTO LA NUEVA FUNCION DE SHLVL
+
+// -----------------------------------------------------------------
+
+// 01_signals.c
+void	setup_signals(void); // src/01_execute_shell.c
+
+// 02.00_executer.c
+void	exec_commands(t_shell *ms); // src/01_execute_shell.c
+
+// 02.01_executer_command.c
+void	execute_command(t_shell *shell, t_cmd *cmd); // 02.00_executer.c
+
+// 03_redirections.c
+int		redirections(t_shell *shell, t_cmd *cmd); // 02.00_executer.c
+
+// 03.01_heredoc.c
+char	*expand_heredoc(char *buffer, char **env, int exit_st); // 03_redirections
 
 // ---------------END Juan Jesus ---------------------------------
 
@@ -389,40 +346,50 @@ char	**ft_copy_env(char **env);
 // --------------------- Parte de Emilia -------------------------
 
 // BUILTINS-------------------------------------------------------
-
+//00_exec_builtins.c
+void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd);
 //00_utils_builtins_00.c
 int		ft_mtrx_size(char **mtrx); // unset, export
 int		ft_search_index_env(char **env, char *str); // export, unset 
 int		ft_valid_env_var(char *env_var); // export, unset
 char	**ft_copy_mtrx(char **mtrx); // export,
 void	ft_swap_mtrx(char **s1, char **s2); // export
-
 //00_utils_builtins_01.c
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_find_plus_pos(char *var); // export
 void	sort_alphabetic_mtrx(char **mtrx); // export
 char	*ft_get_keyvar(char *var); // export
-
 //00_utils_builtins_02.c
 char	**ft_create_new_env(char **env, char *var); // export
-
 //00_utils_builtins_03.c
 char	**ft_append_env_var_value(char **env, char *var, int index); //export
-
-//00_exec_builtins.c
-void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd);
-
-//btn----one file por each one------------------------------------
+// 01_exec_echo.c
 int		exec_echo(t_cmd *cmd);
-int		exec_cd(t_cmd *cmd, t_shell *shell);
+// 02_exec_cd.c
+int		exec_cd(t_cmd *cmd);
+// 03_exec_pwd.c
 int		exec_pwd(void);
+// 04_exec_export.c
 int		exec_export(t_cmd *cmd, t_shell *shell);
+char	**ft_add_modify_env(char **env, char *var, int flag); //TODO: YA HE PUESTO LA FUNCION PARA QUE TAMBIEN LA LLAME SHLVL
+// 05_exec_unset.c
 int		exec_unset(t_shell *shell, t_cmd *cmd);
+// 06_exec_env.c
 int		exec_env(t_shell *shell);
+// 07_exec_exit.c
 void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd);
-
 // END BUILTINS-------------------------------------------------------
 
 // -----------------END parte de Emilia ------------------------------
 
 #endif
+
+
+
+
+
+
+
+
+
+

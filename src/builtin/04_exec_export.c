@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:23:16 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 13:06:43 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/05 11:37:57 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 int			exec_export(t_cmd *cmd, t_shell *shell);
 static void	print_export(char **env_export);
-static char	**ft_add_modify_env(char **env, char *var, int flag);
+char	**ft_add_modify_env(char **env, char *var, int flag);
 static char	**check_flags(int index, int flag, char **env, char *var);
 static void	print_after_equal(char *equal, char *new_var);
 
@@ -31,7 +31,7 @@ int	exec_export(t_cmd *cmd, t_shell *shell)
 	if (!cmd->args[1]) // sin argumentos export lista las variables exportadas
 	{
 		print_export(shell->environment);
-		return (0);
+		return (SUCCESS);
 	}
 	while (cmd->args[i]) // CASO CON ARGUMENTOS
 	{
@@ -43,13 +43,13 @@ int	exec_export(t_cmd *cmd, t_shell *shell)
 			shell->exit_status = ERROR; // return (1); no retornamos porque necesitamos validar todas las variables pasadas como argumento, ya que el comando export admite multiples variables
 		}
 		else
-		{
 			shell->environment = ft_add_modify_env(shell->environment, cmd->args[i],
 					ft_valid_env_var(cmd->args[i]));
-		}
 		i++;
 	}
-	return (0);
+	if (shell->exit_status == ERROR)
+		return (ERROR);
+	return (SUCCESS);
 }
 
 static void	print_export(char **env)
@@ -77,7 +77,7 @@ static void	print_export(char **env)
 	free_matrix(new_env);
 }
 
-static char	**ft_add_modify_env(char **env, char *var, int flag)
+char	**ft_add_modify_env(char **env, char *var, int flag)
 {
 	char	*key;
 	int		index;

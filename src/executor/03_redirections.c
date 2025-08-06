@@ -1,23 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirections.c                                     :+:      :+:    :+:   */
+/*   03_redirections.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 12:34:27 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/31 14:14:32 by jumarque         ###   ########.fr       */
+/*   Created: 2025/08/05 12:52:54 by emcorona          #+#    #+#             */
+/*   Updated: 2025/08/05 20:22:41 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
+
 #include "../../inc/minishell.h"
 
-int	ft_redir_heredoc(t_shell *shell, t_cmd *cmd)
+// TODO, ESTRUCTURAR CÓDIGO, GENERAR STATIC Y FUNCION PRINCIPAL AL PRINCIPIO Y DESPUES LAS ESTATICAS
+// TODO, MIRAR MI PIPES PARA LAS REDIRECCIONES.
+static int	redir_heredoc(t_shell *shell, t_cmd *cmd);
+static int	redir_infile(char *infile);
+static int	redir_outfile(char *outfile, int append);
+
+int	redirections(t_shell *shell, t_cmd *cmd)
+{
+	if (cmd->hd && redir_heredoc(shell, cmd))
+		return (1);
+	if (!cmd->hd && cmd->infile && redir_infile(cmd->infile))
+		return (1);
+	if (cmd->outfile && redir_outfile(cmd->outfile, cmd->append))
+		return (1);
+	return (0);
+}
+
+static int	redir_heredoc(t_shell *shell, t_cmd *cmd)
 {
 	int		pipefd[2];
 	char	*buffer;
 
-	g_signal_flag = 2;
+	g_signal_flag = 2; // ***Importante: Establece la bandera para Ctrl+C en here-document***
 	if (pipe(pipefd) == -1)
 		return (perror("Error pipe\n"), 1);
 	while (1)
@@ -28,7 +47,7 @@ int	ft_redir_heredoc(t_shell *shell, t_cmd *cmd)
 			free(buffer);
 			break ;
 		}
-		buffer = ft_expand_heredoc(buffer, shell->environment, shell->last_exit_status);
+		buffer = expand_heredoc(buffer, shell->environment, shell->last_exit_status);
 		write(pipefd[1], buffer, ft_strlen(buffer));
 		write(pipefd[1], "\n", 1);
 		free(buffer);
@@ -39,7 +58,7 @@ int	ft_redir_heredoc(t_shell *shell, t_cmd *cmd)
 	return (close(pipefd[0]), 0);
 }
 
-int	ft_redir_infile(char *infile)
+static int	redir_infile(char *infile)
 {
 	int	fd;
 
@@ -58,7 +77,7 @@ int	ft_redir_infile(char *infile)
 	return (0);
 }
 
-int	ft_redir_outfile(char *outfile, int append)
+static int	redir_outfile(char *outfile, int append)
 {
 	int	fd;
 
@@ -80,13 +99,4 @@ int	ft_redir_outfile(char *outfile, int append)
 	return (0);
 }
 
-int	ft_redirections(t_shell *shell, t_cmd *cmd)
-{
-	if (cmd->hd && ft_redir_heredoc(shell, cmd))
-		return (1);
-	if (!cmd->hd && cmd->infile && ft_redir_infile(cmd->infile))
-		return (1);
-	if (cmd->outfile && ft_redir_outfile(cmd->outfile, cmd->append))
-		return (1);
-	return (0);
-}
+

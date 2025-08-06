@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 11:35:42 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 12:58:44 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 18:01:10 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,23 @@ int	exec_echo(t_cmd *cmd)
 	int	fd;
 
 	if (!cmd || !cmd->args)
-		return (1);
+		return (ERROR);
 	if (cmd->exit_status == 1)
-		return (1);
+		return (ERROR);
 	fd = dup(STDOUT_FILENO); // copia de seguridad por si tenemos que redireccionar a un archivo, podamos volver a recuper el standar output
 	if (fd == -1)
-		return (1);
+		return (ERROR);
 	if (cmd->outfile) // apuntamos a un archivo de salida en vez de al standar output
 	{
 		if (stdout_to_outfile(cmd->outfile, cmd->append) != 0) // STDOUT ahora apunta al archivo outfile
-			return (1); // manejar errores de redireccion
+			return (ERROR); // manejar errores de redireccion
 	}
 	ft_print_echo(cmd->args);// si lo anterior, el echo se mandará al archivo, si no a la salida standar. 
 	// guardarlo en una variable facilita añadir mas codigos de error en un futuro
 	// VIP en un shell los comandos deber retornar su estado de ejecución, 0 exito, otros valores distintos tipos de error.
 	dup2(fd, STDOUT_FILENO); // restaura la salida standar al original, ya que puede haberse quedado apuntando al archivo aoutfile
 	close(fd);
-	return (0); // echo siempre devuelve cero, a menos que haya errores de redireccion.
+	return (SUCCESS); // echo siempre devuelve cero, a menos que haya errores de redireccion.
 }
 
 /* La redirección persiste porque estamos modificando el descriptor de archivo a nivel del proceso, no solo de la función. Solo se restaura cuando explícitamente lo volvemos a cambiar con el dup2(fd, STDOUT_FILENO) final. */

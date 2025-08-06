@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:31:52 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 13:12:56 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 17:52:26 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	exec_unset(t_shell *shell, t_cmd *cmd)
 			shell->environment = ft_change_env(shell->environment,
 					cmd->args[i]);
 			if (!shell->environment)
-				return (1); // error de memoria
+				return (ERROR); // error de memoria
 		}
 		i++;
 	}

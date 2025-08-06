@@ -1,18 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*   03.01_heredoc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jumarque <jumarque@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 12:33:31 by sbenitez          #+#    #+#             */
-/*   Updated: 2025/07/31 18:50:09 by jumarque         ###   ########.fr       */
+/*   Created: 2025/08/05 12:53:04 by emcorona          #+#    #+#             */
+/*   Updated: 2025/08/05 20:20:50 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../../inc/minishell.h"
 
-char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st)
+static char	*expand_variable(int *i, char *buffer, char **env, int exit_st);
+static char	*not_expand(int *i, char *buffer);
+
+char	*expand_heredoc(char *buffer, char **env, int exit_st)
+{
+	char	*aux;
+	char	*result;
+	char	*temp;
+	int		i;
+
+	result = ft_strdup("");
+	i = 0;
+	while (buffer[i])
+	{
+		if (buffer[i] == '$' && buffer[i + 1] && (ft_isalpha(buffer[i + 1])
+				|| buffer[i + 1] == '_' || buffer[i + 1] == '?'))
+			aux = expand_variable(&i, buffer, env, exit_st);
+		else
+			aux = not_expand(&i, buffer);
+		temp = ft_strjoin(result, aux);
+		free(result);
+		free(aux);
+		result = temp;
+	}
+	return (free(buffer), result);
+}
+
+
+static char	*expand_variable(int *i, char *buffer, char **env, int exit_st)
 {
 	int		start;
 	char	*var;
@@ -37,7 +66,7 @@ char	*ft_expand_variable(int *i, char *buffer, char **env, int exit_st)
 	return (value);
 }
 
-char	*ft_not_expand(int *i, char *buffer)
+static char	*not_expand(int *i, char *buffer)
 {
 	int	start;
 
@@ -55,26 +84,3 @@ char	*ft_not_expand(int *i, char *buffer)
 	return (ft_substr_malloc(buffer, start, (*i) - start + 1));
 }
 
-char	*ft_expand_heredoc(char *buffer, char **env, int exit_st)
-{
-	char	*aux;
-	char	*result;
-	char	*temp;
-	int		i;
-
-	result = ft_strdup("");
-	i = 0;
-	while (buffer[i])
-	{
-		if (buffer[i] == '$' && buffer[i + 1] && (ft_isalpha(buffer[i + 1])
-				|| buffer[i + 1] == '_' || buffer[i + 1] == '?'))
-			aux = ft_expand_variable(&i, buffer, env, exit_st);
-		else
-			aux = ft_not_expand(&i, buffer);
-		temp = ft_strjoin(result, aux);
-		free(result);
-		free(aux);
-		result = temp;
-	}
-	return (free(buffer), result);
-}

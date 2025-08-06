@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:32:48 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 13:19:40 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/05 13:18:40 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static int	ft_valid_arg_exit(char *arg);
 
 void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd)
 {
+	int	exit_status;
+
 	if (cmd->args[1])
 	{
 		if (!ft_valid_arg_exit(cmd->args[1]))
@@ -42,6 +44,7 @@ void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd)
 			// ft_putendl_fd("exit\nminishell: exit: too many arguments", STDERR_FILENO); // comentados al pasar el testeo y ver lo que se imprime en bash
 			ft_putendl_fd(" too many arguments", STDERR_FILENO);
 			shell->last_exit_status = ERROR;
+			shell->exit_status = ERROR;
 			return ;
 		}
 		else
@@ -49,8 +52,9 @@ void	exec_exit(t_shell *shell, t_cmd *cmd, int prev_fd)
 	}
 	if (prev_fd == -1) // mostrar exit solo si no es parte de un pipe, es decir es el ultimo comando
 		ft_putendl_fd("exit", STDOUT_FILENO);
-	cleanup_minishell(shell);
-	exit(shell->last_exit_status); // salir con el estado del ultimo comando almacenado en la estructura shell
+	exit_status = shell->last_exit_status;
+	cleanup_minishell(shell); // exit(shell->last_exit_status); error  en Valgrind es un problema clásico de "uso después de liberación" (use-after-free)
+	exit(exit_status); // salir con el estado del ultimo comando almacenado en la variable, despues de liberar la shell
 }
 
 static int	ft_valid_arg_exit(char *arg)

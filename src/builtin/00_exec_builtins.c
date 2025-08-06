@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 13:34:02 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 10:43:52 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 18:12:32 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd)// prev_fd sirve para
 	if (!ft_strncmp(cmd->args[0], "echo", ft_strlen("echo") + 1)) // + 1 para incluir el carácter nulo '\0' al final de la cadena yno tener errores del tipo echoo.  por seguridad para asegurarse de que la comparación incluya el carácter nulo terminador (\0) al final de la cadena. es un patrón común en C para asegurarse de que estamos comparando comandos exactos y no prefijos de otros comandos más largos.
 		shell->exit_status = exec_echo(cmd);
 	else if (!ft_strncmp(cmd->args[0], "cd", ft_strlen("cd") + 1))
-		shell->exit_status = exec_cd(cmd, shell);
+		shell->exit_status = exec_cd(cmd);
 	else if (!ft_strncmp(cmd->args[0], "pwd", ft_strlen("pwd")))
 		shell->exit_status = exec_pwd();
 	else if (!ft_strncmp(cmd->args[0], "export", ft_strlen("export") + 1))
@@ -34,3 +34,5 @@ void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd)// prev_fd sirve para
 	else
 		return ;
 }
+
+

@@ -54,16 +54,13 @@ OBJ_FILES 		+= $(PAR_FILES:%.c=%.o)
 #ifeq (0,1)
 # EXECUTOR-----------------------------------------------------------------------------
 EXC_DIR			:= ./src/executor
-EXC_FILES		:= $(addprefix $(EXC_DIR)/, clean2.c \
-				commands_utils.c \
-				executer.c \
-				executer_command.c \
-				get_commands.c \
-				heredoc_utils.c \
-				redirections.c \
-				utils.c \
-				signals.c )
-# 				process_redirection.c, clean.c, heredoc_utils.c, exec_builtins.c, expand_var.c 
+EXC_FILES		:= $(addprefix $(EXC_DIR)/, 00_utils_clean.c \
+				00_utils.c \
+				01_signals.c \
+				02.00_executer.c \
+				02.01_executer_command.c \
+				03_redirections.c \
+				03.01_heredoc.c)
 
 OBJ_FILES		+= $(EXC_FILES:%.c=%.o)
 # --------------------------------------------------------------------------
@@ -117,6 +114,7 @@ fclean: clean
 debug: CFLAGS += -g -fsanitize=address
 debug: EXT_LIBRARYS += -fsanitize=address
 debug: re
+# ignore external leaks: ASAN_OPTIONS=detect_leaks=0 make debug
 
 re: fclean all
 	@echo "$(DARK_GREEN)🔁 Cleaning and recompiled -> $(NAME) 	OK$(DEF_COLOR)"	

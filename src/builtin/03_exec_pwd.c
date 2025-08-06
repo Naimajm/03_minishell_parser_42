@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 09:52:44 by emcorona          #+#    #+#             */
-/*   Updated: 2025/07/30 20:40:28 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/01 17:57:35 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	exec_pwd(void)
 	if (!pwd)
 	{
 		perror("minishell: pwd:"); // perror para errores del sistema (open, read, dup,....)
-		return (1);
+		return (ERROR);
 	}
 	printf("%s\n", pwd);
 	free(pwd);
-	return (0);
+	return (SUCCESS);
 }
