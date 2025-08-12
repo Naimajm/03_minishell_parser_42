@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 11:35:28 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/05 20:19:15 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/08 12:52:04 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,41 +15,27 @@
 static int		read_user_input(t_shell *shell, char *prompt);
 static void		process_input(t_shell *shell);
 void			process_commands(t_shell *shell); //11_test_parser.c 
+static void		no_input(char *input, t_shell *shell);
 
 void	execute_shell(t_shell *shell)
 {
-	//int		iteration;
-	
-	if (!shell)											
+	//int	iteration; // DEBUG CONTADOR
+	if (!shell)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO));
-	//iteration = 0;										// DEBUG CONTADOR 
-	while (1)											
+	//iteration = 0; // DEBUG CONTADOR 
+	while (1)
 	{
 		//iteration++;
-        //printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
-		
-		//recover_previous_status(shell);		// JUANJE -> ft_setup_signals() dentro 
-
-		/* printf("ANTES read_user_input -> last_exit_status -> %i\n", shell->last_exit_status);
-		printf("exit_status -> %i\n", shell->exit_status); */
-		
+		//printf("\n\n=== Input() ITERATION %d ===\n\n", iteration);
 		if (read_user_input(shell, PROMPT) == FAILURE)
 			break ;
-		/* printf("ANTES process_input -> last_exit_status -> %i\n", shell->last_exit_status);
-		printf("exit_status -> %i\n", shell->exit_status); */
-
 		process_input(shell);
-		
-		//print_config_shell(shell);		// DEBUG
+		//print_config_shell(shell); // DEBUG
 		free_iteration_input(shell);
-		//printf("DEBUG: Memory freed, iteration %d\n", iteration);
-
-		/* printf("DESPUES  process_input-> last_exit_status -> %i\n", shell->last_exit_status);
-		printf("exit_status -> %i\n", shell->exit_status); */
-	}	
+		//printf("DEBUG: Memory freed, iteration %d\n", iteration); // DEBUG
+	}
 	free_iteration_input(shell);
 }
-
 
 // TODO: OJO, LA FUNCION READLINE DA LEAKS DE MEMORIA, Y EL SUBJEC LOS SABE Y DICE QUE NO HAY QU E LIBERARLOS
 /*solo aparecen bloques de memoria marcados como "still reachable" (aún alcanzables), lo que no se considera una pérdida real de memoria. Estos bloques son:
@@ -67,71 +53,48 @@ No hay errores de acceso a memoria inválida
 
 static int	read_user_input(t_shell *shell, char *prompt)
 {
-	char	*input;	
+	char	*input;
 
-	shell->last_exit_status = shell->exit_status;		// 1. GUARDAR estado anterior ANTES de signals	
+	shell->last_exit_status = shell->exit_status; // 1. GUARDAR estado anterior ANTES de signals	
 	setup_signals();
-
 	input = readline(prompt);
 	if (!input)
-		return (ft_putendl_fd("exit\n", STDOUT_FILENO), FAILURE);
-
-	//printf("g_signal_flag -> %i\n", g_signal_flag);
-	//printf("shell->exit_status -> %i\n", shell->exit_status);
-	//printf("shell->last_exit_status -> %i\n", shell->last_exit_status);
-
+		return (ft_putendl_fd("exit", STDOUT_FILENO), FAILURE);
 	if (g_signal_flag)
 	{
-		shell->exit_status 			= g_signal_flag;
-		shell->last_exit_status 	= g_signal_flag; 		// SEÑALES (Ctrl+C = 130)
-		g_signal_flag 				= 0; 					// Reset después de procesar
-		
-	}			
+		shell->exit_status = g_signal_flag;
+		shell->last_exit_status = g_signal_flag; // SEÑALES (Ctrl+C = 130)
+		g_signal_flag = 0; // Reset después de procesar		
+	}
 	else if (!g_signal_flag && shell->last_exit_status == 0) // RESET A 0 SI NO HAY SEÑALES  // TODO : MODIFICADO POR EMILIA PARA QUE EL TEST DE BUILTIN Y SYNTAX DE CORRECTO Y SI EL LAST EXIT ESTATUS TAMBIEN ES CERO
 		shell->exit_status = SUCCESS;
-		
-	if (input[0] == '\0')					// CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
-	{
-		free(input);
-		return (SUCCESS);
-	}					
-	add_history(input);						// añadir a historial si input no vacio	
-	shell->input = ft_strdup(input);		// PROCESAR INPUT VÁLIDO
+	if (input[0] == '\0') // CASO INPUT VACÍO - CONTINUAR SIN PROCESAR
+		return (free(input), SUCCESS);
+	add_history(input); // añadir a historial si input no vacio	
+	shell->input = ft_strdup(input); // PROCESAR INPUT VÁLIDO
 	if (!shell->input)
 	{
-		free(input);
-		shell->exit_status = ERROR;
+		no_input(input, shell);
 		return (ft_putendl_fd(ERROR_INPUT_READER, STDERR_FILENO), FAILURE);
 	}
-	free(input);
-	return (SUCCESS);
+	return (free(input), SUCCESS);
 }
 
 static void	process_input(t_shell *shell)
 {
 	if (!shell || !shell->input)
 		return ;
-		
-	if (validate_syntax(shell) == SYNTAX_ERROR)		
+	if (validate_syntax(shell) == SYNTAX_ERROR)
 		return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
-
-	create_commands_structure(shell);	
-	if (validate_command_structure(shell) == SYNTAX_ERROR)		
-        return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
-
+	create_commands_structure(shell);
+	if (validate_command_structure(shell) == SYNTAX_ERROR)
+		return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
 	process_commands(shell);
-	if (validate_command_semantics(shell) == SYNTAX_ERROR)		
+	if (validate_command_semantics(shell) == SYNTAX_ERROR)
 		return (ft_putendl_fd(ERROR_CHECK_SYNTAX, STDERR_FILENO));
-		
-	build_execution_structure(shell->commands_list, shell);		
-
-	// EJECUTAR COMANDOS 	-------------------------->	!!! JUANJE
-
+	build_execution_structure(shell->commands_list, shell);
 	if (shell->commands_list)
 		exec_commands(shell);
-	
-    // execute_commands(shell->command_list); --------> !!! JUANJEeho
-	
 	//print_commands_list(shell->commands_list);			// Debug
 	free_commands_list(&shell->commands_list);
 }
@@ -146,10 +109,16 @@ void	process_commands(t_shell *shell)
 	while (current_command)
 	{
 		lexical_analyzer(current_command, shell);
-		tokenizer(current_command->words_list, shell);		
-		variable_expander(current_command->words_list, shell);		
+		tokenizer(current_command->words_list, shell);
+		variable_expander(current_command->words_list, shell);
 		dequotize_tokens(current_command->words_list, shell);
-		generate_processed_word(current_command->words_list, shell);			
+		generate_processed_word(current_command->words_list, shell);
 		current_command = current_command->next;
-	}	
+	}
+}
+
+static void	no_input(char *input, t_shell *shell)
+{
+	free(input);
+	shell->exit_status = ERROR;
 }

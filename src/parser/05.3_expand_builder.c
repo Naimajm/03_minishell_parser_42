@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   05.3_expand_builder.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:02:16 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:56:23 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:10:21 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,15 +75,16 @@ int	insert_expand_node_value(t_token *token)
 	return  (last_position);
 }
 
-t_expand	*add_expand_node(t_expand **expand_list, char  *substitution_variable, int first_index, int expand_type)
+t_expand	*add_expand_node(t_expand **expand_list, char *substit_variable,
+				int first_index, int expand_type)
 {
 	t_expand *new_node;
 	t_expand *last_node;
 
-	if (!expand_list || !substitution_variable)
+	if (!expand_list || !substit_variable)
 		return (ft_putendl_fd(ERROR_INVALID_INPUT, STDERR_FILENO), NULL);   
 
-	new_node = init_expand_node(substitution_variable, first_index, expand_type);
+	new_node = init_expand_node(substit_variable, first_index, expand_type);
 	if (!new_node)
 		return (ft_putendl_fd(ERROR_EXPAND_INIT, STDERR_FILENO), NULL);
 	last_node = find_expand_last_node(*expand_list);	

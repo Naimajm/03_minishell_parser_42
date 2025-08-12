@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 18:13:03 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 17:58:54 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:06:49 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ int	exec_cd(t_cmd *cmd) // según el subject, solo para path relativos o absoolu
 
 	if (cmd->args[2])
 	{
-		ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO); // para errores de sintaxis o uso del comando ft_putstr_fd es mas apropiado. Sigue el formato estándar de shell minishell: comando: mensaje
+		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO); // para errores de sintaxis o uso del comando ft_putstr_fd es mas apropiado. Sigue el formato estándar de shell minishell: comando: mensaje
 		return (ERROR);
 	}
 	path = cmd->args[1];
 	if (!path || path[0] =='\0') // verifica que el path no sea una cadena vacia
 	{
-		ft_putstr_fd("minishell: cd: a path is needed\n", STDERR_FILENO);
+		ft_putendl_fd("minishell: cd: a path is needed", STDERR_FILENO);
 		return (ERROR);
 	}
 	if (chdir(path) == -1) // chdir funciona tanto con paths relativos como absolutos.  mostrando el mensaje de error proporcionado por perror(), que incluirá el motivo específico del fallo. Por ejemplo: minishell: cd: No such file or directory , minishell: cd: Not a directory, minishell: cd: Permission denied

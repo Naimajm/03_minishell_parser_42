@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   01.1_check_syntax.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 23:10:07 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 13:04:52 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:46:04 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	validate_syntax(t_shell *shell)
 	}
 	if (check_redirection_syntax(shell->input) == SYNTAX_ERROR)
 	{
-		ft_putendl_fd(ERROR_REDIRECTION_SYNTAX, STDERR_FILENO);
+		ft_putendl_fd(ERROR_REDIR_SYNTAX, STDERR_FILENO);
         shell->exit_status = SYNTAX_ERROR;
 		return (SYNTAX_ERROR);
 	}

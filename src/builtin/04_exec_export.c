@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:23:16 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/05 11:37:57 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:15:09 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 int			exec_export(t_cmd *cmd, t_shell *shell);
 static void	print_export(char **env_export);
-char	**ft_add_modify_env(char **env, char *var, int flag);
+char		**ft_add_modify_env(char **env, char *var, int flag);
 static char	**check_flags(int index, int flag, char **env, char *var);
 static void	print_after_equal(char *equal, char *new_var);
 

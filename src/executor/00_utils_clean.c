@@ -6,10 +6,9 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:48:15 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/05 12:48:31 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:16:49 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../inc/minishell.h"
 

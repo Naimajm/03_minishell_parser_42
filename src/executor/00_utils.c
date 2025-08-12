@@ -6,11 +6,9 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:48:45 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/05 20:25:29 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:17:47 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 
 #include "../../inc/minishell.h"
 
@@ -68,7 +66,7 @@ char	*ft_substr_malloc(const char *input, int start, int len)
 	return (substr);
 }
 
-void ft_shellevel(t_shell *shell)
+void	ft_shellevel(t_shell *shell)
 {
 	char	*str_value;
 	char	*str_value_shlvl;
@@ -85,11 +83,11 @@ void ft_shellevel(t_shell *shell)
 	//Componer de nuevo el valor SHLVL=int
 	str_value_shlvl = ft_strjoin("SHLVL=", str_value);
 	//actualizar el contenido de la variable de entorno.
-	shell->environment = ft_add_modify_env(shell->environment, str_value_shlvl, ft_valid_env_var(str_value_shlvl));
+	shell->environment = ft_add_modify_env(shell->environment, str_value_shlvl,
+			ft_valid_env_var(str_value_shlvl));
 	free(str_value);
 	free(str_value_shlvl);
 }
-
 
 // TODO: MI VERSION DE SHELLEVEL INDEPENDIZANDO DE SHELBASH EL CONTADOR. creo que coge el uno de la bashell o zshell, pero yo creo que al ejectuar por primera vez nuestra minishell esta deberia mostrar 1 nivel, sin contar el de bashell O ZSHELL
 /* void ft_shellevel(t_shell *shell)

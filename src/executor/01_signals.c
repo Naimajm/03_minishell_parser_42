@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:52:28 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/05 20:19:31 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:19:12 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	g_signal_flag; // Variables globales, el subject permite solo una.
 
 static void	ft_handle_sigint(int signum);
 
-void	setup_signals(void)
+void	setup_signals(void) // comportamiento asíncrono
 {
 	g_signal_flag = 0; // REINICIA A MODO INTEREACTIVO
 	signal(SIGINT, ft_handle_sigint); // Asocia la señal SIGINT (Ctrl+C) con la función ft_handle_sigint. A partir de ahora, cada vez que se presione Ctrl+C, se llamará a esa función. Al llamar a tu función, el sistema operativo le pasa automáticamente como argumento el número de la señal que ha ocurrido. En este caso, el valor de signum será el número entero que representa a SIGINT (que es 2 en la mayoría de los sistemas POSIX).
@@ -46,5 +46,3 @@ static void	ft_handle_sigint(int signum) // SE EJECUTA AL RECIBIR UN SIGINT
 		exit(130);
 	}
 }
-
-

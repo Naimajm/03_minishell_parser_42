@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   02.1_command_check.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:42:58 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/02 15:48:44 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:46:04 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	validate_command_structure(t_shell *shell)
 		return (SYNTAX_ERROR);			
 
 	current_command = (t_cmd *) shell->commands_list;
-	if (count_commands_nodes(current_command) > LOL)		// memoria numero maximo comandos
+	if (count_commands_nodes(current_command) > MAX_PID)		// memoria numero maximo comandos
 		return (SYNTAX_ERROR);
 	while (current_command)
 	{
@@ -37,7 +37,7 @@ int	validate_command_structure(t_shell *shell)
 		if (validate_redirections_structure(current_command) == SYNTAX_ERROR)
 		{
 			shell->exit_status = SYNTAX_ERROR;
-			return (ft_putendl_fd(ERROR_REDIRECTION_SYNTAX, STDERR_FILENO), SYNTAX_ERROR);
+			return (ft_putendl_fd(ERROR_REDIR_SYNTAX, STDERR_FILENO), SYNTAX_ERROR);
 		}
 		current_command = current_command->next;
 	}       

@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/25 13:34:02 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 18:12:32 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/07 18:15:59 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,3 @@ void	exec_builtins(t_shell *shell, t_cmd *cmd, int prev_fd)// prev_fd sirve para
 	else
 		return ;
 }
-
-

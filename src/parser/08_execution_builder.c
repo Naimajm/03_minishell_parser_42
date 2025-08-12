@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   08_execution_builder.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 21:44:56 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/05 00:54:04 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/07 14:38:26 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,11 @@ static void	fill_command_arguments(t_cmd *command)
     {
         if (current_word->word_type == WORD)
         {
+			if (ft_strcmp(current_word->processed_word, "") == 0 && current_word->next) // TODO, PASAR ESTO A JUAN
+			{
+				current_word = current_word->next; // saltar palabra vacia
+				continue;
+			}
             command->args[index] = ft_strdup(current_word->processed_word);
             if (!command->args[index])
                 return (ft_putendl_fd(ERROR_MEMORY_ALLOC, STDERR_FILENO));
@@ -139,22 +144,26 @@ static void    process_redirections(t_cmd *command)
         if (current_word->word_type == OUTFILE)
         {            
             if (current_word->next && current_word->next->word_type == WORD)
-				process_outfile(command, current_word);
+				if (process_outfile(command, current_word) == FAILURE)
+					break;
         }
         else if (current_word->word_type == APPEND) 
         {            
             if (current_word->next && current_word->next->word_type == WORD)
-				process_append(command, current_word);
+				if (process_append(command, current_word) == FAILURE)
+					break;
         }
         else if (current_word->word_type == INFILE)
         {
             if (current_word->next && current_word->next->word_type == WORD)
-				process_infile(command, current_word);
+				if(process_infile(command, current_word) == FAILURE)
+					break;
         }
         else if (current_word->word_type == HERE_DOC)
         {
             if (current_word->next && current_word->next->word_type == WORD)
-           		process_heredoc(command, current_word);
+           		if (process_heredoc(command, current_word) == FAILURE)
+					break;
         }     
         current_word = current_word->next;
     }    

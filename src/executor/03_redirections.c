@@ -6,11 +6,9 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:52:54 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/05 20:22:41 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/08 12:18:50 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 
 #include "../../inc/minishell.h"
 
@@ -33,11 +31,11 @@ int	redirections(t_shell *shell, t_cmd *cmd)
 
 static int	redir_heredoc(t_shell *shell, t_cmd *cmd)
 {
-	int		pipefd[2];
+	int		pipe_fd[2];
 	char	*buffer;
 
 	g_signal_flag = 2; // ***Importante: Establece la bandera para Ctrl+C en here-document***
-	if (pipe(pipefd) == -1)
+	if (pipe(pipe_fd) == -1)
 		return (perror("Error pipe\n"), 1);
 	while (1)
 	{
@@ -47,15 +45,16 @@ static int	redir_heredoc(t_shell *shell, t_cmd *cmd)
 			free(buffer);
 			break ;
 		}
-		buffer = expand_heredoc(buffer, shell->environment, shell->last_exit_status);
-		write(pipefd[1], buffer, ft_strlen(buffer));
-		write(pipefd[1], "\n", 1);
+		buffer = expand_heredoc(buffer, shell->environment,
+				shell->last_exit_status);
+		write(pipe_fd[1], buffer, ft_strlen(buffer));
+		write(pipe_fd[1], "\n", 1);
 		free(buffer);
 	}
-	close(pipefd[1]);
-	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+	close(pipe_fd[1]);
+	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
 		return (perror("Error heredoc\n"), 1);
-	return (close(pipefd[0]), 0);
+	return (close(pipe_fd[0]), 0);
 }
 
 static int	redir_infile(char *infile)
@@ -98,5 +97,3 @@ static int	redir_outfile(char *outfile, int append)
 	close(fd);
 	return (0);
 }
-
-

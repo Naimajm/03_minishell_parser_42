@@ -6,7 +6,7 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:31:52 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/01 17:52:26 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/08 12:13:00 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ Un nombre de variable válido no puede contener el signo =
 int			exec_unset(t_shell *shell, t_cmd *cmd);
 static char	**ft_change_env(char **env, char *str);
 static int	ft_is_readonly(char **readonly_vars, char *var_name);
-static void	print_invalid_errors(t_shell *shell, char *arg);
-static void	print_readonly_errors(t_shell *shell, char *arg);
+static void	print_unset_err(t_shell *shell, char *arg, char *mesasage);
 
 int	exec_unset(t_shell *shell, t_cmd *cmd)
 {
@@ -44,9 +43,9 @@ int	exec_unset(t_shell *shell, t_cmd *cmd)
 	while (cmd->args[i])
 	{
 		if (!ft_valid_env_var(cmd->args[i]) || ft_strchr(cmd->args[i], '=')) // para chequear nombre invalido de variable. y verificacion de que no haya signo = // VER NOTA SOBRE IMPRESION DE ERRORES Construir el mensaje de error completo en STDERR
-			print_invalid_errors(shell, cmd->args[i]);
+			print_unset_err(shell, cmd->args[i], "': not a valid identifier");
 		else if (ft_is_readonly(shell->readonly_vars, cmd->args[i])) // readonly
-			print_readonly_errors(shell, cmd->args[i]);
+			print_unset_err(shell, cmd->args[i], "': readonly variable");
 		else
 		{
 			shell->environment = ft_change_env(shell->environment,
@@ -107,21 +106,14 @@ static int	ft_is_readonly(char **readonly_vars, char *var_name)
 	return (0); // la variable no es readonly
 }
 
-static void	print_invalid_errors(t_shell *shell, char *arg)
+static void	print_unset_err(t_shell *shell, char *arg, char *mesasage)
 {
 	ft_putstr_fd("minishell: unset: `", STDERR_FILENO); // sin salto de linea
 	ft_putstr_fd(arg, STDERR_FILENO); // sin salto de linea
-	ft_putendl_fd("': not a valid identifier", STDERR_FILENO); // con salto de linea
+	ft_putendl_fd(mesasage, STDERR_FILENO);
 	shell->exit_status = ERROR;
 }
 
-static void	print_readonly_errors(t_shell *shell, char *arg)
-{
-	ft_putstr_fd("minishell: unset: `", STDERR_FILENO); // sin salto de linea
-	ft_putstr_fd(arg, STDERR_FILENO); // sin salto de linea
-	ft_putendl_fd("': readonly variable", STDERR_FILENO);
-	shell->exit_status = ERROR;
-}
 // NOTAS:
 
 /* ft_putstr_fd("minishell: unset: ", STDERR_FILENO); 

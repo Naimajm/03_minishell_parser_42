@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   08.1_execution_redict.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juagomez <juagomez@student.42.fr>          +#+  +:+       +#+        */
+/*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 21:16:26 by juagomez          #+#    #+#             */
-/*   Updated: 2025/08/04 21:55:29 by juagomez         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:19:06 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void	process_infile(t_cmd *command, t_word *word);
-void	process_outfile(t_cmd *command, t_word *word);
-void	process_append(t_cmd *command, t_word *word);
-void	process_heredoc(t_cmd *command, t_word *word);
+int	process_infile(t_cmd *command, t_word *word); // 08_executor_builder.c
+int	process_outfile(t_cmd *command, t_word *word);
+int	process_append(t_cmd *command, t_word *word);
+int	process_heredoc(t_cmd *command, t_word *word);
 
-void	process_infile(t_cmd *command, t_word *word)
+int	process_infile(t_cmd *command, t_word *word)
 {
 	//t_cmd	*current_command;
 
@@ -27,7 +27,7 @@ void	process_infile(t_cmd *command, t_word *word)
 		free(command->infile);  ///  liberar existente si redict consedcutivos
 	command->infile = ft_strdup(word->next->processed_word);
 	if (!command->infile)
-		return ;
+		return (FAILURE);
 			
 	if (access(command->infile, R_OK) == FAILURE)		// verificacion permisos archivos
 	{
@@ -35,10 +35,12 @@ void	process_infile(t_cmd *command, t_word *word)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(command->infile, STDERR_FILENO);
 		ft_putendl_fd(ERROR_FILE_NOT_FOUND, STDERR_FILENO);
+		return (FAILURE);
 	}
+	return (SUCCESS);
 }
 
-void	process_outfile(t_cmd *command, t_word *word)
+int	process_outfile(t_cmd *command, t_word *word)
 {
 	int	fd;
 
@@ -46,7 +48,7 @@ void	process_outfile(t_cmd *command, t_word *word)
 		free(command->outfile);
 	command->outfile = ft_strdup(word->next->processed_word);
 	if (!command->outfile)
-		return ;
+		return (FAILURE);
 	command->append = false;
 	
 	fd = open(command->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -56,6 +58,7 @@ void	process_outfile(t_cmd *command, t_word *word)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(command->outfile, STDERR_FILENO);
 		ft_putendl_fd(ERROR_PERMISSION_DENIED, STDERR_FILENO);
+		return (FAILURE);
 	}
 	else
 	{
@@ -63,11 +66,13 @@ void	process_outfile(t_cmd *command, t_word *word)
 		{
 			command->exit_status = ERROR;
 			ft_putendl_fd(ERROR_CLOSING_FILE, STDERR_FILENO);
+			return (FAILURE);
 		}
 	}
+	return (SUCCESS);
 }
 
-void	process_append(t_cmd *command, t_word *word)
+int	process_append(t_cmd *command, t_word *word)
 {
 	int	fd;
 
@@ -75,7 +80,7 @@ void	process_append(t_cmd *command, t_word *word)
 		free(command->outfile);
 	command->outfile = ft_strdup(word->next->processed_word);
 	if (!command->outfile)
-		return ;
+		return (FAILURE);
 
 	command->append = true;
 	fd = open(command->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -85,6 +90,7 @@ void	process_append(t_cmd *command, t_word *word)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(command->outfile, STDERR_FILENO);
 		ft_putendl_fd(ERROR_PERMISSION_DENIED, STDERR_FILENO);
+		return (FAILURE);
 	}
 	else
 	{
@@ -92,17 +98,20 @@ void	process_append(t_cmd *command, t_word *word)
 		{
 			command->exit_status = ERROR;
 			ft_putendl_fd(ERROR_CLOSING_FILE, STDERR_FILENO);
+			return (FAILURE);
 		}
 	}
+	return (SUCCESS);
 }
 
-void	process_heredoc(t_cmd *command, t_word *word)
+int	process_heredoc(t_cmd *command, t_word *word)
 {
 	if (command->delimiter)
 		free(command->delimiter);
 	command->delimiter = ft_strdup(word->next->processed_word);
 	if (!command->delimiter)
-		return ;
+		return (FAILURE);
 		
 	command->hd = true;
+	return (SUCCESS);
 }

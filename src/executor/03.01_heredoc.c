@@ -6,17 +6,16 @@
 /*   By: emcorona <emcorona@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 12:53:04 by emcorona          #+#    #+#             */
-/*   Updated: 2025/08/05 20:20:50 by emcorona         ###   ########.fr       */
+/*   Updated: 2025/08/08 12:23:15 by emcorona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../inc/minishell.h"
 
-static char	*expand_variable(int *i, char *buffer, char **env, int exit_st);
+static char	*expand_variable(int *i, char *buffer, char **env, int exit_status);
 static char	*not_expand(int *i, char *buffer);
 
-char	*expand_heredoc(char *buffer, char **env, int exit_st)
+char	*expand_heredoc(char *buffer, char **env, int exit_status)
 {
 	char	*aux;
 	char	*result;
@@ -29,7 +28,7 @@ char	*expand_heredoc(char *buffer, char **env, int exit_st)
 	{
 		if (buffer[i] == '$' && buffer[i + 1] && (ft_isalpha(buffer[i + 1])
 				|| buffer[i + 1] == '_' || buffer[i + 1] == '?'))
-			aux = expand_variable(&i, buffer, env, exit_st);
+			aux = expand_variable(&i, buffer, env, exit_status);
 		else
 			aux = not_expand(&i, buffer);
 		temp = ft_strjoin(result, aux);
@@ -39,7 +38,6 @@ char	*expand_heredoc(char *buffer, char **env, int exit_st)
 	}
 	return (free(buffer), result);
 }
-
 
 static char	*expand_variable(int *i, char *buffer, char **env, int exit_st)
 {
@@ -83,4 +81,3 @@ static char	*not_expand(int *i, char *buffer)
 	}
 	return (ft_substr_malloc(buffer, start, (*i) - start + 1));
 }
-
